@@ -84,9 +84,8 @@ rec {
   };
 
   rustPackages = pkgs.rustChannelOf {
-    date = "2020-01-30"; # 1.41
-    channel = "stable";
-    sha256 = "07mp7n4n3cmm37mv152frv7p9q58ahjw5k8gcq48vfczrgm5qgiy";
+    channel = "1.53.0";
+    sha256 = "1p4vxwv28v7qmrblnvp6qv8dgcrj8ka5c7dw2g2cr3vis7xhflaa";
   };
 
   rustc = rustPackages.rust.override {
