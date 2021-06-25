@@ -41,11 +41,7 @@ rec {
 
   inherit (gitignoreNix) gitignoreSource;
 
-  gitIgnoredSrc = gitignoreSource ./.;
-
   speculos = pkgs.callPackage ./dep/speculos { };
-
-  speculosItself = speculos.speculos;
 
   buildRustPackageClang = ledgerRustPlatform.buildRustPackage.override {
     stdenv = ledgerPkgs.clangStdenv;
@@ -68,7 +64,7 @@ rec {
     '';
     cargoVendorDir = "pretend-exists";
     depsBuildBuild = [ ledgerPkgs.buildPackages.stdenv.cc ];
-    nativeBuildInputs = [ ];
+    nativeBuildInputs = [ speculos.speculos ];
     buildInputs = [ rustPackages.rust-std ];
     verifyCargoDeps = true;
     target = "thumbv6m-none-eabi";
