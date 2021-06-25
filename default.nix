@@ -55,6 +55,12 @@ rec {
     stdenv = ledgerPkgs.clangStdenv;
     name = "rust-app";
     src = null;
+    # TODO once we break up GCC to separate compiler vs runtime like we do with
+    # Clang, we shouldn't need these hacks to get make the gcc runtime available.
+    preHook = ''
+      export NIX_LDFLAGS
+      NIX_LDFLAGS+=' -L${ledgerPkgs.stdenv.cc.cc}/lib/gcc/${ledgerPkgs.stdenv.hostPlatform.config}/${ledgerPkgs.stdenv.cc.cc.version}'
+    '';
     # We just want dev shell
     unpackPhase = ''
       echo got in shell > $out
