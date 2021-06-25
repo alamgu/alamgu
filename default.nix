@@ -11,6 +11,7 @@ rec {
 
   ledgerPkgs = pkgsFunc {
     crossSystem = {
+      isStatic = true;
       config = "armv6l-unknown-none-eabi";
       #useLLVM = true;
       gcc = {
