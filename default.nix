@@ -13,15 +13,13 @@ rec {
     crossSystem = {
       config = "armv6l-unknown-none-eabi";
       #useLLVM = true;
-      platform = {
-        gcc = {
-          arch = "armv6t2";
-          fpu = "vfpv2";
-        };
-        rustc = {
-          arch = "thumbv6m";
-          config = "thumbv6m-none-eabi";
-        };
+      gcc = {
+        arch = "armv6t2";
+        fpu = "vfpv2";
+      };
+      rustc = {
+        arch = "thumbv6m";
+        config = "thumbv6m-none-eabi";
       };
     };
     overlays = [
@@ -48,11 +46,9 @@ rec {
 
   speculosItself = speculos.speculos;
 
-  buildRustPackageClang = (ledgerPkgs.callPackage "${ledgerPkgs.path}/pkgs/build-support/rust" {
+  buildRustPackageClang = ledgerRustPlatform.buildRustPackage.override {
     stdenv = ledgerPkgs.clangStdenv;
-    inherit (ledgerRustPlatform) fetchcargo;
-    inherit (ledgerRustPlatform.rust) rustc cargo;
-  });
+  };
 
   rustShell = buildRustPackageClang {
     stdenv = ledgerPkgs.clangStdenv;
