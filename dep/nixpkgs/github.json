@@ -1,8 +1,8 @@
 {
-  "owner": "NixOS",
+  "owner": "obsidiansystems",
   "repo": "nixpkgs",
-  "branch": "release-21.05",
+  "branch": "fix-build-rust-crate-cross-21.05",
   "private": false,
-  "rev": "b8b8cfa29c7e9208e3bafd84c2e92402123c5fd3",
-  "sha256": "0m2qh8hg874lkyw94a5yg6x5p76hbk4vrxyy4fvb95aj2fkja24y"
+  "rev": "7e5f019bbff4e59473ea7cbca9aaf5e20e6aa012",
+  "sha256": "15hmkbdkm3b68prrw37mpp5q3gr8mz6450lha477zm3xfp3acsbn"
 }

@@ -1,0 +1,8 @@
+{
+  "owner": "obsidiansystems",
+  "repo": "crate2nix",
+  "branch": "back-to-callPackage",
+  "private": false,
+  "rev": "54f3043d018adee807d7661b300b4899ec4374b2",
+  "sha256": "0ir4938dhxlhl317ch68l82awwjgzww9p49rzx1kxd2fma288vkz"
+}

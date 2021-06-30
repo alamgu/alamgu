@@ -43,20 +43,24 @@ rec {
 
   speculos = pkgs.callPackage ./dep/speculos { };
 
+  crate2nix = import ./dep/crate2nix { inherit pkgs; };
+
   buildRustPackageClang = ledgerRustPlatform.buildRustPackage.override {
     stdenv = ledgerPkgs.clangStdenv;
   };
+
+  # TODO once we break up GCC to separate compiler vs runtime like we do with
+  # Clang, we shouldn't need these hacks to get make the gcc runtime available.
+  gccLibsPreHook = ''
+    export NIX_LDFLAGS
+    NIX_LDFLAGS+=' -L${ledgerPkgs.stdenv.cc.cc}/lib/gcc/${ledgerPkgs.stdenv.hostPlatform.config}/${ledgerPkgs.stdenv.cc.cc.version}'
+  '';
 
   rustShell = buildRustPackageClang {
     stdenv = ledgerPkgs.clangStdenv;
     name = "rust-app";
     src = null;
-    # TODO once we break up GCC to separate compiler vs runtime like we do with
-    # Clang, we shouldn't need these hacks to get make the gcc runtime available.
-    preHook = ''
-      export NIX_LDFLAGS
-      NIX_LDFLAGS+=' -L${ledgerPkgs.stdenv.cc.cc}/lib/gcc/${ledgerPkgs.stdenv.hostPlatform.config}/${ledgerPkgs.stdenv.cc.cc.version}'
-    '';
+    preHook = gccLibsPreHook;
     # We just want dev shell
     unpackPhase = ''
       echo got in shell > $out
@@ -80,6 +84,15 @@ rec {
     meta = {
       platforms = pkgs.lib.platforms.all;
     };
+  };
+
+  # Use right Rust; use Clang.
+  buildRustCrateForPkgsLedger = pkgs: let
+    isLedger = pkgs.stdenv.hostPlatform.parsed.kernel.name == "none";
+    platform = if isLedger then ledgerRustPlatform else rustPlatform;
+  in pkgs.buildRustCrate.override rec {
+    stdenv = if isLedger then pkgs.clangStdenv else pkgs.stdenv;
+    inherit (platform.rust) rustc cargo;
   };
 
   rustPackages = pkgs.rustChannelOf {
