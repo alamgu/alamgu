@@ -9,6 +9,8 @@ rec {
     ];
   };
 
+  inherit (pkgs) lib;
+
   ledgerPkgs = pkgsFunc {
     crossSystem = {
       isStatic = true;
@@ -37,7 +39,7 @@ rec {
 
   usbtool = import ./usbtool.nix { };
 
-  gitignoreNix = import (thunkSource ./dep/gitignore.nix) { inherit (pkgs) lib; };
+  gitignoreNix = import (thunkSource ./dep/gitignore.nix) { inherit lib; };
 
   inherit (gitignoreNix) gitignoreSource;
 
@@ -82,7 +84,7 @@ rec {
     RUSTC_BOOTSTRAP = 1;
 
     meta = {
-      platforms = pkgs.lib.platforms.all;
+      platforms = lib.platforms.all;
     };
   };
 
