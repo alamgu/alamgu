@@ -41,7 +41,7 @@ rec {
 
   inherit (gitignoreNix) gitignoreSource;
 
-  speculos = pkgs.callPackage ./dep/speculos { };
+  speculos = pkgs.callPackage ./dep/speculos { inherit pkgsFunc pkgs; };
 
   buildRustPackageClang = ledgerRustPlatform.buildRustPackage.override {
     stdenv = ledgerPkgs.clangStdenv;
