@@ -3,6 +3,6 @@
   "repo": "nixpkgs",
   "branch": "fix-build-rust-crate-cross-21.05",
   "private": false,
-  "rev": "7e5f019bbff4e59473ea7cbca9aaf5e20e6aa012",
-  "sha256": "15hmkbdkm3b68prrw37mpp5q3gr8mz6450lha477zm3xfp3acsbn"
+  "rev": "a1881f05c11c58ab4876a07c0ee72d5a051319c2",
+  "sha256": "0nsjrj3899cydw4dg09ikh0728ch1xrvbfnv3xghivdb376w6cd5"
 }
