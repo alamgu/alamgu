@@ -1,8 +1,8 @@
 {
   "owner": "obsidiansystems",
   "repo": "crate2nix",
-  "branch": "back-to-callPackage",
+  "branch": "pr-rollup-0",
   "private": false,
-  "rev": "54f3043d018adee807d7661b300b4899ec4374b2",
-  "sha256": "0ir4938dhxlhl317ch68l82awwjgzww9p49rzx1kxd2fma288vkz"
+  "rev": "da7f7bff4878cfca17d45f828321ba55f259d5f1",
+  "sha256": "0nbmsllvgw94phr28f2hy164c0s9ls1sdvlnl8v9ks13cvqf27hm"
 }
