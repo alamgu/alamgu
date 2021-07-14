@@ -107,7 +107,7 @@ rec {
     pname = "ledgerctl";
     version = "master";
     src = thunkSource ./dep/ledgerctl;
-    buildInputs = [
+    propagatedBuildInputs = [
       click
       construct
       cryptography
