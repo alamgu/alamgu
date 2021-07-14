@@ -117,4 +117,22 @@ rec {
     inherit (rustPackages) cargo;
     inherit rustc;
   };
+
+  ledgerctl = with pkgs.python3Packages; buildPythonPackage {
+    pname = "ledgerctl";
+    version = "master";
+    src = thunkSource ./dep/ledgerctl;
+    buildInputs = [
+      click
+      construct
+      cryptography
+      ecdsa
+      hidapi
+      intelhex
+      pillow
+      protobuf
+      requests
+      tabulate
+    ];
+  };
 }
