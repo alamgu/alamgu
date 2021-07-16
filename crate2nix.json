@@ -1,0 +1,12 @@
+{
+  "sources": {
+    "cargo-watch": {
+      "type": "Nix",
+      "import": "dep/cargo-watch/thunk.nix"
+    },
+    "cargo-ledger": {
+      "type": "Nix",
+      "import": "dep/cargo-ledger/thunk.nix"
+    }
+  }
+}
