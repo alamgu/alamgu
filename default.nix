@@ -135,4 +135,10 @@ rec {
       tabulate
     ];
   };
+
+  utils = import ./Cargo.nix {};
+
+  cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
+
+  cargo-watch = utils.workspaceMembers.cargo-watch.build;
 }
