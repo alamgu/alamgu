@@ -70,7 +70,16 @@ rec {
     '';
     cargoVendorDir = "pretend-exists";
     depsBuildBuild = [ ledgerPkgs.buildPackages.stdenv.cc ];
-    nativeBuildInputs = [ speculos.speculos ];
+    nativeBuildInputs = [
+      # emu
+      speculos.speculos
+
+      # loading on real hardware
+      cargo-ledger ledgerctl
+
+      # just plain useful for rust dev
+      cargo-watch
+    ];
     buildInputs = [ rustPackages.rust-std ];
     verifyCargoDeps = true;
     target = "thumbv6m-none-eabi";
@@ -136,7 +145,7 @@ rec {
     ];
   };
 
-  utils = import ./Cargo.nix {};
+  utils = import ./Cargo.nix { inherit pkgs; };
 
   cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
 
