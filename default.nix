@@ -43,7 +43,7 @@ rec {
 
   inherit (gitignoreNix) gitignoreSource;
 
-  speculos = pkgs.callPackage ./dep/speculos { };
+  speculos = pkgs.callPackage ./dep/speculos { inherit pkgsFunc pkgs; };
 
   crate2nix = import ./dep/crate2nix { inherit pkgs; };
 
