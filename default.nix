@@ -72,7 +72,7 @@ rec {
     depsBuildBuild = [ ledgerPkgs.buildPackages.stdenv.cc ];
     nativeBuildInputs = [
       # emu
-      speculos.speculos
+      speculos.speculos ledgerPkgs.buildPackages.gdb
 
       # loading on real hardware
       cargo-ledger ledgerctl
