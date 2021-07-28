@@ -28,6 +28,17 @@ rec {
     overlays = [
       (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
     ];
+    config = {
+	    packageOverrides = pkgs: rec {
+		    rust_1_53 = pkgs.callPackage ./1_53.nix {
+			    nixpkgs_src = thunkSource ./dep/nixpkgs;
+			    inherit (pkgs.darwin.apple_sdk.frameworks) CoreFoundation Security;
+			    llvm_12 = pkgs.llvmPackages_12.libllvm;
+		    };
+                    rust = rust_1_53;
+		    rustc = rust.packages.stable.rustc;
+	    };
+    };
   };
 
   # TODO: Replace this with `thunkSource` from nix-thunk for added safety
@@ -70,7 +81,8 @@ rec {
     '';
     cargoVendorDir = "pretend-exists";
     depsBuildBuild = [ ledgerPkgs.buildPackages.stdenv.cc ];
-    nativeBuildInputs = [ speculos.speculos ];
+    inherit (pkgs.rustPlatform) rustLibSrc;
+    nativeBuildInputs = [ speculos.speculos pkgs.gdb-multitarget pkgs.llvmPackages_12.lld ];
     buildInputs = [ rustPackages.rust-std ];
     verifyCargoDeps = true;
     target = "thumbv6m-none-eabi";
@@ -102,11 +114,41 @@ rec {
     sha256 = "1p4vxwv28v7qmrblnvp6qv8dgcrj8ka5c7dw2g2cr3vis7xhflaa";
   };
 
-  rustc = rustPackages.rust.override {
+  binaryRustC = rustPackages.rust.override {
     targets = [
       "thumbv6m-none-eabi"
     ];
   };
+
+  rustcBuilt = ledgerPkgs.pkgsBuildTarget.rustc.overrideAttrs (attrs: {
+    configureFlags = (builtins.tail attrs.configureFlags) ++ [
+      "--release-channel=nightly"
+      "--disable-docs"
+      "--disable-compiler-docs"
+    ];
+  });
+
+  rustcSrc = pkgs.runCommand "rustc-source" {} ''
+    install -d $out/lib/rustlib/src/rust
+    tar -C $out/lib/rustlib/src/rust -xvf ${rustcBuilt.src} --strip-components=1
+  '';
+
+  llvmPass = pkgs.stdenv.mkDerivation {
+    name = "LedgerROPI";
+    src = ./llvm-pass;
+    buildInputs = [
+      pkgs.llvmPackages_12.libllvm
+      pkgs.cmake
+    ];
+  };
+
+  rustc = pkgs.runCommand "rustc-ledger" {} ''
+    install -d $out/
+    ${pkgs.xorg.lndir}/bin/lndir -silent ${rustcBuilt} $out
+    ${pkgs.xorg.lndir}/bin/lndir -silent ${rustcSrc} $out
+    rm $out/bin/rustc
+    ${pkgs.patchelf}/bin/patchelf --add-needed ${llvmPass}/lib/libLedgerROPI.so ${rustcBuilt}/bin/rustc --output $out/bin/rustc
+  '';
 
   rustPlatform = pkgs.makeRustPlatform {
     inherit (rustPackages) cargo;
@@ -114,7 +156,7 @@ rec {
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
-    inherit (rustPackages) cargo;
+    inherit (rustPackages) cargo rustcSrc;
     inherit rustc;
   };
 }
