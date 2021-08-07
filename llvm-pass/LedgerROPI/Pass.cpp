@@ -20,6 +20,8 @@
 #include "llvm/IR/InstIterator.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/InstrTypes.h"
+#include "llvm/IR/InlineAsm.h"
+#include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Type.h"
 #include <iostream>
 using namespace llvm;
@@ -30,82 +32,60 @@ STATISTIC(LedgerROPICounter, "Applies ledger-specific relocations");
 
 namespace {
 
-	//Instruction* fixPointer(Instruction* L, Value* ptr, Function &F) {
-	Value* fixPointer(Instruction* L, Value* ptr, Function &F) {
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		auto *off_addr = F.getParent()->getNamedGlobal("ro_offset");
-		//std::cerr << "ro_offset: " << off_addr << "\n";
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		auto *nvram = F.getParent()->getNamedGlobal("_nvram");
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		//std::cerr << "nvram: " << nvram << "\n";
-		auto *ni = new PtrToIntInst(ptr, Type::getInt32Ty(F.getContext()));
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		ni->insertBefore(L);
-		auto *nvri = new PtrToIntInst(ptr, Type::getInt32Ty(F.getContext()));
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		nvri->insertBefore(L);
-		//std::cerr << "ptr: " << ptr << "\n";
-		auto *is_reloc = CmpInst::Create(Instruction::ICmp, CmpInst::ICMP_UGE, ni, nvri);
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		is_reloc->insertBefore(L);
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		auto *off = new LoadInst(Type::getInt32Ty(F.getContext()), off_addr, "", L);
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		auto *offed = BinaryOperator::Create(Instruction::Add, off, ni);
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		offed->insertBefore(L);
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		auto *backconvert = new IntToPtrInst(offed, ptr->getType());
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		backconvert->insertBefore(L);
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		auto *newaddr = SelectInst::Create(is_reloc, ptr, backconvert);
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		newaddr->insertBefore(L);
-		//std::cerr << "Modifying pointer line: " << __LINE__ << "\n";
-		// auto *newaddr = ptr;
-		return newaddr;
-	}
+  Value* fixPointer(Instruction* L, Value* ptr, Function &F, Module &M) {
+    IRBuilder<> builder(L);
+    auto vpt = Type::getInt8Ty(F.getContext())->getPointerTo();
+
+    auto *castArgument = builder.CreatePointerCast(ptr, vpt, "as_void");
+    FunctionCallee pic_fn = M.getOrInsertFunction("pic", vpt, vpt);
+    std::vector<Value*> args(1,castArgument);
+    auto *fixed_ptr = builder.CreateCall(pic_fn.getFunctionType(), pic_fn.getCallee(), args, "call_pic");
+    return builder.CreatePointerCast(fixed_ptr, ptr->getType(), "fixed_ptr");
+  }
 
   struct LedgerROPI : public ModulePass {
-    static char ID; // Pass identification, replacement for typeid
+    static char ID;
     LedgerROPI() : ModulePass(ID) {}
 
     bool runOnModule(Module &M) override {
-	    M.getOrInsertGlobal("ro_offset",Type::getInt32Ty(M.getContext()));
-	    M.getOrInsertGlobal("_nvram",Type::getInt32Ty(M.getContext()));
-	    for (auto &F: M.getFunctionList())
-      for ( auto I = inst_begin(F), E = inst_end(F); I != E; ++I ) {
-	Instruction *inst = &*I;
-	//std::cerr << "opcode" << inst->getOpcode() << "\n";
-	switch( inst->getOpcode() ) {
-	  case Instruction::Load: 
-	    {
-	      auto *L = dyn_cast<LoadInst>(inst);
-	      //std::cerr << "Load fix for " ;
-	      //std::cerr << "(" << inst->getOpcode() << ", " << Instruction::Load << ") ";
-	      //errs() << *inst << "\n";
-	      auto *newaddr = fixPointer(L, L->getPointerOperand(), F);
-	      L->setOperand(L->getPointerOperandIndex(), newaddr);
-	      break;
-	    }
-	  case Instruction::Invoke:
-	    {
-	      break;
-	    }
-	  case Instruction::Call:
-	    {
-	      auto *C = dyn_cast<CallInst>(inst);
-	      //std::cerr << "Function call fix\n";
-	      //auto *newaddr = fixPointer(C, C->getCalledOperand(), F);
-	      //C->setCalledOperand(newaddr);
-	      break;
-	    }
-	  default: break;
-	}
-      }
+      M.getOrInsertGlobal("ro_offset",Type::getInt32Ty(M.getContext()));
+      M.getOrInsertGlobal("_nvram",Type::getInt32Ty(M.getContext()));
+      for (auto &F: M.getFunctionList())
+        for ( auto I = inst_begin(F), E = inst_end(F); I != E; ++I ) {
+          Instruction *inst = &*I;
+          switch( inst->getOpcode() ) {
+            case Instruction::Load: 
+              {
+                auto *L = dyn_cast<LoadInst>(inst);
+                auto *P = L->getPointerOperand();
+                if(isa<AllocaInst>(P)) break;
+                auto *newaddr = fixPointer(L, L->getPointerOperand(), F, M);
+                L->setOperand(L->getPointerOperandIndex(), newaddr);
+                break;
+              }
+            case Instruction::Invoke:
+              {
+                break;
+              }
+            case Instruction::Call:
+              {
+                auto *C = dyn_cast<CallInst>(inst);
+                auto *targ = C->getCalledOperand();
+                auto *targF = dyn_cast<Function>(targ);
+                // Don't change normal function references (handled by the pic code
+                // already) or inline assembly.  Ignoring intrinsic functions and
+                // inline assembly is required here - they don't have pointers - but
+                // ignoring direct function references is not and is here as an
+                // approximation of "is an indirect function reference".
+                if(targ && ! targF && ! isa<InlineAsm>(targ)) {
+                  auto *newaddr = fixPointer(C, targ, F, M);
+                  C->setCalledOperand(newaddr);
+                }
+                break;
+              }
+            default: break;
+          }
+        }
       return true;
     }
   };
@@ -114,12 +94,3 @@ namespace {
 char LedgerROPI::ID = 0;
 static RegisterPass<LedgerROPI> X("ledger-ropi", "Ledger-specific read-only position-independent pass");
 
-/*namespace llvm {
-INITIALIZE_PASS(LedgerROPI, "ledger-ropi",
-                "Ledger ROPI pass", false, false)
-
-// Public interface to the GlobalDCEPass.
-ModulePass *llvm::createLedgerROPI() {
-  return new LedgerROPI();
-}
-}*/
