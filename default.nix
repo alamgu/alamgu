@@ -2,11 +2,33 @@
 }:
 
 rec {
+  overlays = [
+    (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
+    (self: super: {
+      rust_1_53 = pkgs.callPackage ./1_53.nix {
+          nixpkgs_src = self.path;
+          inherit (pkgs.darwin.apple_sdk.frameworks) CoreFoundation Security;
+          llvm_12 = pkgs.llvmPackages_12.libllvm;
+      };
+      rustPackages_1_53 = self.rust_1_53.packages.stable;
+      cargo_1_53 = self.rustPackages_1_53.cargo;
+      clippy_1_53 = self.rustPackages_1_53.clippy;
+      rustc_1_53 = self.rustPackages_1_53.rustc;
+      rustPlatform_1_53 = self.rustPackages_1_53.rustPlatform;
+    })
+    (self: super: {
+      lldClangStdenv = self.clangStdenv.override (old: {
+        cc = old.cc.override (old: {
+          # Default version of 11 segfaulted
+          inherit (ledgerPkgs.buildPackages.llvmPackages_12) bintools;
+        });
+      });
+    })
+  ];
+
   pkgs = pkgsFunc {
     config = {};
-    overlays = [
-      (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
-    ];
+    inherit overlays;
   };
 
   inherit (pkgs) lib;
@@ -25,20 +47,7 @@ rec {
         config = "thumbv6m-none-eabi";
       };
     };
-    overlays = [
-      (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
-    ];
-    config = {
-	    packageOverrides = pkgs: rec {
-		    rust_1_53 = pkgs.callPackage ./1_53.nix {
-			    nixpkgs_src = thunkSource ./dep/nixpkgs;
-			    inherit (pkgs.darwin.apple_sdk.frameworks) CoreFoundation Security;
-			    llvm_12 = pkgs.llvmPackages_12.libllvm;
-		    };
-                    rust = rust_1_53;
-		    rustc = rust.packages.stable.rustc;
-	    };
-    };
+    inherit overlays;
   };
 
   # TODO: Replace this with `thunkSource` from nix-thunk for added safety
@@ -59,7 +68,7 @@ rec {
   crate2nix = import ./dep/crate2nix { inherit pkgs; };
 
   buildRustPackageClang = ledgerRustPlatform.buildRustPackage.override {
-    stdenv = ledgerPkgs.clangStdenv;
+    stdenv = ledgerPkgs.lldClangStdenv;
   };
 
   # TODO once we break up GCC to separate compiler vs runtime like we do with
@@ -70,7 +79,7 @@ rec {
   '';
 
   rustShell = buildRustPackageClang {
-    stdenv = ledgerPkgs.clangStdenv;
+    stdenv = ledgerPkgs.lldClangStdenv;
     name = "rust-app";
     src = null;
     preHook = gccLibsPreHook;
@@ -81,9 +90,18 @@ rec {
     '';
     cargoVendorDir = "pretend-exists";
     depsBuildBuild = [ ledgerPkgs.buildPackages.stdenv.cc ];
-    inherit (pkgs.rustPlatform) rustLibSrc;
-    nativeBuildInputs = [ speculos.speculos pkgs.gdb-multitarget pkgs.llvmPackages_12.lld ];
-    buildInputs = [ rustPackages.rust-std ];
+    inherit (ledgerPkgs.rustPlatform_1_53) rustLibSrc;
+    nativeBuildInputs = [
+      # emu
+      speculos.speculos ledgerPkgs.buildPackages.gdb
+
+      # loading on real hardware
+      cargo-ledger ledgerctl
+
+      # just plain useful for rust dev
+      cargo-watch
+    ];
+    # buildInputs = [ binaryRustPackages.rust-std ];
     verifyCargoDeps = true;
     target = "thumbv6m-none-eabi";
 
@@ -105,22 +123,22 @@ rec {
     isLedger = pkgs.stdenv.hostPlatform.parsed.kernel.name == "none";
     platform = if isLedger then ledgerRustPlatform else rustPlatform;
   in pkgs.buildRustCrate.override rec {
-    stdenv = if isLedger then pkgs.clangStdenv else pkgs.stdenv;
+    stdenv = if isLedger then pkgs.lldClangStdenv else pkgs.stdenv;
     inherit (platform.rust) rustc cargo;
   };
 
-  rustPackages = pkgs.rustChannelOf {
+  binaryRustPackages = pkgs.rustChannelOf {
     channel = "1.53.0";
     sha256 = "1p4vxwv28v7qmrblnvp6qv8dgcrj8ka5c7dw2g2cr3vis7xhflaa";
   };
 
-  binaryRustC = rustPackages.rust.override {
+  binaryRustC = binaryRustPackages.rust.override {
     targets = [
       "thumbv6m-none-eabi"
     ];
   };
 
-  rustcBuilt = ledgerPkgs.pkgsBuildTarget.rustc.overrideAttrs (attrs: {
+  rustcBuilt = ledgerPkgs.buildPackages.rustc_1_53.overrideAttrs (attrs: {
     configureFlags = (builtins.tail attrs.configureFlags) ++ [
       "--release-channel=nightly"
       "--disable-docs"
@@ -151,12 +169,36 @@ rec {
   '';
 
   rustPlatform = pkgs.makeRustPlatform {
-    inherit (rustPackages) cargo;
+    inherit (binaryRustPackages) cargo rustcSrc;
     inherit rustc;
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
-    inherit (rustPackages) cargo rustcSrc;
+    inherit (binaryRustPackages) cargo rustcSrc;
     inherit rustc;
   };
+
+  ledgerctl = with pkgs.python3Packages; buildPythonPackage {
+    pname = "ledgerctl";
+    version = "master";
+    src = thunkSource ./dep/ledgerctl;
+    propagatedBuildInputs = [
+      click
+      construct
+      cryptography
+      ecdsa
+      hidapi
+      intelhex
+      pillow
+      protobuf
+      requests
+      tabulate
+    ];
+  };
+
+  utils = import ./Cargo.nix { inherit pkgs; };
+
+  cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
+
+  cargo-watch = utils.workspaceMembers.cargo-watch.build;
 }
