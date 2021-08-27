@@ -6,15 +6,48 @@ rec {
     (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
     (self: super: {
       rust_1_53 = pkgs.callPackage ./1_53.nix {
-          nixpkgs_src = self.path;
-          inherit (pkgs.darwin.apple_sdk.frameworks) CoreFoundation Security;
-          llvm_12 = pkgs.llvmPackages_12.libllvm;
+        nixpkgs_src = self.path;
+        inherit (pkgs.darwin.apple_sdk.frameworks) CoreFoundation Security;
+        llvm_12 = pkgs.llvmPackages_12.libllvm;
       };
       rustPackages_1_53 = self.rust_1_53.packages.stable;
       cargo_1_53 = self.rustPackages_1_53.cargo;
       clippy_1_53 = self.rustPackages_1_53.clippy;
       rustc_1_53 = self.rustPackages_1_53.rustc;
       rustPlatform_1_53 = self.rustPackages_1_53.rustPlatform;
+    })
+    (self: super: {
+      rustcBuilt = self.rustc_1_53.overrideAttrs (attrs: {
+        configureFlags = (builtins.tail attrs.configureFlags) ++ [
+          "--release-channel=nightly"
+          "--disable-docs"
+          "--disable-compiler-docs"
+        ];
+      });
+
+      rustcSrc = self.runCommand "rustc-source" {} ''
+        install -d $out/lib/rustlib/src/rust
+        tar -C $out/lib/rustlib/src/rust -xvf ${self.rustcBuilt.src} --strip-components=1
+      '';
+
+      ropiAllLlvmPass = self.stdenv.mkDerivation {
+        name = "LedgerROPI";
+        src = ./llvm-pass;
+        nativeBuildInputs = [
+          self.buildPackages.cmake
+        ];
+        buildInputs = [
+          self.llvmPackages_12.libllvm
+        ];
+      };
+
+      rustcRopi = self.runCommand "rustc-ledger" {} ''
+        install -d $out/
+        ${self.buildPackages.xorg.lndir}/bin/lndir -silent ${self.rustcBuilt} $out
+        ${self.buildPackages.xorg.lndir}/bin/lndir -silent ${self.rustcSrc} $out
+        rm $out/bin/rustc
+        ${self.buildPackages.patchelf}/bin/patchelf --add-needed ${self.ropiAllLlvmPass}/lib/libLedgerROPI.so ${self.rustcBuilt}/bin/rustc --output $out/bin/rustc
+      '';
     })
     (self: super: {
       lldClangStdenv = self.clangStdenv.override (old: {
@@ -132,50 +165,25 @@ rec {
     sha256 = "1p4vxwv28v7qmrblnvp6qv8dgcrj8ka5c7dw2g2cr3vis7xhflaa";
   };
 
-  binaryRustC = binaryRustPackages.rust.override {
+  binaryRustc = binaryRustPackages.rust.override {
     targets = [
       "thumbv6m-none-eabi"
     ];
   };
 
-  rustcBuilt = ledgerPkgs.buildPackages.rustc_1_53.overrideAttrs (attrs: {
-    configureFlags = (builtins.tail attrs.configureFlags) ++ [
-      "--release-channel=nightly"
-      "--disable-docs"
-      "--disable-compiler-docs"
-    ];
-  });
-
-  rustcSrc = pkgs.runCommand "rustc-source" {} ''
-    install -d $out/lib/rustlib/src/rust
-    tar -C $out/lib/rustlib/src/rust -xvf ${rustcBuilt.src} --strip-components=1
-  '';
-
-  llvmPass = pkgs.stdenv.mkDerivation {
-    name = "LedgerROPI";
-    src = ./llvm-pass;
-    buildInputs = [
-      pkgs.llvmPackages_12.libllvm
-      pkgs.cmake
-    ];
-  };
-
-  rustc = pkgs.runCommand "rustc-ledger" {} ''
-    install -d $out/
-    ${pkgs.xorg.lndir}/bin/lndir -silent ${rustcBuilt} $out
-    ${pkgs.xorg.lndir}/bin/lndir -silent ${rustcSrc} $out
-    rm $out/bin/rustc
-    ${pkgs.patchelf}/bin/patchelf --add-needed ${llvmPass}/lib/libLedgerROPI.so ${rustcBuilt}/bin/rustc --output $out/bin/rustc
-  '';
-
   rustPlatform = pkgs.makeRustPlatform {
     inherit (binaryRustPackages) cargo rustcSrc;
-    inherit rustc;
+    rustc = pkgs.buildPackages.rustcRopi;
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
     inherit (binaryRustPackages) cargo rustcSrc;
-    inherit rustc;
+    rustc = ledgerPkgs.buildPackages.rustcRopi;
+  };
+
+  binaryLedgerRustPlatform = ledgerPkgs.makeRustPlatform {
+    inherit (binaryRustPackages) cargo rustcSrc;
+    rustc = binaryRustc;
   };
 
   ledgerctl = with pkgs.python3Packages; buildPythonPackage {
