@@ -19,6 +19,7 @@ rec {
       gcc = {
         arch = "armv6t2";
         fpu = "vfpv2";
+        thumb = true;
       };
       rustc = {
         arch = "thumbv6m";
