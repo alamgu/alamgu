@@ -12,13 +12,12 @@ rec {
   inherit (pkgs) lib;
 
   ledgerPkgs = pkgsFunc {
+    config.allowUnsupportedSystem = true;
     crossSystem = {
       isStatic = true;
-      config = "armv6l-unknown-none-eabi";
-      #useLLVM = true;
+      config = "armv6m-unknown-none-eabi";
       gcc = {
-        arch = "armv6t2";
-        fpu = "vfpv2";
+        arch = "armv6s-m";
       };
       rustc = {
         arch = "thumbv6m";
