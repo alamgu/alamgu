@@ -1,8 +1,8 @@
 {
   "owner": "obsidiansystems",
   "repo": "nixpkgs",
-  "branch": "fix-build-rust-crate-cross-21.05",
+  "branch": "fix-build-rust-crate-cross-21.05-newer",
   "private": false,
-  "rev": "a1881f05c11c58ab4876a07c0ee72d5a051319c2",
-  "sha256": "0nsjrj3899cydw4dg09ikh0728ch1xrvbfnv3xghivdb376w6cd5"
+  "rev": "32caf284cc407cde3a060771821a534b5718dc30",
+  "sha256": "057z86h9vpslp43vvn3ikpassmxlqrivlmrhqy6h8gcibzqfb7b7"
 }
