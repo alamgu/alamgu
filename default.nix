@@ -2,11 +2,21 @@
 }:
 
 rec {
+  overlays = [
+    (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
+    (self: super: {
+      lldClangStdenv = self.clangStdenv.override (old: {
+        cc = old.cc.override (old: {
+          # Default version of 11 segfaulted
+          inherit (ledgerPkgs.buildPackages.llvmPackages_12) bintools;
+        });
+      });
+    })
+  ];
+
   pkgs = pkgsFunc {
     config = {};
-    overlays = [
-      (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
-    ];
+    inherit overlays;
   };
 
   inherit (pkgs) lib;
@@ -24,9 +34,7 @@ rec {
         config = "thumbv6m-none-eabi";
       };
     };
-    overlays = [
-      (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
-    ];
+    inherit overlays;
   };
 
   # TODO: Replace this with `thunkSource` from nix-thunk for added safety
@@ -47,7 +55,7 @@ rec {
   crate2nix = import ./dep/crate2nix { inherit pkgs; };
 
   buildRustPackageClang = ledgerRustPlatform.buildRustPackage.override {
-    stdenv = ledgerPkgs.clangStdenv;
+    stdenv = ledgerPkgs.lldClangStdenv;
   };
 
   # TODO once we break up GCC to separate compiler vs runtime like we do with
@@ -58,7 +66,7 @@ rec {
   '';
 
   rustShell = buildRustPackageClang {
-    stdenv = ledgerPkgs.clangStdenv;
+    stdenv = ledgerPkgs.lldClangStdenv;
     name = "rust-app";
     src = null;
     preHook = gccLibsPreHook;
@@ -101,7 +109,7 @@ rec {
     isLedger = pkgs.stdenv.hostPlatform.parsed.kernel.name == "none";
     platform = if isLedger then ledgerRustPlatform else rustPlatform;
   in pkgs.buildRustCrate.override rec {
-    stdenv = if isLedger then pkgs.clangStdenv else pkgs.stdenv;
+    stdenv = if isLedger then pkgs.lldClangStdenv else pkgs.stdenv;
     inherit (platform.rust) rustc cargo;
   };
 
