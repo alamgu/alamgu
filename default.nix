@@ -80,6 +80,13 @@ rec {
       };
     };
     inherit overlays;
+    crossOverlays = [
+      (self: super: {
+        newlibCross = super.newlibCross.override {
+          nanoizeNewlib = true;
+        };
+      })
+    ];
   };
 
   # TODO: Replace this with `thunkSource` from nix-thunk for added safety
