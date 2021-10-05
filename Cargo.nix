@@ -174,12 +174,12 @@ rec {
         dependencies = [
           {
             name = "hermit-abi";
-            packageId = "hermit-abi";
+            packageId = "hermit-abi 0.1.19";
             target = { target, features }: (target."os" == "hermit");
           }
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             usesDefaultFeatures = false;
             target = { target, features }: (target."unix" or false);
           }
@@ -192,7 +192,17 @@ rec {
         ];
 
       };
-      "autocfg" = rec {
+      "autocfg 1.0.0" = rec {
+        crateName = "autocfg";
+        version = "1.0.0";
+        edition = "2015";
+        sha256 = "17cv6pwb4q08s0ynpr4n8hv5299hcmhdgvdchzixfpw8y5qcgapq";
+        authors = [
+          "Josh Stone <cuviper@gmail.com>"
+        ];
+
+      };
+      "autocfg 1.0.1" = rec {
         crateName = "autocfg";
         version = "1.0.1";
         edition = "2015";
@@ -282,7 +292,7 @@ rec {
           }
           {
             name = "clap";
-            packageId = "clap 3.0.0-beta.2";
+            packageId = "clap 3.0.0-beta.1";
           }
           {
             name = "goblin";
@@ -290,15 +300,15 @@ rec {
           }
           {
             name = "serde";
-            packageId = "serde";
+            packageId = "serde 1.0.114";
           }
           {
             name = "serde_derive";
-            packageId = "serde_derive";
+            packageId = "serde_derive 1.0.114";
           }
           {
             name = "serde_json";
-            packageId = "serde_json";
+            packageId = "serde_json 1.0.56";
           }
         ];
 
@@ -325,7 +335,7 @@ rec {
           }
           {
             name = "log";
-            packageId = "log";
+            packageId = "log 0.4.14";
           }
           {
             name = "shell-escape";
@@ -362,9 +372,9 @@ rec {
       };
       "cargo_metadata" = rec {
         crateName = "cargo_metadata";
-        version = "0.11.4";
+        version = "0.11.0";
         edition = "2018";
-        sha256 = "1v0pis3y6dzqrzppan3vs2c97b20wf4xphnxk9i4sxc69g16g9d3";
+        sha256 = "1d3szmjhdwfy179c13h1kw9xsjayw7al2pa6z4j4x1j5q4zqpb0p";
         authors = [
           "Oliver Schneider <git-spam-no-reply9815368754983@oli-obk.de>"
         ];
@@ -376,12 +386,15 @@ rec {
           }
           {
             name = "serde";
-            packageId = "serde";
-            features = [ "derive" ];
+            packageId = "serde 1.0.114";
+          }
+          {
+            name = "serde_derive";
+            packageId = "serde_derive 1.0.114";
           }
           {
             name = "serde_json";
-            packageId = "serde_json";
+            packageId = "serde_json 1.0.56";
           }
         ];
         features = {
@@ -437,7 +450,7 @@ rec {
         dependencies = [
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             optional = true;
           }
           {
@@ -503,7 +516,7 @@ rec {
           }
           {
             name = "textwrap";
-            packageId = "textwrap 0.11.0";
+            packageId = "textwrap";
           }
           {
             name = "unicode-width";
@@ -526,11 +539,11 @@ rec {
         };
         resolvedDefaultFeatures = [ "ansi_term" "atty" "color" "default" "strsim" "suggestions" "vec_map" ];
       };
-      "clap 3.0.0-beta.2" = rec {
+      "clap 3.0.0-beta.1" = rec {
         crateName = "clap";
-        version = "3.0.0-beta.2";
+        version = "3.0.0-beta.1";
         edition = "2018";
-        sha256 = "0hm1kivw6190rxbfqhdr4hqwlrijvwh90i3d9dyyw0d5k0chdlab";
+        sha256 = "0dhrqk3978hp7mj95q8zmarjqfy9qfvglpg2llw0s3wq7z2l61l6";
         authors = [
           "Kevin K. <kbknapp@gmail.com>"
           "Clap Maintainers"
@@ -571,12 +584,12 @@ rec {
           }
           {
             name = "termcolor";
-            packageId = "termcolor";
+            packageId = "termcolor 1.1.0";
             optional = true;
           }
           {
             name = "textwrap";
-            packageId = "textwrap 0.12.1";
+            packageId = "textwrap";
           }
           {
             name = "unicode-width";
@@ -594,24 +607,23 @@ rec {
           }
         ];
         features = {
-          "cargo" = [ "lazy_static" ];
           "color" = [ "atty" "termcolor" ];
           "debug" = [ "clap_derive/debug" ];
           "default" = [ "suggestions" "color" "derive" "std" "cargo" ];
           "derive" = [ "clap_derive" "lazy_static" ];
-          "doc" = [ "yaml" "regex" ];
+          "doc" = [ "yaml" ];
           "suggestions" = [ "strsim" ];
           "unstable" = [ "clap_derive/unstable" ];
-          "wrap_help" = [ "terminal_size" "textwrap/terminal_size" ];
+          "wrap_help" = [ "term_size" "textwrap/term_size" ];
           "yaml" = [ "yaml-rust" ];
         };
         resolvedDefaultFeatures = [ "atty" "cargo" "clap_derive" "color" "default" "derive" "lazy_static" "std" "strsim" "suggestions" "termcolor" ];
       };
       "clap_derive" = rec {
         crateName = "clap_derive";
-        version = "3.0.0-beta.2";
+        version = "3.0.0-beta.1";
         edition = "2018";
-        sha256 = "18cn82jhcha7m0nkpi1a03jx8k7aaq5kxfcxnsqpaa8ih5dp23rp";
+        sha256 = "0c2g04dzpxcysgdjm1asfg2cd9gm4f9r47fjmh2jaiclbgkwjlgv";
         procMacro = true;
         authors = [
           "Guillaume Pinot <texitoi@texitoi.eu>"
@@ -628,15 +640,15 @@ rec {
           }
           {
             name = "proc-macro2";
-            packageId = "proc-macro2";
+            packageId = "proc-macro2 1.0.19";
           }
           {
             name = "quote";
-            packageId = "quote";
+            packageId = "quote 1.0.7";
           }
           {
             name = "syn";
-            packageId = "syn";
+            packageId = "syn 1.0.35";
             features = [ "full" ];
           }
         ];
@@ -700,7 +712,7 @@ rec {
           }
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
           }
           {
             name = "terminal_size";
@@ -763,11 +775,11 @@ rec {
           }
           {
             name = "proc-macro2";
-            packageId = "proc-macro2";
+            packageId = "proc-macro2 1.0.27";
           }
           {
             name = "quote";
-            packageId = "quote";
+            packageId = "quote 1.0.9";
           }
           {
             name = "strsim";
@@ -776,7 +788,7 @@ rec {
           }
           {
             name = "syn";
-            packageId = "syn";
+            packageId = "syn 1.0.73";
             features = [ "full" "extra-traits" ];
           }
         ];
@@ -801,11 +813,11 @@ rec {
           }
           {
             name = "quote";
-            packageId = "quote";
+            packageId = "quote 1.0.9";
           }
           {
             name = "syn";
-            packageId = "syn";
+            packageId = "syn 1.0.73";
           }
         ];
 
@@ -851,15 +863,15 @@ rec {
           }
           {
             name = "proc-macro2";
-            packageId = "proc-macro2";
+            packageId = "proc-macro2 1.0.27";
           }
           {
             name = "quote";
-            packageId = "quote";
+            packageId = "quote 1.0.9";
           }
           {
             name = "syn";
-            packageId = "syn";
+            packageId = "syn 1.0.73";
             features = [ "full" "extra-traits" ];
           }
         ];
@@ -885,7 +897,7 @@ rec {
           }
           {
             name = "syn";
-            packageId = "syn";
+            packageId = "syn 1.0.73";
             features = [ "full" "extra-traits" ];
           }
         ];
@@ -934,7 +946,7 @@ rec {
         dependencies = [
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             target = { target, features }: (target."unix" or false);
           }
           {
@@ -1015,7 +1027,7 @@ rec {
           }
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             target = { target, features }: (target."unix" or false);
           }
           {
@@ -1100,7 +1112,7 @@ rec {
         dependencies = [
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
           }
         ];
 
@@ -1150,7 +1162,7 @@ rec {
           }
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             usesDefaultFeatures = false;
             target = { target, features }: (target."unix" or false);
           }
@@ -1182,7 +1194,7 @@ rec {
           }
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             usesDefaultFeatures = false;
             target = { target, features }: (target."unix" or false);
           }
@@ -1233,7 +1245,7 @@ rec {
           }
           {
             name = "log";
-            packageId = "log";
+            packageId = "log 0.4.14";
           }
           {
             name = "regex";
@@ -1261,7 +1273,7 @@ rec {
         dependencies = [
           {
             name = "log";
-            packageId = "log";
+            packageId = "log 0.4.11";
             optional = true;
             usesDefaultFeatures = false;
           }
@@ -1290,11 +1302,17 @@ rec {
       };
       "hashbrown" = rec {
         crateName = "hashbrown";
-        version = "0.11.2";
+        version = "0.8.1";
         edition = "2018";
-        sha256 = "0vkjsf5nzs7qcia5ya79j9sq2p1caz4crrncr1675wwyj3ag0pmb";
+        sha256 = "1ys6hax8s1f9n5i7vq6mzq0ick6ph938dsgnsbc68d0hbxc9bx9l";
         authors = [
           "Amanieu d'Antras <amanieu@gmail.com>"
+        ];
+        buildDependencies = [
+          {
+            name = "autocfg";
+            packageId = "autocfg 1.0.0";
+          }
         ];
         features = {
           "ahash-compile-time-rng" = [ "ahash/compile-time-rng" ];
@@ -1305,9 +1323,9 @@ rec {
       };
       "heck" = rec {
         crateName = "heck";
-        version = "0.3.3";
-        edition = "2018";
-        sha256 = "0b0kkr790p66lvzn9nsmfjvydrbmh9z5gb664jchwgw64vxiwqkd";
+        version = "0.3.1";
+        edition = "2015";
+        sha256 = "01a2v7yvkiqxakdqz4hw3w3g4sm52ivz9cs3qcsv2arxsmw4wmi0";
         authors = [
           "Without Boats <woboats@gmail.com>"
         ];
@@ -1319,7 +1337,7 @@ rec {
         ];
 
       };
-      "hermit-abi" = rec {
+      "hermit-abi 0.1.19" = rec {
         crateName = "hermit-abi";
         version = "0.1.19";
         edition = "2018";
@@ -1330,7 +1348,7 @@ rec {
         dependencies = [
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             usesDefaultFeatures = false;
           }
         ];
@@ -1351,9 +1369,9 @@ rec {
       };
       "indexmap" = rec {
         crateName = "indexmap";
-        version = "1.7.0";
-        edition = "2018";
-        sha256 = "19b2zwfajhsfcgny0clv8y4jppy704znfhv8nv2dw9a18l2kcqxw";
+        version = "1.5.0";
+        edition = "2015";
+        sha256 = "19r9j3nirmk6hiafy1gyrq049m47yg48y932kalgwwazxrcwv22v";
         authors = [
           "bluss"
           "Josh Stone <cuviper@gmail.com>"
@@ -1369,7 +1387,7 @@ rec {
         buildDependencies = [
           {
             name = "autocfg";
-            packageId = "autocfg";
+            packageId = "autocfg 1.0.0";
           }
         ];
         features = {
@@ -1398,7 +1416,7 @@ rec {
           }
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
           }
         ];
         features = {
@@ -1417,7 +1435,7 @@ rec {
         dependencies = [
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
           }
         ];
 
@@ -1443,12 +1461,12 @@ rec {
           }
           {
             name = "serde";
-            packageId = "serde";
+            packageId = "serde 1.0.126";
             features = [ "derive" ];
           }
           {
             name = "serde_json";
-            packageId = "serde_json";
+            packageId = "serde_json 1.0.64";
           }
           {
             name = "serde_yaml";
@@ -1483,7 +1501,7 @@ rec {
         dependencies = [
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             target = { target, features }: (target."unix" or false);
           }
         ];
@@ -1510,7 +1528,19 @@ rec {
         };
         resolvedDefaultFeatures = [ "default" "use_alloc" "use_std" ];
       };
-      "itoa" = rec {
+      "itoa 0.4.6" = rec {
+        crateName = "itoa";
+        version = "0.4.6";
+        edition = "2015";
+        sha256 = "1rnpb7rr8df76gnlk07b9086cn7fc0dxxy1ghh00q6nip7bklvyw";
+        authors = [
+          "David Tolnay <dtolnay@gmail.com>"
+        ];
+        features = {
+          "default" = [ "std" ];
+        };
+      };
+      "itoa 0.4.7" = rec {
         crateName = "itoa";
         version = "0.4.7";
         edition = "2015";
@@ -1570,7 +1600,7 @@ rec {
           "nightly-testing" = [ "clippy" "nightly" ];
         };
       };
-      "libc" = rec {
+      "libc 0.2.98" = rec {
         crateName = "libc";
         version = "0.2.98";
         edition = "2015";
@@ -1599,7 +1629,25 @@ rec {
           "serde_impl" = [ "serde" "serde_test" ];
         };
       };
-      "log" = rec {
+      "log 0.4.11" = rec {
+        crateName = "log";
+        version = "0.4.11";
+        edition = "2015";
+        sha256 = "12xzqaflpiljn5cmxsbnbv9sjaj13ykhwsvll0gysbx4blbyvasg";
+        authors = [
+          "The Rust Project Developers"
+        ];
+        dependencies = [
+          {
+            name = "cfg-if";
+            packageId = "cfg-if 0.1.10";
+          }
+        ];
+        features = {
+          "kv_unstable_sval" = [ "kv_unstable" "sval/fmt" ];
+        };
+      };
+      "log 0.4.14" = rec {
         crateName = "log";
         version = "0.4.14";
         edition = "2015";
@@ -1670,12 +1718,12 @@ rec {
           }
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             target = { target, features }: (target."unix" or false);
           }
           {
             name = "log";
-            packageId = "log";
+            packageId = "log 0.4.14";
           }
           {
             name = "miow";
@@ -1717,7 +1765,7 @@ rec {
           }
           {
             name = "log";
-            packageId = "log";
+            packageId = "log 0.4.14";
           }
           {
             name = "mio";
@@ -1774,7 +1822,7 @@ rec {
           }
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             target = { target, features }: ((target."os" == "redox") || (target."unix" or false) || (target."os" == "wasi"));
           }
           {
@@ -1808,7 +1856,7 @@ rec {
           }
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             features = [ "extra_traits" ];
           }
         ];
@@ -1839,7 +1887,7 @@ rec {
         buildDependencies = [
           {
             name = "version_check";
-            packageId = "version_check";
+            packageId = "version_check 0.9.3";
           }
         ];
         features = {
@@ -1902,7 +1950,7 @@ rec {
           }
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
           }
           {
             name = "mio";
@@ -1946,7 +1994,7 @@ rec {
         buildDependencies = [
           {
             name = "autocfg";
-            packageId = "autocfg";
+            packageId = "autocfg 1.0.1";
           }
         ];
         features = {
@@ -1966,7 +2014,7 @@ rec {
         buildDependencies = [
           {
             name = "autocfg";
-            packageId = "autocfg";
+            packageId = "autocfg 1.0.1";
           }
         ];
         features = {
@@ -1975,9 +2023,9 @@ rec {
       };
       "os_str_bytes" = rec {
         crateName = "os_str_bytes";
-        version = "2.4.0";
+        version = "2.3.1";
         edition = "2018";
-        sha256 = "11agh8n3x2l4sr3sxvx6byc1j3ryb1g6flb1ywn0qhq7xv1y3cmg";
+        sha256 = "041m0bp3cbmfwrkpw1jbf0qh5faysgndi6i1ji68qz9l92w4gph6";
         authors = [
           "dylni"
         ];
@@ -2167,9 +2215,9 @@ rec {
       };
       "proc-macro-error" = rec {
         crateName = "proc-macro-error";
-        version = "1.0.4";
+        version = "0.4.12";
         edition = "2018";
-        sha256 = "1373bhxaf0pagd8zkyd03kkx6bchzf6g0dkwrwzsnal9z47lj9fs";
+        sha256 = "1rvpaadwv7vmsp142qqh2axqrr9v78f1nvdsi9nhmfhy10kk1wqq";
         authors = [
           "CreepySkeleton <creepy-skeleton@yandex.ru>"
         ];
@@ -2180,36 +2228,32 @@ rec {
           }
           {
             name = "proc-macro2";
-            packageId = "proc-macro2";
+            packageId = "proc-macro2 1.0.19";
           }
           {
             name = "quote";
-            packageId = "quote";
+            packageId = "quote 1.0.7";
           }
           {
             name = "syn";
-            packageId = "syn";
-            optional = true;
+            packageId = "syn 1.0.35";
             usesDefaultFeatures = false;
+            features = [ "derive" "parsing" "proc-macro" "printing" ];
           }
         ];
         buildDependencies = [
           {
             name = "version_check";
-            packageId = "version_check";
+            packageId = "version_check 0.9.2";
           }
         ];
-        features = {
-          "default" = [ "syn-error" ];
-          "syn-error" = [ "syn" ];
-        };
-        resolvedDefaultFeatures = [ "default" "syn" "syn-error" ];
+
       };
       "proc-macro-error-attr" = rec {
         crateName = "proc-macro-error-attr";
-        version = "1.0.4";
+        version = "0.4.12";
         edition = "2018";
-        sha256 = "0sgq6m5jfmasmwwy8x4mjygx5l7kp8s4j60bv25ckv2j1qc41gm1";
+        sha256 = "1pk9mwcfnpf8favgc2cl4sqlmi818p96hg8pfb51wg5nzmvlnnwa";
         procMacro = true;
         authors = [
           "CreepySkeleton <creepy-skeleton@yandex.ru>"
@@ -2217,22 +2261,52 @@ rec {
         dependencies = [
           {
             name = "proc-macro2";
-            packageId = "proc-macro2";
+            packageId = "proc-macro2 1.0.19";
           }
           {
             name = "quote";
-            packageId = "quote";
+            packageId = "quote 1.0.7";
+          }
+          {
+            name = "syn";
+            packageId = "syn 1.0.35";
+            usesDefaultFeatures = false;
+            features = [ "derive" "parsing" "proc-macro" "printing" ];
+          }
+          {
+            name = "syn-mid";
+            packageId = "syn-mid";
           }
         ];
         buildDependencies = [
           {
             name = "version_check";
-            packageId = "version_check";
+            packageId = "version_check 0.9.2";
           }
         ];
 
       };
-      "proc-macro2" = rec {
+      "proc-macro2 1.0.19" = rec {
+        crateName = "proc-macro2";
+        version = "1.0.19";
+        edition = "2018";
+        sha256 = "04lb4n7g5z9mq6in39i7yb1m5bb107dfawc2rf4227npnn2z1x84";
+        authors = [
+          "Alex Crichton <alex@alexcrichton.com>"
+          "David Tolnay <dtolnay@gmail.com>"
+        ];
+        dependencies = [
+          {
+            name = "unicode-xid";
+            packageId = "unicode-xid 0.2.1";
+          }
+        ];
+        features = {
+          "default" = [ "proc-macro" ];
+        };
+        resolvedDefaultFeatures = [ "default" "proc-macro" ];
+      };
+      "proc-macro2 1.0.27" = rec {
         crateName = "proc-macro2";
         version = "1.0.27";
         edition = "2018";
@@ -2244,7 +2318,7 @@ rec {
         dependencies = [
           {
             name = "unicode-xid";
-            packageId = "unicode-xid";
+            packageId = "unicode-xid 0.2.2";
           }
         ];
         features = {
@@ -2252,7 +2326,28 @@ rec {
         };
         resolvedDefaultFeatures = [ "default" "proc-macro" ];
       };
-      "quote" = rec {
+      "quote 1.0.7" = rec {
+        crateName = "quote";
+        version = "1.0.7";
+        edition = "2018";
+        sha256 = "0drzd6pq7whq7qhdvvs8wn6pbb0hhc12pz8wv80fb05ixhbksmma";
+        authors = [
+          "David Tolnay <dtolnay@gmail.com>"
+        ];
+        dependencies = [
+          {
+            name = "proc-macro2";
+            packageId = "proc-macro2 1.0.19";
+            usesDefaultFeatures = false;
+          }
+        ];
+        features = {
+          "default" = [ "proc-macro" ];
+          "proc-macro" = [ "proc-macro2/proc-macro" ];
+        };
+        resolvedDefaultFeatures = [ "default" "proc-macro" ];
+      };
+      "quote 1.0.9" = rec {
         crateName = "quote";
         version = "1.0.9";
         edition = "2018";
@@ -2263,7 +2358,7 @@ rec {
         dependencies = [
           {
             name = "proc-macro2";
-            packageId = "proc-macro2";
+            packageId = "proc-macro2 1.0.27";
             usesDefaultFeatures = false;
           }
         ];
@@ -2291,7 +2386,7 @@ rec {
           }
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             optional = true;
             usesDefaultFeatures = false;
             target = { target, features }: (target."unix" or false);
@@ -2566,9 +2661,9 @@ rec {
       };
       "scroll" = rec {
         crateName = "scroll";
-        version = "0.10.2";
+        version = "0.10.1";
         edition = "2018";
-        sha256 = "1v61drdig30qfx2xh8bn7qdk2xgqbmmhwyrznjl0gf1h915qv8px";
+        sha256 = "1cbcns8538sqmfnmdbphqy0fd4j8z75z802pvmz3zlwmnln37cmb";
         authors = [
           "m4b <m4b.github.io@gmail.com>"
           "Ted Mielczarek <ted@mielczarek.org>"
@@ -2588,27 +2683,27 @@ rec {
       };
       "scroll_derive" = rec {
         crateName = "scroll_derive";
-        version = "0.10.5";
+        version = "0.10.2";
         edition = "2018";
-        sha256 = "187zrrwrp9gnvp7gjxazg6ahs9691fppj6bzzd6484dkigryiama";
+        sha256 = "1f8m9frpw990ax6ch4w27mp8baqa5212pfh4qyhzyr28jcpn4rz3";
         procMacro = true;
         authors = [
           "m4b <m4b.github.io@gmail.com>"
           "Ted Mielczarek <ted@mielczarek.org>"
-          "Systemcluster <me@systemcluster.me>"
+          "Systemcluster <me@systemcluster.me"
         ];
         dependencies = [
           {
             name = "proc-macro2";
-            packageId = "proc-macro2";
+            packageId = "proc-macro2 1.0.19";
           }
           {
             name = "quote";
-            packageId = "quote";
+            packageId = "quote 1.0.7";
           }
           {
             name = "syn";
-            packageId = "syn";
+            packageId = "syn 1.0.35";
           }
         ];
 
@@ -2629,7 +2724,7 @@ rec {
           }
           {
             name = "serde";
-            packageId = "serde";
+            packageId = "serde 1.0.114";
             optional = true;
           }
         ];
@@ -2648,7 +2743,22 @@ rec {
         ];
 
       };
-      "serde" = rec {
+      "serde 1.0.114" = rec {
+        crateName = "serde";
+        version = "1.0.114";
+        edition = "2015";
+        sha256 = "1lwcxlh8c09cs6qmwr6w68hl989mczwmwrzgc3p7hl0aixcgf5sk";
+        authors = [
+          "Erick Tryzelaar <erick.tryzelaar@gmail.com>"
+          "David Tolnay <dtolnay@gmail.com>"
+        ];
+        features = {
+          "default" = [ "std" ];
+          "derive" = [ "serde_derive" ];
+        };
+        resolvedDefaultFeatures = [ "default" "std" ];
+      };
+      "serde 1.0.126" = rec {
         crateName = "serde";
         version = "1.0.126";
         edition = "2015";
@@ -2660,14 +2770,14 @@ rec {
         dependencies = [
           {
             name = "serde_derive";
-            packageId = "serde_derive";
+            packageId = "serde_derive 1.0.126";
             optional = true;
           }
         ];
         devDependencies = [
           {
             name = "serde_derive";
-            packageId = "serde_derive";
+            packageId = "serde_derive 1.0.126";
           }
         ];
         features = {
@@ -2676,7 +2786,36 @@ rec {
         };
         resolvedDefaultFeatures = [ "default" "derive" "serde_derive" "std" ];
       };
-      "serde_derive" = rec {
+      "serde_derive 1.0.114" = rec {
+        crateName = "serde_derive";
+        version = "1.0.114";
+        edition = "2015";
+        sha256 = "13lgjxsc617yhblm779jwg43gxab2dfgrpyd6znvl3v90i5yj2ra";
+        procMacro = true;
+        authors = [
+          "Erick Tryzelaar <erick.tryzelaar@gmail.com>"
+          "David Tolnay <dtolnay@gmail.com>"
+        ];
+        dependencies = [
+          {
+            name = "proc-macro2";
+            packageId = "proc-macro2 1.0.19";
+          }
+          {
+            name = "quote";
+            packageId = "quote 1.0.7";
+          }
+          {
+            name = "syn";
+            packageId = "syn 1.0.35";
+            features = [ "visit" ];
+          }
+        ];
+        features = {
+        };
+        resolvedDefaultFeatures = [ "default" ];
+      };
+      "serde_derive 1.0.126" = rec {
         crateName = "serde_derive";
         version = "1.0.126";
         edition = "2015";
@@ -2689,22 +2828,55 @@ rec {
         dependencies = [
           {
             name = "proc-macro2";
-            packageId = "proc-macro2";
+            packageId = "proc-macro2 1.0.27";
           }
           {
             name = "quote";
-            packageId = "quote";
+            packageId = "quote 1.0.9";
           }
           {
             name = "syn";
-            packageId = "syn";
+            packageId = "syn 1.0.73";
           }
         ];
         features = {
         };
         resolvedDefaultFeatures = [ "default" ];
       };
-      "serde_json" = rec {
+      "serde_json 1.0.56" = rec {
+        crateName = "serde_json";
+        version = "1.0.56";
+        edition = "2018";
+        sha256 = "1hra2v0my42jgrl99f5g3zggsd6gk54a1cpyx2syipaqlmwyhcrl";
+        authors = [
+          "Erick Tryzelaar <erick.tryzelaar@gmail.com>"
+          "David Tolnay <dtolnay@gmail.com>"
+        ];
+        dependencies = [
+          {
+            name = "itoa";
+            packageId = "itoa 0.4.6";
+            usesDefaultFeatures = false;
+          }
+          {
+            name = "ryu";
+            packageId = "ryu";
+          }
+          {
+            name = "serde";
+            packageId = "serde 1.0.114";
+            usesDefaultFeatures = false;
+          }
+        ];
+        features = {
+          "alloc" = [ "serde/alloc" ];
+          "default" = [ "std" ];
+          "preserve_order" = [ "indexmap" ];
+          "std" = [ "serde/std" ];
+        };
+        resolvedDefaultFeatures = [ "default" "std" ];
+      };
+      "serde_json 1.0.64" = rec {
         crateName = "serde_json";
         version = "1.0.64";
         edition = "2018";
@@ -2716,7 +2888,7 @@ rec {
         dependencies = [
           {
             name = "itoa";
-            packageId = "itoa";
+            packageId = "itoa 0.4.7";
             usesDefaultFeatures = false;
           }
           {
@@ -2725,7 +2897,7 @@ rec {
           }
           {
             name = "serde";
-            packageId = "serde";
+            packageId = "serde 1.0.126";
             usesDefaultFeatures = false;
           }
         ];
@@ -2756,7 +2928,7 @@ rec {
           }
           {
             name = "serde";
-            packageId = "serde";
+            packageId = "serde 1.0.126";
           }
           {
             name = "yaml-rust";
@@ -2840,12 +3012,12 @@ rec {
           }
           {
             name = "log";
-            packageId = "log";
+            packageId = "log 0.4.14";
             features = [ "std" ];
           }
           {
             name = "termcolor";
-            packageId = "termcolor";
+            packageId = "termcolor 1.1.2";
           }
           {
             name = "thread_local";
@@ -2874,7 +3046,40 @@ rec {
         ];
 
       };
-      "syn" = rec {
+      "syn 1.0.35" = rec {
+        crateName = "syn";
+        version = "1.0.35";
+        edition = "2018";
+        sha256 = "1c39agngv58dgqaz0wvszr3bg7p8a748rp8rbs2ighgqkm8lqzzv";
+        authors = [
+          "David Tolnay <dtolnay@gmail.com>"
+        ];
+        dependencies = [
+          {
+            name = "proc-macro2";
+            packageId = "proc-macro2 1.0.19";
+            usesDefaultFeatures = false;
+          }
+          {
+            name = "quote";
+            packageId = "quote 1.0.7";
+            optional = true;
+            usesDefaultFeatures = false;
+          }
+          {
+            name = "unicode-xid";
+            packageId = "unicode-xid 0.2.1";
+          }
+        ];
+        features = {
+          "default" = [ "derive" "parsing" "printing" "clone-impls" "proc-macro" ];
+          "printing" = [ "quote" ];
+          "proc-macro" = [ "proc-macro2/proc-macro" "quote/proc-macro" ];
+          "test" = [ "syn-test-suite/all-features" ];
+        };
+        resolvedDefaultFeatures = [ "clone-impls" "default" "derive" "full" "parsing" "printing" "proc-macro" "quote" "visit" ];
+      };
+      "syn 1.0.73" = rec {
         crateName = "syn";
         version = "1.0.73";
         edition = "2018";
@@ -2885,18 +3090,18 @@ rec {
         dependencies = [
           {
             name = "proc-macro2";
-            packageId = "proc-macro2";
+            packageId = "proc-macro2 1.0.27";
             usesDefaultFeatures = false;
           }
           {
             name = "quote";
-            packageId = "quote";
+            packageId = "quote 1.0.9";
             optional = true;
             usesDefaultFeatures = false;
           }
           {
             name = "unicode-xid";
-            packageId = "unicode-xid";
+            packageId = "unicode-xid 0.2.2";
           }
         ];
         features = {
@@ -2907,7 +3112,52 @@ rec {
         };
         resolvedDefaultFeatures = [ "clone-impls" "default" "derive" "extra-traits" "full" "parsing" "printing" "proc-macro" "quote" ];
       };
-      "termcolor" = rec {
+      "syn-mid" = rec {
+        crateName = "syn-mid";
+        version = "0.5.0";
+        edition = "2018";
+        sha256 = "12ikg5jfklixq0wsgfl7sdzjqlxgq50ygklxy4f972hjdjgm7qvv";
+        authors = [
+          "Taiki Endo <te316e89@gmail.com>"
+        ];
+        dependencies = [
+          {
+            name = "proc-macro2";
+            packageId = "proc-macro2 1.0.19";
+          }
+          {
+            name = "quote";
+            packageId = "quote 1.0.7";
+          }
+          {
+            name = "syn";
+            packageId = "syn 1.0.35";
+            usesDefaultFeatures = false;
+            features = [ "parsing" "printing" "derive" ];
+          }
+        ];
+        features = {
+          "clone-impls" = [ "syn/clone-impls" ];
+        };
+      };
+      "termcolor 1.1.0" = rec {
+        crateName = "termcolor";
+        version = "1.1.0";
+        edition = "2018";
+        sha256 = "0pyp8vc0gx7124y80ixdl6plbfn1yjhw04i875k5fz2dk8lglsxv";
+        authors = [
+          "Andrew Gallant <jamslam@gmail.com>"
+        ];
+        dependencies = [
+          {
+            name = "winapi-util";
+            packageId = "winapi-util";
+            target = { target, features }: (target."windows" or false);
+          }
+        ];
+
+      };
+      "termcolor 1.1.2" = rec {
         crateName = "termcolor";
         version = "1.1.2";
         edition = "2018";
@@ -2935,7 +3185,7 @@ rec {
         dependencies = [
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             target = { target, features }: (!(target."windows" or false));
           }
           {
@@ -2983,27 +3233,11 @@ rec {
         ];
 
       };
-      "textwrap 0.11.0" = rec {
+      "textwrap" = rec {
         crateName = "textwrap";
         version = "0.11.0";
         edition = "2015";
         sha256 = "0q5hky03ik3y50s9sz25r438bc4nwhqc6dqwynv4wylc807n29nk";
-        authors = [
-          "Martin Geisler <martin@geisler.net>"
-        ];
-        dependencies = [
-          {
-            name = "unicode-width";
-            packageId = "unicode-width";
-          }
-        ];
-
-      };
-      "textwrap 0.12.1" = rec {
-        crateName = "textwrap";
-        version = "0.12.1";
-        edition = "2018";
-        sha256 = "12978qmkl5gcp94lxndpvp9qxq8mxp7hm9xbrw3422dgikchhc10";
         authors = [
           "Martin Geisler <martin@geisler.net>"
         ];
@@ -3043,15 +3277,15 @@ rec {
         dependencies = [
           {
             name = "proc-macro2";
-            packageId = "proc-macro2";
+            packageId = "proc-macro2 1.0.27";
           }
           {
             name = "quote";
-            packageId = "quote";
+            packageId = "quote 1.0.9";
           }
           {
             name = "syn";
-            packageId = "syn";
+            packageId = "syn 1.0.73";
           }
         ];
 
@@ -3083,7 +3317,7 @@ rec {
         dependencies = [
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
           }
           {
             name = "winapi";
@@ -3113,9 +3347,9 @@ rec {
       };
       "unicode-segmentation" = rec {
         crateName = "unicode-segmentation";
-        version = "1.8.0";
-        edition = "2018";
-        sha256 = "0nrqfgxkh00wb5dhl0874z20789i2yjimp6ndgh4ay4yjjd895c8";
+        version = "1.6.0";
+        edition = "2015";
+        sha256 = "1h7d48mzpi8hwf5cvnq07warkv86pvapzzzf32hvbjsk20yiagp8";
         authors = [
           "kwantam <kwantam@gmail.com>"
           "Manish Goregaokar <manishsmail@gmail.com>"
@@ -3137,7 +3371,20 @@ rec {
         };
         resolvedDefaultFeatures = [ "default" ];
       };
-      "unicode-xid" = rec {
+      "unicode-xid 0.2.1" = rec {
+        crateName = "unicode-xid";
+        version = "0.2.1";
+        edition = "2015";
+        sha256 = "0r6mknipyy9vpz8mwmxvkx65ff2ha1n2pxqjj6f46lcn8yrhpzpp";
+        authors = [
+          "erick.tryzelaar <erick.tryzelaar@gmail.com>"
+          "kwantam <kwantam@gmail.com>"
+        ];
+        features = {
+        };
+        resolvedDefaultFeatures = [ "default" ];
+      };
+      "unicode-xid 0.2.2" = rec {
         crateName = "unicode-xid";
         version = "0.2.2";
         edition = "2015";
@@ -3210,7 +3457,17 @@ rec {
           "eders" = [ "serde" ];
         };
       };
-      "version_check" = rec {
+      "version_check 0.9.2" = rec {
+        crateName = "version_check";
+        version = "0.9.2";
+        edition = "2015";
+        sha256 = "1vbaqdf802qinsq8q20w8w0qn2pv0rkq5p73ijcblrwxcvjp5adm";
+        authors = [
+          "Sergio Benitez <sb@sergio.bz>"
+        ];
+
+      };
+      "version_check 0.9.3" = rec {
         crateName = "version_check";
         version = "0.9.3";
         edition = "2015";
@@ -3232,7 +3489,7 @@ rec {
         dependencies = [
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
             target = { target, features }: (target."unix" or false);
           }
         ];
@@ -3326,7 +3583,7 @@ rec {
           }
           {
             name = "log";
-            packageId = "log";
+            packageId = "log 0.4.14";
           }
           {
             name = "nix";
@@ -3365,7 +3622,7 @@ rec {
           }
           {
             name = "libc";
-            packageId = "libc";
+            packageId = "libc 0.2.98";
           }
         ];
 

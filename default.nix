@@ -117,11 +117,18 @@ rec {
     NIX_LDFLAGS+=' -L${ledgerPkgs.stdenv.cc.cc}/lib/gcc/${ledgerPkgs.stdenv.hostPlatform.config}/${ledgerPkgs.stdenv.cc.cc.version}'
   '';
 
+  # Our tools are named differently than the Cargo defaults.
+  cargoLedgerPreHook = ''
+    export CARGO_TARGET_THUMBV6M_NONE_EABI_OBJCOPY=$OBJCOPY
+    export CARGO_TARGET_THUMBV6M_NONE_EABI_SIZE=$SIZE
+  '';
+
   rustShell = buildRustPackageClang {
     stdenv = ledgerPkgs.lldClangStdenv;
     name = "rust-app";
     src = null;
     preHook = gccLibsPreHook;
+    shellHook = cargoLedgerPreHook;
     # We just want dev shell
     unpackPhase = ''
       echo got in shell > $out
