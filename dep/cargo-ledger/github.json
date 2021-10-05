@@ -1,8 +1,8 @@
 {
-  "owner": "obsidiansystems",
+  "owner": "ledgerhq",
   "repo": "cargo-ledger",
-  "branch": "different-exe-prefix-for-nix--regenerate-lock-file",
+  "branch": "master",
   "private": false,
-  "rev": "a30e8316b38e1b689df83a9800fdf9d49d49f8c3",
-  "sha256": "1fgk99xfrhpixkwshbg13d7szd0wjjhyvh84y9rgw8q6g4w8sn5l"
+  "rev": "bfa1b83a7252ddc5844b0c6eec579537d793fcff",
+  "sha256": "11vlry9irjfzyfmvkbmzk6s50kabg879rikrgargjgaw9d0x63wy"
 }
