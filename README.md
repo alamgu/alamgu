@@ -1,2 +1,3 @@
-# ledger-platform
-Infrastructure for writing ledger apps, built with Nix
+# Ledger Platform
+
+Infrastructure for writing ledger apps, built with Nix.

@@ -3,6 +3,6 @@
   "repo": "crate2nix",
   "branch": "pr-rollup-0",
   "private": false,
-  "rev": "da7f7bff4878cfca17d45f828321ba55f259d5f1",
-  "sha256": "0nbmsllvgw94phr28f2hy164c0s9ls1sdvlnl8v9ks13cvqf27hm"
+  "rev": "250dd10a65fee06c5c232cfe8e1932922248703b",
+  "sha256": "06y1b3w9mm7zpp5ym9s49n0awdy2bmm8c8l5hq2nvkc3gz2m22wx"
 }

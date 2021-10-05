@@ -174,12 +174,12 @@ rec {
         dependencies = [
           {
             name = "hermit-abi";
-            packageId = "hermit-abi 0.1.19";
+            packageId = "hermit-abi 0.1.15";
             target = { target, features }: (target."os" == "hermit");
           }
           {
             name = "libc";
-            packageId = "libc 0.2.98";
+            packageId = "libc 0.2.73";
             usesDefaultFeatures = false;
             target = { target, features }: (target."unix" or false);
           }
@@ -1337,18 +1337,18 @@ rec {
         ];
 
       };
-      "hermit-abi 0.1.19" = rec {
+      "hermit-abi 0.1.15" = rec {
         crateName = "hermit-abi";
-        version = "0.1.19";
+        version = "0.1.15";
         edition = "2018";
-        sha256 = "0cxcm8093nf5fyn114w8vxbrbcyvv91d4015rdnlgfll7cs6gd32";
+        sha256 = "1ac5bij39rhzs8zngfxi109dh0h3v0jl5ng8595f9yg7nsbd3vix";
         authors = [
           "Stefan Lankes"
         ];
         dependencies = [
           {
             name = "libc";
-            packageId = "libc 0.2.98";
+            packageId = "libc 0.2.73";
             usesDefaultFeatures = false;
           }
         ];
@@ -1598,6 +1598,20 @@ rec {
         ];
         features = {
           "nightly-testing" = [ "clippy" "nightly" ];
+        };
+      };
+      "libc 0.2.73" = rec {
+        crateName = "libc";
+        version = "0.2.73";
+        edition = "2015";
+        sha256 = "1fa20bc68n28zyw1fn0c4dzas845vwkpqdkzlvrlpbrj8zb4nzdx";
+        authors = [
+          "The Rust Project Developers"
+        ];
+        features = {
+          "default" = [ "std" ];
+          "rustc-dep-of-std" = [ "align" "rustc-std-workspace-core" ];
+          "use_std" = [ "std" ];
         };
       };
       "libc 0.2.98" = rec {
@@ -3649,18 +3663,18 @@ rec {
           {
             name = "winapi-i686-pc-windows-gnu";
             packageId = "winapi-i686-pc-windows-gnu";
-            target = { target, features }: (stdenv.hostPlatform.config == "i686-pc-windows-gnu");
+            target = { target, features }: ((let p = stdenv.hostPlatform; in p.rustc.config or p.config) == "i686-pc-windows-gnu");
           }
           {
             name = "winapi-x86_64-pc-windows-gnu";
             packageId = "winapi-x86_64-pc-windows-gnu";
-            target = { target, features }: (stdenv.hostPlatform.config == "x86_64-pc-windows-gnu");
+            target = { target, features }: ((let p = stdenv.hostPlatform; in p.rustc.config or p.config) == "x86_64-pc-windows-gnu");
           }
         ];
         features = {
           "debug" = [ "impl-debug" ];
         };
-        resolvedDefaultFeatures = [ "consoleapi" "errhandlingapi" "fileapi" "handleapi" "impl-default" "ioapiset" "jobapi2" "knownfolders" "lmapibuf" "lmserver" "lmwksta" "minwinbase" "minwindef" "ntdef" "objbase" "processenv" "profileapi" "shlobj" "std" "synchapi" "sysinfoapi" "timezoneapi" "tlhelp32" "winbase" "wincon" "winerror" "winnt" "winsock2" "winuser" "ws2def" "ws2ipdef" "ws2tcpip" ];
+        resolvedDefaultFeatures = [ "consoleapi" "errhandlingapi" "fileapi" "minwinbase" "minwindef" "processenv" "std" "winbase" "wincon" "winerror" "winnt" ];
       };
       "winapi-build" = rec {
         crateName = "winapi-build";
