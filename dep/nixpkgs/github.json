@@ -1,8 +1,8 @@
 {
-  "owner": "obsidiansystems",
+  "owner": "nixos",
   "repo": "nixpkgs",
-  "branch": "fix-build-rust-crate-cross-21.05-newer+try-newlib-nano-0",
+  "branch": "release-21.05",
   "private": false,
-  "rev": "2c2249ef2d0821ed20ca163b64db8d913520e8f7",
-  "sha256": "0syx87gd0jrk2njidv4xxj48qyq250vv0hcb1z0lyslr0h4qn3vl"
+  "rev": "378104a43e0904ad631bdf3dbc0d428dbe9093d0",
+  "sha256": "055l4j7g7bbp6s5q9hddpl1gy2wi76ij6wdqr3bw36zwxpfaql7v"
 }
