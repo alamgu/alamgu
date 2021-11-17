@@ -54,7 +54,7 @@ namespace {
         for ( auto I = inst_begin(F), E = inst_end(F); I != E; ++I ) {
           Instruction *inst = &*I;
           switch( inst->getOpcode() ) {
-            case Instruction::Load: 
+            case Instruction::Load:
               {
                 auto *L = dyn_cast<LoadInst>(inst);
                 auto *P = L->getPointerOperand();
