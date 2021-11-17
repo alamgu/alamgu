@@ -146,6 +146,9 @@ rec {
 
       # just plain useful for rust dev
       cargo-watch
+
+      # Testing stuff against nodejs modules
+      pkgs.nodejs_latest
     ];
     # buildInputs = [ binaryRustPackages.rust-std ];
     verifyCargoDeps = true;
