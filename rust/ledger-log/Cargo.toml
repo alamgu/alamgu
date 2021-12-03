@@ -1,0 +1,20 @@
+[package]
+name = "ledger-log"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+arrayvec = { version = "0.7.1", default-features = false }
+
+[target.thumbv6m-none-eabi.dependencies]
+nanos_sdk = { git = "https://github.com/LedgerHQ/ledger-nanos-sdk.git" } 
+
+[features]
+speculos = ["nanos_sdk/speculos"]
+log_error = []
+log_warn = ["log_error"]
+log_info = ["log_warn"]
+log_debug = ["log_info"]
+log_trace = ["log_debug"]
