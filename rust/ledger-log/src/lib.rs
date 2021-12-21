@@ -1,9 +1,11 @@
 #![cfg_attr(target_os = "nanos", no_std)]
 #[cfg(all(target_os = "nanos", feature = "speculos"))]
 use nanos_sdk::debug_print;
+#[cfg(not(all(target_os = "nanos", not(any(feature = "speculos", feature = "debug_mcu_print")))))]
 use core::fmt::Write;
 
 pub struct DBG;
+
 
 #[cfg(all(target_os = "nanos", feature = "speculos"))]
 impl Write for DBG {
@@ -20,9 +22,24 @@ impl Write for DBG {
     }
 }
 
-#[cfg(all(target_os = "nanos", not(feature = "speculos")))]
+#[cfg(all(target_os = "nanos", feature = "debug_mcu_print", not(feature = "speculos")))]
+#[inline(never)]
+pub fn printc(c: u8) {
+    use nanos_sdk::seph::{seph_send,seph_recv};
+    use nanos_sdk::bindings::SEPROXYHAL_TAG_PRINTF_STATUS;
+    let mut buf : [u8; 4] = [SEPROXYHAL_TAG_PRINTF_STATUS as u8, 0, 1, c];
+    seph_send(&buf[..]);
+    seph_recv(&mut buf[..], 0);
+    buf[0] = 0;
+}
+
+#[cfg(all(target_os = "nanos", feature = "debug_mcu_print", not(feature = "speculos")))]
 impl Write for DBG {
-    fn write_str(&mut self, _s: &str) -> core::fmt::Result {
+    #[inline(never)]
+    fn write_str(&mut self, s: &str) -> core::fmt::Result {
+        for c in s.as_bytes().iter() {
+            printc(*c);
+        }
         Ok(())
     }
 }
@@ -35,17 +52,17 @@ impl Write for DBG {
     }
 }
 
-#[cfg(not(all(target_os = "nanos", not(feature = "speculos"))))]
+#[cfg(not(all(target_os = "nanos", not(any(feature = "speculos", feature = "debug_mcu_print")))))]
 #[macro_export]
 macro_rules! log {
     (target: $target:expr, $lvl:expr, $fmt:literal $($arg:tt)*) => ({
         use core::fmt::Write;
-        let _ = core::write!($crate::DBG, concat!("{}:{}: ", $fmt, "\n"), core::file!(), core::line!() $($arg)*);
+        let _ = core::write!($crate::DBG, concat!("{}:{}: ", $fmt, "\r\n"), core::file!(), core::line!() $($arg)*);
     });
     ($lvl:expr, $fmt:literal $($arg:tt)*) => (log!(target: __log_module_path!(), $lvl, $fmt $($arg)*))
 }
 
-#[cfg(all(target_os = "nanos", not(feature = "speculos")))]
+#[cfg(all(target_os = "nanos", not(any(feature = "speculos", feature = "debug_mcu_print"))))]
 #[macro_export]
 macro_rules! log {
     (target: $target:expr, $lvl:expr, $fmt:literal $($arg:tt)*) => ({ });

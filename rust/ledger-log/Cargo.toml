@@ -13,6 +13,7 @@ nanos_sdk = { git = "https://github.com/LedgerHQ/ledger-nanos-sdk.git" }
 
 [features]
 speculos = ["nanos_sdk/speculos"]
+debug_mcu_print = []
 log_error = []
 log_warn = ["log_error"]
 log_info = ["log_warn"]
