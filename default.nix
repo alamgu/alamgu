@@ -5,6 +5,51 @@ rec {
   overlays = [
     (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
     (self: super: {
+      rust_1_53 = pkgs.callPackage ./1_53.nix {
+        nixpkgs_src = self.path;
+        inherit (pkgs.darwin.apple_sdk.frameworks) CoreFoundation Security;
+        llvm_12 = pkgs.llvmPackages_12.libllvm;
+      };
+      rustPackages_1_53 = self.rust_1_53.packages.stable;
+      cargo_1_53 = self.rustPackages_1_53.cargo;
+      clippy_1_53 = self.rustPackages_1_53.clippy;
+      rustc_1_53 = self.rustPackages_1_53.rustc;
+      rustPlatform_1_53 = self.rustPackages_1_53.rustPlatform;
+    })
+    (self: super: {
+      rustcBuilt = self.rustc_1_53.overrideAttrs (attrs: {
+        configureFlags = (builtins.tail attrs.configureFlags) ++ [
+          "--release-channel=nightly"
+          "--disable-docs"
+          "--disable-compiler-docs"
+        ];
+      });
+
+      rustcSrc = self.runCommand "rustc-source" {} ''
+        install -d $out/lib/rustlib/src/rust
+        tar -C $out/lib/rustlib/src/rust -xvf ${self.rustcBuilt.src} --strip-components=1
+      '';
+
+      ropiAllLlvmPass = self.stdenv.mkDerivation {
+        name = "LedgerROPI";
+        src = ./llvm-pass;
+        nativeBuildInputs = [
+          self.buildPackages.cmake
+        ];
+        buildInputs = [
+          self.llvmPackages_12.libllvm
+        ];
+      };
+
+      rustcRopi = self.runCommand "rustc-ledger" {} ''
+        install -d $out/
+        ${self.buildPackages.xorg.lndir}/bin/lndir -silent ${self.rustcBuilt} $out
+        ${self.buildPackages.xorg.lndir}/bin/lndir -silent ${self.rustcSrc} $out
+        rm $out/bin/rustc
+        ${self.buildPackages.patchelf}/bin/patchelf --add-needed ${self.ropiAllLlvmPass}/lib/libLedgerROPI.so ${self.rustcBuilt}/bin/rustc --output $out/bin/rustc
+      '';
+    })
+    (self: super: {
       lldClangStdenv = self.clangStdenv.override (old: {
         cc = old.cc.override (old: {
           # Default version of 11 segfaulted
@@ -91,6 +136,7 @@ rec {
     '';
     cargoVendorDir = "pretend-exists";
     depsBuildBuild = [ ledgerPkgs.buildPackages.stdenv.cc ];
+    inherit (ledgerPkgs.rustPlatform_1_53) rustLibSrc;
     nativeBuildInputs = [
       # emu
       speculos.speculos ledgerPkgs.buildPackages.gdb
@@ -100,8 +146,11 @@ rec {
 
       # just plain useful for rust dev
       cargo-watch
+
+      # Testing stuff against nodejs modules
+      pkgs.nodejs_latest
     ];
-    buildInputs = [ rustPackages.rust-std ];
+    # buildInputs = [ binaryRustPackages.rust-std ];
     verifyCargoDeps = true;
     target = "thumbv6m-none-eabi";
 
@@ -127,25 +176,30 @@ rec {
     inherit (platform.rust) rustc cargo;
   };
 
-  rustPackages = pkgs.rustChannelOf {
+  binaryRustPackages = pkgs.rustChannelOf {
     channel = "1.53.0";
     sha256 = "1p4vxwv28v7qmrblnvp6qv8dgcrj8ka5c7dw2g2cr3vis7xhflaa";
   };
 
-  rustc = rustPackages.rust.override {
+  binaryRustc = binaryRustPackages.rust.override {
     targets = [
       "thumbv6m-none-eabi"
     ];
   };
 
   rustPlatform = pkgs.makeRustPlatform {
-    inherit (rustPackages) cargo;
-    inherit rustc;
+    inherit (binaryRustPackages) cargo rustcSrc;
+    rustc = pkgs.buildPackages.rustcRopi;
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
-    inherit (rustPackages) cargo;
-    inherit rustc;
+    inherit (binaryRustPackages) cargo rustcSrc;
+    rustc = ledgerPkgs.buildPackages.rustcRopi;
+  };
+
+  binaryLedgerRustPlatform = ledgerPkgs.makeRustPlatform {
+    inherit (binaryRustPackages) cargo rustcSrc;
+    rustc = binaryRustc;
   };
 
   ledgerctl = with pkgs.python3Packages; buildPythonPackage {
