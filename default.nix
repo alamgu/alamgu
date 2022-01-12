@@ -74,6 +74,14 @@ rec {
 
   inherit (pkgs) lib;
 
+  # Have rustc spit out unstable target config json so we can do a minimum of
+  # hard-coding.
+  stockThumbTarget = pkgs.runCommand "stock-target.json" {
+    nativeBuildInputs = [ pkgs.buildPackages.rustcBuilt ];
+  } ''
+    rustc -Z unstable-options --print target-spec-json --target thumbv6m-none-eabi > $out
+  '';
+
   ledgerPkgs = pkgsFunc {
     config.allowUnsupportedSystem = true;
     crossSystem = {
@@ -83,8 +91,10 @@ rec {
         arch = "armv6s-m";
       };
       rustc = {
-        arch = "thumbv6m";
         config = "thumbv6m-none-eabi";
+        platform = builtins.fromJSON (builtins.readFile stockThumbTarget) // {
+          os = "nanos";
+        };
       };
     };
     inherit overlays;
@@ -135,6 +145,8 @@ rec {
     stdenv = ledgerPkgs.lldClangStdenv;
     name = "rust-app";
     src = null;
+    # We are just (ab)using buildRustPackage for a shell. When we actually build
+    __internal_dontAddSysroot = true;
     preHook = gccLibsPreHook;
     shellHook = cargoLedgerPreHook;
     # We just want dev shell
