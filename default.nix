@@ -1,4 +1,5 @@
-{ pkgsFunc ? import ./dep/nixpkgs
+{ pkgsSrc ? import ./dep/nixpkgs/thunk.nix
+, pkgsFunc ? import pkgsSrc
 }:
 
 rec {
@@ -29,6 +30,13 @@ rec {
         install -d $out/lib/rustlib/src/rust
         tar -C $out/lib/rustlib/src/rust -xvf ${self.rustcBuilt.src} --strip-components=1
       '';
+
+      # TODO upstream this stuff back to nixpkgs after bumping to latest
+      # stable.
+      stdLibSrc = self.callPackage ./stdlib/src.nix {
+        rustPlatform = self.rustPlatform_1_53;
+        originalCargoToml = null;
+      };
 
       ropiAllLlvmPass = self.stdenv.mkDerivation {
         name = "LedgerROPI";
