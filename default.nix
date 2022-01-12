@@ -220,7 +220,7 @@ rec {
     ];
   };
 
-  utils = import ./Cargo.nix { inherit pkgs; };
+  utils = import ./utils/Cargo.nix { inherit pkgs; };
 
   cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
 

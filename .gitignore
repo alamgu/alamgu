@@ -1,4 +1,8 @@
 *~
 
+# crate2nix
+utils/crate2nix-sources
+utils/crate2nix-sources.nix
+
 result
 result-*
