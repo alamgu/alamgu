@@ -1,4 +1,5 @@
-{ pkgsFunc ? import ./dep/nixpkgs
+{ pkgsSrc ? import ./dep/nixpkgs/thunk.nix
+, pkgsFunc ? import pkgsSrc
 }:
 
 rec {
@@ -29,6 +30,13 @@ rec {
         install -d $out/lib/rustlib/src/rust
         tar -C $out/lib/rustlib/src/rust -xvf ${self.rustcBuilt.src} --strip-components=1
       '';
+
+      # TODO upstream this stuff back to nixpkgs after bumping to latest
+      # stable.
+      stdlibSrc = self.callPackage ./stdlib/src.nix {
+        rustPlatform = self.rustPlatform_1_53;
+        originalCargoToml = null;
+      };
 
       ropiAllLlvmPass = self.stdenv.mkDerivation {
         name = "LedgerROPI";
@@ -193,7 +201,8 @@ rec {
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
-    inherit (binaryRustPackages) cargo rustcSrc;
+    inherit (binaryRustPackages) cargo;
+    rustcSrc = ledgerPkgs.buildPackages.rustcBuilt.src;
     rustc = ledgerPkgs.buildPackages.rustcRopi;
   };
 
@@ -220,7 +229,32 @@ rec {
     ];
   };
 
-  utils = import ./Cargo.nix { inherit pkgs; };
+  ledgerStdlib = import ./stdlib/Cargo.nix {
+    pkgs = ledgerPkgs;
+    buildRustCrateForPkgs = pkgs: (buildRustCrateForPkgsLedger pkgs).override {
+      defaultCrateOverrides = pkgs.defaultCrateOverrides // {
+        core = attrs: {
+          postUnpack = ''
+            cp -r ${ledgerPkgs.rustPlatform_1_53.rustLibSrc}/stdarch $sourceRoot/..
+          '';
+        };
+      };
+    };
+  };
+
+  ledgerCompilerBuiltins = lib.findFirst
+    (p: lib.hasPrefix "rust_compiler_builtins" p.name)
+    (builtins.throw "no compiler_builtins!")
+    ledgerStdlib.rootCrate.build.dependencies;
+
+  ledgerCore = lib.findFirst
+    (p: lib.hasPrefix "rust_core" p.name)
+    (builtins.throw "no core!")
+    ledgerStdlib.rootCrate.build.dependencies;
+
+  ledgerStdlibCI = ledgerStdlib.rootCrate.build;
+
+  utils = import ./utils/Cargo.nix { inherit pkgs; };
 
   cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
 

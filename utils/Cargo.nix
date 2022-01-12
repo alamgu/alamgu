@@ -281,7 +281,7 @@ rec {
         crateBin = [
           { name = "cargo-ledger"; path = "src/main.rs"; }
         ];
-        src = import dep/cargo-ledger/thunk.nix;
+        src = import ../dep/cargo-ledger/thunk.nix;
         authors = [
           "yhql"
         ];
@@ -320,7 +320,7 @@ rec {
         crateBin = [
           { name = "cargo-watch"; path = "src/main.rs"; }
         ];
-        src = import dep/cargo-watch/thunk.nix;
+        src = import ../dep/cargo-watch/thunk.nix;
         authors = [
           "Félix Saparelli <felix@passcod.name>"
         ];
