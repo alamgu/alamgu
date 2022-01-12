@@ -242,6 +242,16 @@ rec {
     };
   };
 
+  ledgerCompilerBuiltins = lib.findFirst
+    (p: lib.hasPrefix "rust_compiler_builtins" p.name)
+    (builtins.throw "no compiler_builtins!")
+    ledgerStdlib.rootCrate.build.dependencies;
+
+  ledgerCore = lib.findFirst
+    (p: lib.hasPrefix "rust_core" p.name)
+    (builtins.throw "no core!")
+    ledgerStdlib.rootCrate.build.dependencies;
+
   ledgerStdlibCI = ledgerStdlib.rootCrate.build;
 
   utils = import ./utils/Cargo.nix { inherit pkgs; };
