@@ -3,6 +3,6 @@
   "repo": "nixpkgs",
   "branch": "wip/ledger-platform-21.05-z-build-std-hack",
   "private": false,
-  "rev": "4610c97f0d2f6dddb6fd0d648d5de5a763555267",
-  "sha256": "0367r7nmm07r4w0c547hppl64nc0l4v3s8r9w2x8a8slnqfclna9"
+  "rev": "c17e6a23060b36c30814a7584f158668a490d110",
+  "sha256": "1y6im4vjv0jq8qa57nqwfg2gmgs7gqr7kmfai5war56fa82mr84z"
 }
