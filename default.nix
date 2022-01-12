@@ -33,7 +33,7 @@ rec {
 
       # TODO upstream this stuff back to nixpkgs after bumping to latest
       # stable.
-      stdLibSrc = self.callPackage ./stdlib/src.nix {
+      stdlibSrc = self.callPackage ./stdlib/src.nix {
         rustPlatform = self.rustPlatform_1_53;
         originalCargoToml = null;
       };
@@ -201,7 +201,8 @@ rec {
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
-    inherit (binaryRustPackages) cargo rustcSrc;
+    inherit (binaryRustPackages) cargo;
+    rustcSrc = ledgerPkgs.buildPackages.rustcBuilt.src;
     rustc = ledgerPkgs.buildPackages.rustcRopi;
   };
 
@@ -227,6 +228,21 @@ rec {
       tabulate
     ];
   };
+
+  ledgerStdlib = import ./stdlib/Cargo.nix {
+    pkgs = ledgerPkgs;
+    buildRustCrateForPkgs = pkgs: (buildRustCrateForPkgsLedger pkgs).override {
+      defaultCrateOverrides = pkgs.defaultCrateOverrides // {
+        core = attrs: {
+          postUnpack = ''
+            cp -r ${ledgerPkgs.rustPlatform_1_53.rustLibSrc}/stdarch $sourceRoot/..
+          '';
+        };
+      };
+    };
+  };
+
+  ledgerStdlibCI = ledgerStdlib.rootCrate.build;
 
   utils = import ./utils/Cargo.nix { inherit pkgs; };
 
