@@ -93,6 +93,9 @@ rec {
       rustc = {
         config = "thumbv6m-none-eabi";
         platform = builtins.fromJSON (builtins.readFile stockThumbTarget) // {
+          # Shoudn't be needed, but what rustc prints out by default is
+          # evidently wrong!
+          atomic-cas = true;
           os = "nanos";
         };
       };
