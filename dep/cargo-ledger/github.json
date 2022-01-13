@@ -1,8 +1,8 @@
 {
   "owner": "obsidiansystems",
   "repo": "cargo-ledger",
-  "branch": "jg-add-path-and-name",
+  "branch": "je-allow-prebuilt",
   "private": false,
-  "rev": "4dbe8970ae0e178924f0fb87937791a5f56f3c00",
-  "sha256": "0icwrpzpmf4yvrcp8jkrj913riblv0ag8xqa3077nj2hfmlkdg6j"
+  "rev": "73b39d6a57f3d0e0f142ec016dd86a85203f5492",
+  "sha256": "052aj516b9g3xih56c0g99kf6d2kqiz05i3hfqj3irbnqv67fimb"
 }
