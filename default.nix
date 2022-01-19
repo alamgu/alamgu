@@ -246,15 +246,24 @@ rec {
 
   ledgerStdlib = import ./stdlib/Cargo.nix {
     pkgs = ledgerPkgs;
-    buildRustCrateForPkgs = pkgs: (buildRustCrateForPkgsLedger pkgs).override {
-      defaultCrateOverrides = pkgs.defaultCrateOverrides // {
-        core = attrs: {
-          postUnpack = ''
-            cp -r ${ledgerPkgs.rustPlatform_1_53.rustLibSrc}/stdarch $sourceRoot/..
-          '';
+    buildRustCrateForPkgs = pkgs: let
+      fun = (buildRustCrateForPkgsLedger pkgs).override {
+        defaultCrateOverrides = pkgs.defaultCrateOverrides // {
+          core = attrs: {
+            postUnpack = ''
+              cp -r ${ledgerPkgs.rustPlatform_1_53.rustLibSrc}/stdarch $sourceRoot/..
+            '';
+          };
         };
       };
-    };
+    in
+      args: fun (args // lib.optionalAttrs pkgs.stdenv.hostPlatform.isAarch32 {
+        RUSTC_BOOTSTRAP = true;
+        extraRustcOpts = [
+          "-C" "relocation-model=ropi"
+          "-C" "passes=ledger-ropi"
+        ] ++ args.extraRustcOpts or [];
+      });
   };
 
   ledgerCompilerBuiltins = lib.findFirst
