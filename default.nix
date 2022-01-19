@@ -262,6 +262,9 @@ rec {
         extraRustcOpts = [
           "-C" "relocation-model=ropi"
           "-C" "passes=ledger-ropi"
+          "-C" "opt-level=3"
+          "--emit=dep-info,link,llvm-ir"
+          "-C" "lto"
         ] ++ args.extraRustcOpts or [];
       });
   };
