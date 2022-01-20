@@ -192,7 +192,7 @@ rec {
 
   # Use right Rust; use Clang.
   buildRustCrateForPkgsLedger = pkgs: let
-    isLedger = pkgs.stdenv.hostPlatform.parsed.kernel.name == "none";
+    isLedger = (pkgs.stdenv.hostPlatform.rustc.platform.os or "") == "nanos";
     platform = if isLedger then ledgerRustPlatform else rustPlatform;
   in pkgs.buildRustCrate.override rec {
     stdenv = if isLedger then pkgs.lldClangStdenv else pkgs.stdenv;
@@ -244,10 +244,23 @@ rec {
     ];
   };
 
+  buildRustCrateForPkgsWrapper = pkgs: fun: let
+    isLedger = (pkgs.stdenv.hostPlatform.rustc.platform.os or "") == "nanos";
+  in args: fun (args // lib.optionalAttrs isLedger {
+      RUSTC_BOOTSTRAP = true;
+      extraRustcOpts = [
+        "-C" "relocation-model=ropi"
+        "-C" "passes=ledger-ropi"
+        "-C" "opt-level=3"
+        "-C" "codegen-units=1"
+      ] ++ args.extraRustcOpts or [];
+    });
+
   ledgerStdlib = import ./stdlib/Cargo.nix {
     pkgs = ledgerPkgs;
-    buildRustCrateForPkgs = pkgs: let
-      fun = (buildRustCrateForPkgsLedger pkgs).override {
+    buildRustCrateForPkgs = pkgs: buildRustCrateForPkgsWrapper
+      pkgs
+      ((buildRustCrateForPkgsLedger pkgs).override {
         defaultCrateOverrides = pkgs.defaultCrateOverrides // {
           core = attrs: {
             postUnpack = ''
@@ -255,17 +268,6 @@ rec {
             '';
           };
         };
-      };
-    in
-      args: fun (args // lib.optionalAttrs pkgs.stdenv.hostPlatform.isAarch32 {
-        RUSTC_BOOTSTRAP = true;
-        extraRustcOpts = [
-          "-C" "relocation-model=ropi"
-          "-C" "passes=ledger-ropi"
-          "-C" "opt-level=3"
-          "--emit=dep-info,link,llvm-ir"
-          "-C" "lto"
-        ] ++ args.extraRustcOpts or [];
       });
   };
 
