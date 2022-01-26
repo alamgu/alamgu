@@ -31,6 +31,17 @@ export const builder: CommandBuilder<Options, Options> = (yargs) =>
       file: {type: 'boolean'},
       speculos: {type: 'boolean'},
     })
+    .describe({
+             json: "Input is JSON. Strips whitespace from the beginning and end of <payload>.",
+             hex: "Input is hexadecimal. Non-hex characters at the end are ignored.",
+             base64: "Input is base64",
+             base64url: "Input is base64, with the url-friendly character set",
+             raw: "Synonym for --binary",
+             binary: "Take the input exactly as written; unencoded binary mode. Also appropriate for JSON where we need to include leading or trailing whitespace.",
+             format: "Input format. The other format flags are equivalent to --format=<format>",
+             file: "Treat <payload> as a filename and read the file rather than using the argument directly.",
+             speculos: "Connect to a speculos instance instead of a real ledger; use --apdu 5555 when running speculos to enable.",
+    })
     .conflicts(formatIsExclusive)
     .middleware(argv=>{
       for (const arg of formats) {
@@ -38,15 +49,15 @@ export const builder: CommandBuilder<Options, Options> = (yargs) =>
           argv['format'] = arg;
         }
       }
-      if (argv.format == 'json' || argv.format == 'raw' ) {
+      if ( argv.format == 'raw' ) {
         argv.format = 'binary';
       }
       return argv;
     })
     .default('format', 'hex')
     .default('speculos', false)
-    .positional('path', {type: 'string', demandOption: true })
-    .positional('path', {type: 'string', demandOption: true })
+    .positional('path', {type: 'string', demandOption: true, description: "Bip32 path to for the key to sign with."})
+    .positional('payload', {type: 'string', demandOption: true, description: "Transaction/payload to sign, interpreted according to format and file options." })
     ;
 
 export const handler = async (argv: Arguments<Options>): Promise<void> => {
@@ -57,8 +68,8 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     payloadString = await require('fs').promises.readFile(payloadString, 'binary');
   }
   let payload;
-  if(format == 'raw' || format == 'json') {
-    payload = Buffer.from(payloadString, 'binary');
+  if(format == 'json') {
+    payload = Buffer.from(payloadString.trim(), 'binary');
   } else {
     payload = Buffer.from(payloadString, format as BufferEncoding);
   }

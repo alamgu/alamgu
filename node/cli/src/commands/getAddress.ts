@@ -14,8 +14,11 @@ export const desc: string = 'Get address for <path> from ledger';
 export const builder: CommandBuilder<Options, Options> = (yargs) =>
   yargs
     .options({ speculos: {type: 'boolean'} })
-    .default('speculos', false )
-    .positional('path', {type: 'string', demandOption: true });
+    .describe({
+      speculos: "Connect to a speculos instance instead of a real ledger; use --apdu 5555 when running speculos to enable."
+    })
+    .default('speculos', false)
+    .positional('path', {type: 'string', demandOption: true, description: "Bip32 path to for the public key to provide."});
 
 export const handler = async (argv: Arguments<Options>): Promise<void> => {
   const { path, speculos } = argv;
