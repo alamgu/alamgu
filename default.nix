@@ -256,6 +256,10 @@ rec {
       ] ++ args.extraRustcOpts or [];
     });
 
+  generic-cli = (import ./node/cli {
+    inherit pkgs;
+  }).package;
+
   ledgerStdlib = import ./stdlib/Cargo.nix {
     pkgs = ledgerPkgs;
     buildRustCrateForPkgs = pkgs: buildRustCrateForPkgsWrapper
