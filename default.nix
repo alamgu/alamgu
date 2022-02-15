@@ -254,6 +254,8 @@ rec {
         "-C" "opt-level=3"
         "-C" "codegen-units=1"
       ] ++ args.extraRustcOpts or [];
+      # separateDebugInfo = true;
+      dontStrip = isLedger;
     });
 
   generic-cli = (import ./node/cli {
