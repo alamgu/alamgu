@@ -254,6 +254,9 @@ rec {
         "-C" "passes=ledger-ropi"
         "-C" "opt-level=3"
         "-C" "codegen-units=1"
+        "-C" "embed-bitcode"
+        "-C" "lto"
+        "-Z" "emit-stack-sizes"
       ] ++ args.extraRustcOpts or [];
       # separateDebugInfo = true;
       dontStrip = isLedger;
