@@ -7,6 +7,10 @@
     "cargo-ledger": {
       "type": "Nix",
       "import": "../dep/cargo-ledger/thunk.nix"
+    },
+    "stack-sizes": {
+      "type": "Nix",
+      "import": "../dep/stack-sizes/thunk.nix"
     }
   }
 }

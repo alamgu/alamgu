@@ -168,6 +168,7 @@ rec {
       cargo-ledger ledgerctl
 
       # just plain useful for rust dev
+      stack-sizes
       cargo-watch
 
       # Testing stuff against nodejs modules
@@ -294,4 +295,6 @@ rec {
   cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
 
   cargo-watch = utils.workspaceMembers.cargo-watch.build;
+
+  stack-sizes = utils.workspaceMembers.stack-sizes.build;
 }
