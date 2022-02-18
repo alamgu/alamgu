@@ -257,6 +257,7 @@ rec {
         "-C" "embed-bitcode"
         "-C" "lto"
         "-Z" "emit-stack-sizes"
+        "--emit=link,dep-info,obj"
       ] ++ args.extraRustcOpts or [];
       # separateDebugInfo = true;
       dontStrip = isLedger;
