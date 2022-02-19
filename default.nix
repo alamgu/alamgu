@@ -168,6 +168,7 @@ rec {
       cargo-ledger ledgerctl
 
       # just plain useful for rust dev
+      stack-sizes
       cargo-watch
 
       # Testing stuff against nodejs modules
@@ -192,7 +193,7 @@ rec {
 
   # Use right Rust; use Clang.
   buildRustCrateForPkgsLedger = pkgs: let
-    isLedger = pkgs.stdenv.hostPlatform.parsed.kernel.name == "none";
+    isLedger = (pkgs.stdenv.hostPlatform.rustc.platform.os or "") == "nanos";
     platform = if isLedger then ledgerRustPlatform else rustPlatform;
   in pkgs.buildRustCrate.override rec {
     stdenv = if isLedger then pkgs.lldClangStdenv else pkgs.stdenv;
@@ -244,14 +245,33 @@ rec {
     ];
   };
 
+  buildRustCrateForPkgsWrapper = pkgs: fun: let
+    isLedger = (pkgs.stdenv.hostPlatform.rustc.platform.os or "") == "nanos";
+  in args: fun (args // lib.optionalAttrs isLedger {
+      RUSTC_BOOTSTRAP = true;
+      extraRustcOpts = [
+        "-C" "relocation-model=ropi"
+        "-C" "passes=ledger-ropi"
+        "-C" "opt-level=3"
+        "-C" "codegen-units=1"
+        "-C" "embed-bitcode"
+        "-C" "lto"
+        "-Z" "emit-stack-sizes"
+        "--emit=link,dep-info,obj"
+      ] ++ args.extraRustcOpts or [];
+      # separateDebugInfo = true;
+      dontStrip = isLedger;
+    });
+
   generic-cli = (import ./node/cli {
     inherit pkgs;
   }).package;
 
   ledgerStdlib = import ./stdlib/Cargo.nix {
     pkgs = ledgerPkgs;
-    buildRustCrateForPkgs = pkgs: let
-      fun = (buildRustCrateForPkgsLedger pkgs).override {
+    buildRustCrateForPkgs = pkgs: buildRustCrateForPkgsWrapper
+      pkgs
+      ((buildRustCrateForPkgsLedger pkgs).override {
         defaultCrateOverrides = pkgs.defaultCrateOverrides // {
           core = attrs: {
             postUnpack = ''
@@ -259,14 +279,6 @@ rec {
             '';
           };
         };
-      };
-    in
-      args: fun (args // lib.optionalAttrs pkgs.stdenv.hostPlatform.isAarch32 {
-        RUSTC_BOOTSTRAP = true;
-        extraRustcOpts = [
-          "-C" "relocation-model=ropi"
-          "-C" "passes=ledger-ropi"
-        ] ++ args.extraRustcOpts or [];
       });
   };
 
@@ -287,4 +299,6 @@ rec {
   cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
 
   cargo-watch = utils.workspaceMembers.cargo-watch.build;
+
+  stack-sizes = utils.workspaceMembers.stack-sizes.build;
 }
