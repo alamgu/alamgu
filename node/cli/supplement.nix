@@ -27,10 +27,10 @@ in
   typescript = nodeEnv.buildNodePackage {
     name = "typescript";
     packageName = "typescript";
-    version = "4.5.5";
+    version = "4.6.2";
     src = fetchurl {
-      url = "https://registry.npmjs.org/typescript/-/typescript-4.5.5.tgz";
-      sha512 = "TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==";
+      url = "https://registry.npmjs.org/typescript/-/typescript-4.6.2.tgz";
+      sha512 = "HM/hFigTBHZhLXshn9sN37H085+hQGeJHJ/X7LpBWLID/fbc2acUMfU+lGD98X81sKP+pFa9f0DZmCwB9GnbAg==";
     };
     buildInputs = globalBuildInputs;
     meta = {
@@ -45,10 +45,10 @@ in
   "@types/node" = nodeEnv.buildNodePackage {
     name = "_at_types_slash_node";
     packageName = "@types/node";
-    version = "17.0.12";
+    version = "17.0.23";
     src = fetchurl {
-      url = "https://registry.npmjs.org/@types/node/-/node-17.0.12.tgz";
-      sha512 = "4YpbAsnJXWYK/fpTVFlMIcUIho2AYCi4wg5aNPrG1ng7fn/1/RZfCIpRCiBX+12RVa34RluilnvCqD+g3KiSiA==";
+      url = "https://registry.npmjs.org/@types/node/-/node-17.0.23.tgz";
+      sha512 = "UxDxWn7dl97rKVeVS61vErvw086aCYhDLyvRQZ5Rk65rZKepaFdm53GeqXaKBuOhED4e9uWq34IC3TdSdJJ2Gw==";
     };
     buildInputs = globalBuildInputs;
     meta = {
