@@ -27,10 +27,10 @@ in
   typescript = nodeEnv.buildNodePackage {
     name = "typescript";
     packageName = "typescript";
-    version = "4.6.2";
+    version = "4.6.3";
     src = fetchurl {
-      url = "https://registry.npmjs.org/typescript/-/typescript-4.6.2.tgz";
-      sha512 = "HM/hFigTBHZhLXshn9sN37H085+hQGeJHJ/X7LpBWLID/fbc2acUMfU+lGD98X81sKP+pFa9f0DZmCwB9GnbAg==";
+      url = "https://registry.npmjs.org/typescript/-/typescript-4.6.3.tgz";
+      sha512 = "yNIatDa5iaofVozS/uQJEl3JRWLKKGJKh6Yaiv0GLGSuhpFJe7P3SbHZ8/yjAHRQwKRoA6YZqlfjXWmVzoVSMw==";
     };
     buildInputs = globalBuildInputs;
     meta = {

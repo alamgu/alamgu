@@ -442,8 +442,8 @@ let
       version = "0.0.1";
       src = fetchgit {
         url = "https://github.com/obsidiansystems/hw-app-obsidian-common";
-        rev = "36d46440d289b024ec611d42a12cbde9bc40295e";
-        sha256 = "25defe1e9a23cb89e50300380bb52e211072853ccc7eb8667fe966410f27b8c8";
+        rev = "06f3f1d1a4b80ba12646875c356235ea458f98c3";
+        sha256 = "55b5ea71c649edafb5fca9e56a69e6af9541182eb5461a1a15037ee3058510f5";
       };
     };
     "ieee754-1.2.1" = {
@@ -941,13 +941,13 @@ let
         sha512 = "NHNI7Dr6JHa/I3+c62gdRNXBIyX7P33O9TafGLd07ur3MqzcKgwTvpg18EtvCLHJyfeSthAtCLpM7WkStUmDuQ==";
       };
     };
-    "typescript-4.6.2" = {
+    "typescript-4.6.3" = {
       name = "typescript";
       packageName = "typescript";
-      version = "4.6.2";
+      version = "4.6.3";
       src = fetchurl {
-        url = "https://registry.npmjs.org/typescript/-/typescript-4.6.2.tgz";
-        sha512 = "HM/hFigTBHZhLXshn9sN37H085+hQGeJHJ/X7LpBWLID/fbc2acUMfU+lGD98X81sKP+pFa9f0DZmCwB9GnbAg==";
+        url = "https://registry.npmjs.org/typescript/-/typescript-4.6.3.tgz";
+        sha512 = "yNIatDa5iaofVozS/uQJEl3JRWLKKGJKh6Yaiv0GLGSuhpFJe7P3SbHZ8/yjAHRQwKRoA6YZqlfjXWmVzoVSMw==";
       };
     };
     "usb-1.9.2" = {
@@ -1178,7 +1178,7 @@ let
       sources."tslib-1.14.1"
       sources."tunnel-agent-0.6.0"
       sources."typedoc-0.22.13"
-      sources."typescript-4.6.2"
+      sources."typescript-4.6.3"
       (sources."usb-1.9.2" // {
         dependencies = [
           sources."node-addon-api-4.3.0"
