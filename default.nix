@@ -1,4 +1,5 @@
-{ pkgsSrc ? import ./dep/nixpkgs/thunk.nix
+{ localSystem ? { system = builtins.currentSystem; }
+, pkgsSrc ? import ./dep/nixpkgs/thunk.nix
 , pkgsFunc ? import pkgsSrc
 }:
 
@@ -69,7 +70,7 @@ rec {
 
   pkgs = pkgsFunc {
     config = {};
-    inherit overlays;
+    inherit localSystem overlays;
   };
 
   inherit (pkgs) lib;
@@ -100,7 +101,7 @@ rec {
         };
       };
     };
-    inherit overlays;
+    inherit localSystem overlays;
     crossOverlays = [
       (self: super: {
         newlibCross = super.newlibCross.override {
