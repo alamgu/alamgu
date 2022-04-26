@@ -1,4 +1,5 @@
-{ pkgsSrc ? import ./dep/nixpkgs/thunk.nix
+{ localSystem ? { system = builtins.currentSystem; }
+, pkgsSrc ? import ./dep/nixpkgs/thunk.nix
 , pkgsFunc ? import pkgsSrc
 }:
 
@@ -69,7 +70,7 @@ rec {
 
   pkgs = pkgsFunc {
     config = {};
-    inherit overlays;
+    inherit localSystem overlays;
   };
 
   inherit (pkgs) lib;
@@ -100,7 +101,7 @@ rec {
         };
       };
     };
-    inherit overlays;
+    inherit localSystem overlays;
     crossOverlays = [
       (self: super: {
         newlibCross = super.newlibCross.override {
@@ -123,7 +124,9 @@ rec {
 
   inherit (gitignoreNix) gitignoreSource;
 
-  speculos = pkgs.callPackage ./dep/speculos { inherit pkgsFunc pkgs; };
+  speculos = pkgs.callPackage ./dep/speculos {
+    inherit pkgsFunc pkgs localSystem;
+  };
 
   crate2nix = import ./dep/crate2nix { inherit pkgs; };
 
@@ -294,7 +297,21 @@ rec {
 
   ledgerStdlibCI = ledgerStdlib.rootCrate.build;
 
-  utils = import ./utils/Cargo.nix { inherit pkgs; };
+  utils = import ./utils/Cargo.nix {
+    inherit pkgs; 
+    defaultCrateOverrides = {
+      llvm-sys = attrs: {
+        LLVM_SYS_120_FFI_WORKAROUND=1;
+        LLVM_SYS_130_FFI_WORKAROUND=1;
+        LLVM_SYS_140_FFI_WORKAROUND=1;
+        LLVM_SYS_150_FFI_WORKAROUND=1;
+        buildInputs = [pkgs.llvmPackages_12.libllvm pkgs.zlib pkgs.ncurses pkgs.xml2 pkgs.libffi];
+      };
+      stack-sizes = attrs: {
+        buildInputs = [pkgs.llvmPackages_12.libllvm pkgs.zlib pkgs.ncurses pkgs.libxml2 pkgs.libffi];
+      };
+    };
+  };
 
   cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
 
