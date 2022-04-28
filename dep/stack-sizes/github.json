@@ -1,8 +1,8 @@
 {
   "owner": "obsidiansystems",
   "repo": "stack-sizes",
-  "branch": "use-call-graph",
+  "branch": "wip-use-call-graph-more",
   "private": false,
-  "rev": "79f8c9430a48bab3e20a5871512b491990b60c4a",
-  "sha256": "1x1633mlism24f976gw0pjhdqlm0z09yc7w2r1ixj82knlwh9s4h"
+  "rev": "e09d8eee6deb910f31cc6278f1ace9a340505047",
+  "sha256": "191iyd6lqvi5p472bs5pjz5xdf2fil4hbwliimhcc6fqd85hbf1d"
 }
