@@ -65,7 +65,7 @@ export const builder: CommandBuilder<Options, Options> = (yargs) =>
     ;
 
 export const handler = async (argv: Arguments<Options>): Promise<void> => {
-  const { path, format, file, speculos } = argv;
+  const { path, format, file, speculos, useBlock } = argv;
   let payloadString = argv.payload;
 
   if(file) {
@@ -85,9 +85,9 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     transport = await Transport.open(undefined);
   }
   let app = new Common(transport, "");
-  // if(useBlock) {
+  if(useBlock) {
     app.sendChunks = app.sendWithBlocks;
-  // }
+  }
 
   console.log("Signing: ", payload);
 

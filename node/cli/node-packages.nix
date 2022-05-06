@@ -442,8 +442,8 @@ let
       version = "0.0.1";
       src = fetchgit {
         url = "https://github.com/obsidiansystems/hw-app-obsidian-common";
-        rev = "06f3f1d1a4b80ba12646875c356235ea458f98c3";
-        sha256 = "55b5ea71c649edafb5fca9e56a69e6af9541182eb5461a1a15037ee3058510f5";
+        rev = "b02c506d098bc8716aa18d3f56cfefe4ba4c025d";
+        sha256 = "149jn0pi0icb8v7z823yvflidxpmlzd02xpg8cjgc62yka63a195";
       };
     };
     "ieee754-1.2.1" = {
