@@ -15,6 +15,10 @@ pub struct PromptWrite<'a, const N: usize> {
     total: usize
 }
 
+pub fn mk_prompt_write<'a, const N: usize>(buffer: &'a mut ArrayString<N>) -> PromptWrite<'a, N> {
+    PromptWrite{ offset: 0, buffer: buffer, total: 0 }
+}
+
 impl<'a, const N: usize> Write for PromptWrite<'a, N> {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
         self.total += s.len();
