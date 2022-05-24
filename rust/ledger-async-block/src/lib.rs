@@ -1,3 +1,26 @@
+//! Stock code for writing APDUs that use the block protocol using futures.
+//!
+//!
+//! To use, for each APDU write a struct type for each APDU and provide instances of [AsyncAPDU]
+//! and [AsyncAPDUStated], and call [poll_apdu_handler] when dispatch identifies that APDU. The
+//! future returned by [AsyncAPDU::run] can use any parser defined via
+//! [ledger_parser_combinators::async_parser] by simply passing the appropriate [ByteStream] to it
+//! and using `.await`.
+//!
+//! In order to implement [AsyncAPDUStated] it will be necessary to write a StateHolder enum, and
+//! provide an empty struct implementing StateHolderCtr to AsyncAPDUStated; the StateHolderCtr is
+//! essentially a constructor for a StateHolder with the appropriate lifetime variable;
+//! [AsyncAPDUStated::init] should call the [AsyncAPDU::run] and put the result in an appropriate
+//! variant of the StateHolder enum, and [AsyncAPDUStated::poll] should match on the StateHolder
+//! enum and poll the contained future if the APDU is the current one.
+//!
+//! From within [AsyncAPDU::run] there is access to both a [ByteStream] for each parameter of the
+//! APDU supporting [ledger_parser_combinators::async_parser::Readable] and a handle to [HostIO];
+//! [HostIO::get_chunk] and [HostIO::put_chunk] may be used to read and write arbitrary chunks of
+//! content-indexed data from and to the host, and [HostIO::result_accumulating] and
+//! [HostIO::result_final] send pieces of final result to the host. An APDU handler must call
+//! [HostIO::result_final] upon successful completion of the APDU.
+//!
 #![no_std]
 #![allow(incomplete_features)]
 #![feature(const_generics)]
@@ -55,7 +78,7 @@ pub enum LedgerToHostCmd {
 }
 
 const HASH_LEN: usize = 32;
-type SHA256 = [u8; HASH_LEN];
+pub type SHA256 = [u8; HASH_LEN];
 
 
 #[derive(Debug)]
@@ -78,10 +101,12 @@ pub struct HostIO(pub &'static RefCell<HostIOState>);
 
 impl HostIO {
 
+    /// Grab a mutable reference to the [io::Comm] object, to do some direct stuff with.
     pub fn get_comm<'a>(self) -> Result<RefMut<'a, io::Comm>, Reply> {
         self.0.try_borrow_mut().or(Err(io::StatusWords::Unknown))?.comm.try_borrow_mut().or(Err(io::StatusWords::Unknown.into()))
     }
 
+    /// Get a chunk, identified by SHA256 hash of it's contents, from the host.
     pub fn get_chunk(self, sha: SHA256) -> impl Future<Output = Result<Ref<'static, [u8]>, ChunkNotFound>> {
         core::future::poll_fn(move |_| {
             match self.0.try_borrow_mut() {
@@ -114,7 +139,7 @@ impl HostIO {
         })
     }
 
-    pub fn send_write_command<'a: 'c, 'b: 'c, 'c>(self, cmd: LedgerToHostCmd, data: &'b [u8]) -> impl 'c + Future<Output = ()> {
+    fn send_write_command<'a: 'c, 'b: 'c, 'c>(self, cmd: LedgerToHostCmd, data: &'b [u8]) -> impl 'c + Future<Output = ()> {
         core::future::poll_fn(move |_| {
             match self.0.try_borrow_mut() {
                 Ok(ref mut s) => {
@@ -133,17 +158,30 @@ impl HostIO {
             }
         })
     }
-    pub fn put_chunk<'a: 'c, 'b: 'c, 'c>(self, chunk: &'b [u8]) -> impl 'c + Future<Output = ()> {
-        self.send_write_command(LedgerToHostCmd::PutChunk, chunk)
+
+    /// Write a chunk to the host, returning the SHA256 of it's contents, used as an address for a
+    /// future get_chunk.
+    pub fn put_chunk<'a: 'c, 'b: 'c, 'c>(self, chunk: &'b [u8]) -> impl 'c + Future<Output = SHA256> {
+        async move {
+            self.send_write_command(LedgerToHostCmd::PutChunk, chunk).await;
+            sha256_hash(chunk)
+        }
     }
+
+    /// Write a piece of output to the host, but don't declare that we are done; the host will
+    /// return to the ledger to get more.
     pub fn result_accumulating<'a: 'c, 'b: 'c, 'c>(self, chunk: &'b [u8]) -> impl 'c + Future<Output = ()> {
         self.send_write_command(LedgerToHostCmd::ResultAccumulating, chunk)
     }
+    /// Write the final piece of output to the host; after this, we're done and the host does not
+    /// contact us again on this subject.
     pub fn result_final<'a: 'c, 'b: 'c, 'c>(self, chunk: &'b [u8]) -> impl 'c + Future<Output = ()> {
         self.send_write_command(LedgerToHostCmd::ResultFinal, chunk)
     }
 }
 
+/// Concrete implementation of the interface defined by
+/// [ledger_parser_combinators::async_parser::Readable] for the block protocol.
 #[derive(Clone)]
 pub struct ByteStream {
     host_io: HostIO,
@@ -215,8 +253,7 @@ pub trait AsyncAPDUStated<StateHolderT: 'static + StateHolderCtr> : AsyncAPDU {
 
 pub static RAW_WAKER_VTABLE : RawWakerVTable = RawWakerVTable::new(|a| RawWaker::new(a, &RAW_WAKER_VTABLE), |_| {}, |_| {}, |_| {});
 
-// Main entry point: run an AsyncAPDU given an input.
-
+/// Main entry point: run an AsyncAPDU given an input.
 #[inline(never)]
 pub fn poll_apdu_handler<'a: 'b, 'b, StateHolderT: 'static + StateHolderCtr, A: 'a + AsyncAPDUStated<StateHolderT> + Copy>     (
     s: &'b mut core::pin::Pin<&'a mut StateHolderT::StateCtr<'a>>,
