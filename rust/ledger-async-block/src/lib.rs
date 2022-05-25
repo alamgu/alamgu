@@ -21,6 +21,101 @@
 //! [HostIO::result_final] send pieces of final result to the host. An APDU handler must call
 //! [HostIO::result_final] upon successful completion of the APDU.
 //!
+//! # Example
+//!
+//!
+//! ```
+//! use core::future::Future;
+//! use core::task::*;
+//! use ledger_async_block::*;
+//! use ledger_parser_combinators::async_parser::*;
+//! use pin_project::pin_project;
+//!
+//!
+//! struct ExampleAPDU;
+//!
+//! impl AsyncAPDU for ExampleAPDU {
+//!     type State<'a> = impl Future<Output = ()>;
+//!     fn run<'a>(self, io: HostIO, input: ArrayVec<ByteStream, MAX_PARAMS>) -> Self::State<'a> {
+//!         async move {
+//!             // Parse an array of four bytes from the input; ignore any remainder.
+//!             let data = (DefaultInterp as AsyncParser<Array<u8, 4>>).parse(&mut input[0]).await;
+//!             // Send the four bytes back to the host.
+//!             io.result_final(&data).await;
+//!         }
+//!     }
+//! }
+//!
+//! // State holder for the APDUs
+//! #[pin_project(project = APDUStateProjection)]
+//! enum APDUState<'a> {
+//!   NoState,
+//!   ExampleAPDUState(#[pin] <ExampleAPDU as AsyncAPDU>::State<'a>),
+//! }
+//!
+//! static mut COMM_CELL : Option<RefCell<io::Comm>> = None;
+//! static mut HOST_IO_STATE : Option<RefCell<HostIOState>> = None;
+//! static mut STATES_BACKING : APDUState<'static> = APDUState::NoState;
+//!
+//! unsafe fn initialize() {
+//!     COMM_CELL=Some(RefCell::new(io::Comm::new()));
+//!     let comm = COMM_CELL.as_ref().unwrap();
+//!     HOST_IO_STATE = Some(RefCell::new(HostIOState {
+//!         comm: comm,
+//!         requested_block: None,
+//!         sent_command: None,
+//!     }));
+//! }
+//!
+//!
+//! extern "C" fn sample_main() {
+//!   ...
+//!   unsafe { initialize(); }
+//!   let mut states = unsafe { Pin::new_unchecked( &mut STATES_BACKING ) };
+//!   ...
+//!   match handle_apdu(host_io, ins, &mut states) {
+//!     Ok(()) => { comm.borrow_mut().reply_ok() }
+//!     Err(sw) => { comm.borrow_mut().reply(sw) }
+//!   }
+//! }
+//!
+//! handle_apdu<'a: 'b, 'b>(io: HostIO, ins: Ins, state: &'b mut Pin<&'a mut ParsersState<'a>>)
+//!     -> Result<(), Reply> {
+//!         match ins {
+//!             Ins::ExampleAPDU => poll_apdu_handler(state, io, ExampleAPDU)?
+//!         }
+//!     }
+//!
+//! // Boilerplate to set and retrieve states from the state holder; should really be simpler than
+//! // this.
+//! struct APDUStateConstructor;
+//! impl StateHolderCtr for APDUStateConstructor {
+//!     type StateCtr<'a> = APDUState<'a>;
+//! }
+//!
+//! impl AsyncAPDUStated for ExampleAPDU {
+//!     #[inline(never)]
+//!     fn init<'a, 'b: 'a>(
+//!         self,
+//!         s: &mut core::pin::Pin<&'a mut ParsersState<'a>>,
+//!         io: HostIO,
+//!         input: ArrayVec<ByteStream, MAX_PARAMS>
+//!     ) -> () {
+//!         s.set(APDUState::ExampleAPDUState(self.run(io, input)));
+//!     }
+//!     #[inline(never)]
+//!     fn poll<'a, 'b>(self, s: &mut core::pin::Pin<&'a mut ParsersState>) -> core::task::Poll<()> {
+//!         let waker = unsafe { Waker::from_raw(RawWaker::new(&(), &RAW_WAKER_VTABLE)) };
+//!         let mut ctxd = Context::from_waker(&waker);
+//!         match s.as_mut().project() {
+//!             APDUStateProjection::ExampleAPDUState(ref mut s) => s.as_mut().poll(&mut ctxd),
+//!             _ => panic!("Ooops"),
+//!         }
+//!     }
+//! }
+//!
+//! ```
+//!
 #![no_std]
 #![allow(incomplete_features)]
 #![feature(const_generics)]
