@@ -46,17 +46,16 @@ export const builder: CommandBuilder<Options, Options> = (yargs) =>
              useBlock: "Use block protocol",
     })
     .conflicts(formatIsExclusive)
-    /*.middleware(argv=>{
+    .middleware([ function (argv) {
       for (const arg of formats) {
         if(argv[arg]) {
-          argv['format'] = arg;
+          argv.format = arg;
         }
       }
       if ( argv.format == 'raw' ) {
         argv.format = 'binary';
       }
-      return argv;
-    })*/
+    }])
     .default('format', 'hex')
     .default('speculos', false)
     .default('useBlock', false)
