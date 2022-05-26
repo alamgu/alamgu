@@ -32,6 +32,7 @@ export const builder: CommandBuilder<Options, Options> = (yargs) =>
       file: {type: 'boolean'},
       speculos: {type: 'boolean'},
       useBlock: {type: 'boolean'},
+      verbose: {type: 'boolean'},
     })
     .describe({
              json: "Input is JSON. Strips whitespace from the beginning and end of <payload>.",
@@ -44,6 +45,7 @@ export const builder: CommandBuilder<Options, Options> = (yargs) =>
              file: "Treat <payload> as a filename and read the file rather than using the argument directly.",
              speculos: "Connect to a speculos instance instead of a real ledger; use --apdu 5555 when running speculos to enable.",
              useBlock: "Use block protocol",
+             verbose: "Print verbose output of message transfer with ledger",
     })
     .conflicts(formatIsExclusive)
     .middleware([ function (argv) {
@@ -59,12 +61,13 @@ export const builder: CommandBuilder<Options, Options> = (yargs) =>
     .default('format', 'hex')
     .default('speculos', false)
     .default('useBlock', false)
+    .default('verbose', false)
     .positional('path', {type: 'string', demandOption: true, description: "Bip32 path to for the key to sign with."})
     .positional('payload', {type: 'string', demandOption: true, description: "Transaction/payload to sign, interpreted according to format and file options." })
     ;
 
 export const handler = async (argv: Arguments<Options>): Promise<void> => {
-  const { path, format, file, speculos } = argv;
+  const { path, format, file, speculos, useBlock, verbose } = argv;
   let payloadString = argv.payload;
 
   if(file) {
@@ -83,10 +86,10 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
   } else {
     transport = await Transport.open(undefined);
   }
-  let app = new Common(transport, "");
-  // if(useBlock) {
+  let app = new Common(transport, "", "", verbose === true);
+  if(useBlock) {
     app.sendChunks = app.sendWithBlocks;
-  // }
+  }
 
   console.log("Signing: ", payload);
 
