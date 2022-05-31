@@ -9,10 +9,10 @@ in
   node-gyp-build = nodeEnv.buildNodePackage {
     name = "node-gyp-build";
     packageName = "node-gyp-build";
-    version = "4.3.0";
+    version = "4.4.0";
     src = fetchurl {
-      url = "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.3.0.tgz";
-      sha512 = "iWjXZvmboq0ja1pUGULQBexmxq8CV4xBhX7VDOTbL7ZR4FOowwY/VOtRxBN/yKxmdGoIp4j5ysNT4u3S2pDQ3Q==";
+      url = "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.4.0.tgz";
+      sha512 = "amJnQCcgtRVw9SvoebO3BKGESClrfXGCUTX9hSn1OuGQTQBOZmVd0Z0OlecpuRksKvbsUqALE8jls/ErClAPuQ==";
     };
     buildInputs = globalBuildInputs;
     meta = {
@@ -27,10 +27,10 @@ in
   typescript = nodeEnv.buildNodePackage {
     name = "typescript";
     packageName = "typescript";
-    version = "4.5.5";
+    version = "4.7.2";
     src = fetchurl {
-      url = "https://registry.npmjs.org/typescript/-/typescript-4.5.5.tgz";
-      sha512 = "TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==";
+      url = "https://registry.npmjs.org/typescript/-/typescript-4.7.2.tgz";
+      sha512 = "Mamb1iX2FDUpcTRzltPxgWMKy3fhg0TN378ylbktPGPK/99KbDtMQ4W1hwgsbPAsG3a0xKa1vmw4VKZQbkvz5A==";
     };
     buildInputs = globalBuildInputs;
     meta = {
@@ -45,10 +45,10 @@ in
   "@types/node" = nodeEnv.buildNodePackage {
     name = "_at_types_slash_node";
     packageName = "@types/node";
-    version = "17.0.12";
+    version = "17.0.35";
     src = fetchurl {
-      url = "https://registry.npmjs.org/@types/node/-/node-17.0.12.tgz";
-      sha512 = "4YpbAsnJXWYK/fpTVFlMIcUIho2AYCi4wg5aNPrG1ng7fn/1/RZfCIpRCiBX+12RVa34RluilnvCqD+g3KiSiA==";
+      url = "https://registry.npmjs.org/@types/node/-/node-17.0.35.tgz";
+      sha512 = "vu1SrqBjbbZ3J6vwY17jBs8Sr/BKA+/a/WtjRG+whKg1iuLFOosq872EXS0eXWILdO36DHQQeku/ZcL6hz2fpg==";
     };
     buildInputs = globalBuildInputs;
     meta = {
