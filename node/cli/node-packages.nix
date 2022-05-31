@@ -436,13 +436,13 @@ let
         sha1 = "e0e6fe6a28cf51138855e086d1691e771de2a8b9";
       };
     };
-    "hw-app-obsidian-common-git+https://github.com/obsidiansystems/hw-app-obsidian-common#wip_new_protocol" = {
+    "hw-app-obsidian-common-git+https://github.com/obsidiansystems/hw-app-obsidian-common" = {
       name = "hw-app-obsidian-common";
       packageName = "hw-app-obsidian-common";
       version = "0.0.1";
       src = fetchgit {
         url = "https://github.com/obsidiansystems/hw-app-obsidian-common";
-        rev = "ee33d3f6cce0d65d59053dd98520b6f4d8324582";
+        rev = "9c4c397861e33761f2e5f5af29bb6642a05fd9e1";
         sha256 = "199b0519c4b1f12509ed4c853252838341310ada23d085f6e8bda773e9ad2d65";
       };
     };
@@ -1117,7 +1117,7 @@ let
         ];
       })
       sources."has-unicode-2.0.1"
-      sources."hw-app-obsidian-common-git+https://github.com/obsidiansystems/hw-app-obsidian-common#wip_new_protocol"
+      sources."hw-app-obsidian-common-git+https://github.com/obsidiansystems/hw-app-obsidian-common"
       sources."ieee754-1.2.1"
       sources."inflight-1.0.6"
       sources."inherits-2.0.4"
