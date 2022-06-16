@@ -277,10 +277,13 @@ rec {
       ((buildRustCrateForPkgsLedger pkgs).override {
         defaultCrateOverrides = pkgs.defaultCrateOverrides // {
           core = attrs: {
+            src = ledgerPkgs.rustPlatform_1_53.rustLibSrc + "/core";
             postUnpack = ''
               cp -r ${ledgerPkgs.rustPlatform_1_53.rustLibSrc}/stdarch $sourceRoot/..
             '';
           };
+          alloc = attrs: { src = ledgerPkgs.rustPlatform_1_53.rustLibSrc + "/alloc"; };
+          rustc-std-workspace-core = attrs: { src = ledgerPkgs.rustPlatform_1_53.rustLibSrc + "/rustc-std-workspace-core"; };
         };
       });
   };
