@@ -149,7 +149,7 @@ rec {
 
   rustShell = buildRustPackageClang {
     stdenv = ledgerPkgs.lldClangStdenv;
-    name = "rust-app";
+    name = "rust-ledger-app-shell";
     src = null;
     # We are just (ab)using buildRustPackage for a shell. When we actually build
     __internal_dontAddSysroot = true;
