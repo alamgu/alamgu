@@ -69,7 +69,15 @@ rec {
   ];
 
   pkgs = pkgsFunc {
-    config = {};
+    config = {
+      packageOverrides = pkgs: {
+        # Shrink the qemu we use with speculos to just support the minimum:
+        qemu = pkgs.qemu.override (attrs: {
+          nixosTestRunner = true;
+          hostCpuTargets = ["arm-linux-user"];
+        });
+      };
+    };
     inherit localSystem overlays;
   };
 
