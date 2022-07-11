@@ -36,12 +36,14 @@ let
     #"pkgs"
     "rustPlatform"
     "rustShell"
-    #"speculos"
+    "speculos"
     "stack-sizes"
     "stockThumbTarget"
     "thunkSource"
     "usbtool"
     "utils"
+    "build-docker"
+    "build-docker-recompressed"
   ];
 in {
   inherit x86_64-linux x86_64-darwin;
