@@ -165,7 +165,9 @@ rec {
     shellHook = cargoLedgerPreHook;
     # We just want dev shell
     unpackPhase = ''
-      echo got in shell > $out
+      mkdir $out
+      echo '#' got in shell > $out/env.sh
+      export | sed 's|/build|./|' >> $out/env.sh
       exit 0;
     '';
     cargoVendorDir = "pretend-exists";
@@ -184,6 +186,7 @@ rec {
 
       # Testing stuff against nodejs modules
       pkgs.nodejs_latest
+      pkgs.wget
     ];
     # buildInputs = [ binaryRustPackages.rust-std ];
     verifyCargoDeps = true;
@@ -329,4 +332,69 @@ rec {
   cargo-watch = utils.workspaceMembers.cargo-watch.build;
 
   stack-sizes = utils.workspaceMembers.stack-sizes.build;
+
+  docker-nixpkgs = pkgs.fetchFromGitHub {
+    owner = "nix-community";
+    repo = "docker-nixpkgs";
+    rev = "f0ddafd597ce53eaa310d7bb29144605bb1a2db8";
+    sha256 = "13hhd2mlipv8i4kslgvjmhd83fm6s4dvh2x53f525iy02gvq9fiz";
+  };
+
+  build-docker = with pkgs; dockerTools.buildImageWithNixDb {
+    # inherit (nix) name;
+    name = "ledger-nix-build";
+    tag = "latest";
+
+    contents = [
+      (docker-nixpkgs + "/images/nix/root")
+      coreutils
+      # add /bin/sh
+      bashInteractive
+      nix
+
+      # runtime dependencies of nix
+      cacert
+      # gitReallyMinimal
+      git
+      gnutar
+      gzip
+      openssh
+      xz
+
+      # for haskell binaries
+      iana-etc
+
+      # nix sources for the pinned nixpkgs & nixpkgs-mozilla
+      # pkgsSrc
+      # (thunkSource ./dep/nixpkgs-mozilla)
+
+      rustShell
+    ];
+
+    extraCommands = ''
+      # for /usr/bin/env
+      mkdir usr
+      ln -s ../bin usr/bin
+      # make sure /tmp exists
+      mkdir -m 1777 tmp
+      # need a HOME
+      mkdir -vp root
+      mkdir -vp app
+    '';
+
+    config = {
+      Cmd = [ "/bin/bash" ];
+      Env = [
+        "ENV=/etc/profile.d/nix.sh"
+        "BASH_ENV=/etc/profile.d/nix.sh"
+        "NIX_BUILD_SHELL=/bin/bash"
+        "NIX_PATH=nixpkgs=${pkgsSrc}:nixpkgs-mozilla=${thunkSource ./dep/nixpkgs-mozilla}" # ${docker-nixpkgs + ./images/nix/fake_nixpkgs}"
+        "HOME=/app"
+        "PAGER=cat"
+        "PATH=/usr/bin:/bin"
+        "SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt"
+        "USER=root"
+      ];
+    };
+  };
 }
