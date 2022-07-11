@@ -397,4 +397,10 @@ rec {
       ];
     };
   };
+  build-docker-recompressed = pkgs.runCommand "ledger-build-docker.tar.xz" {
+    nativeBuildInputs = [ pkgs.gzip pkgs.xz ];
+  }
+  ''
+  zcat ${build-docker} | xz -v > $out
+  '';
 }
