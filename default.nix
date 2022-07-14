@@ -340,6 +340,32 @@ rec {
     sha256 = "13hhd2mlipv8i4kslgvjmhd83fm6s4dvh2x53f525iy02gvq9fiz";
   };
 
+  docker-entry = pkgs.writeShellScriptBin "entrypoint.sh" ''
+        install -o $ORIG_UID -g $ORIG_GID -d /app/.home
+        nix-daemon &
+        HOME=/app/.home setpriv --clear-groups --regid $ORIG_GID --reuid $ORIG_UID "''${@:-$DEFAULT_CMD}"
+        '';
+
+  docker-enter-rust-shell = pkgs.writeShellScriptBin "enter-rust-shell.sh" ''
+        cd app/
+        nix-shell -A ledger-platform.rustShell --command "cd rust-app; return"
+        '';
+
+  docker-build-tarball = pkgs.writeShellScriptBin "build-tarball" ''
+         cd app/
+         cp $(nix-build --no-out-link -A tarball) release.tar.gz
+  '';
+
+  docker-extra-sources = pkgs.writeTextDir "/sources-list.txt" ''
+      ${./.}
+      ${pkgsSrc}
+      ${thunkSource ./dep/cargo-watch}
+      ${thunkSource ./dep/cargo-ledger}
+      ${thunkSource ./dep/nixpkgs-mozilla}
+      ${thunkSource ./dep/speculos}
+      ${thunkSource ./dep/stack-sizes}
+  '';
+
   build-docker = with pkgs; dockerTools.buildImageWithNixDb {
     # inherit (nix) name;
     name = "ledger-nix-build";
@@ -364,11 +390,15 @@ rec {
       # for haskell binaries
       iana-etc
 
+      util-linux.bin
+
       # nix sources for the pinned nixpkgs & nixpkgs-mozilla
-      # pkgsSrc
-      # (thunkSource ./dep/nixpkgs-mozilla)
+      docker-extra-sources
 
       rustShell
+      docker-entry
+      docker-enter-rust-shell
+      docker-build-tarball
     ];
 
     extraCommands = ''
@@ -383,13 +413,14 @@ rec {
     '';
 
     config = {
-      Cmd = [ "/bin/bash" ];
+      Entrypoint = [ "/bin/entrypoint.sh" ];
       Env = [
         "ENV=/etc/profile.d/nix.sh"
         "BASH_ENV=/etc/profile.d/nix.sh"
+        "DEFAULT_CMD=/bin/enter-rust-shell.sh"
         "NIX_BUILD_SHELL=/bin/bash"
         "NIX_PATH=nixpkgs=${pkgsSrc}:nixpkgs-mozilla=${thunkSource ./dep/nixpkgs-mozilla}" # ${docker-nixpkgs + ./images/nix/fake_nixpkgs}"
-        "HOME=/app"
+        "HOME=/root"
         "PAGER=cat"
         "PATH=/usr/bin:/bin"
         "SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt"
