@@ -87,7 +87,7 @@ rec {
         crateName = "alloc";
         version = "0.0.0";
         edition = "2018";
-        src = lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/ifzqkphrhi6s57xggxwhj2p39zpwlk1p-rust-lib-src/alloc; };
+        src = lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/mw9dvfb6dj44mi65qwg4z2ck8digl4r7-rust-lib-src/alloc; };
         authors = [
           "The Rust Project Developers"
         ];
@@ -111,9 +111,9 @@ rec {
       };
       "compiler_builtins" = rec {
         crateName = "compiler_builtins";
-        version = "0.1.53";
+        version = "0.1.75";
         edition = "2015";
-        sha256 = "1jwba0rdg9varxnmhpfycfkhb5i7s14i9vgi09yxz92had2zyrr4";
+        sha256 = "116p970v3vbqxxz95m2dwj9kvvdygnvg9f2xhdiahngni0z1iqy6";
         authors = [
           "Jorge Aparicio <japaricious@gmail.com>"
         ];
@@ -136,7 +136,7 @@ rec {
         crateName = "core";
         version = "0.0.0";
         edition = "2018";
-        src = lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/ifzqkphrhi6s57xggxwhj2p39zpwlk1p-rust-lib-src/core; };
+        src = lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/mw9dvfb6dj44mi65qwg4z2ck8digl4r7-rust-lib-src/core; };
         authors = [
           "The Rust Project Developers"
         ];
@@ -172,7 +172,7 @@ rec {
         crateName = "rustc-std-workspace-core";
         version = "1.99.0";
         edition = "2018";
-        src = lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/ifzqkphrhi6s57xggxwhj2p39zpwlk1p-rust-lib-src/rustc-std-workspace-core; };
+        src = lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/mw9dvfb6dj44mi65qwg4z2ck8digl4r7-rust-lib-src/rustc-std-workspace-core; };
         libPath = "lib.rs";
         authors = [
           "Alex Crichton <alex@alexcrichton.com>"

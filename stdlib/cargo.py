@@ -13,7 +13,7 @@ base = {
   },
   'dependencies': {
     'compiler_builtins': {
-      'version': '=0.1.53',
+      'version': '=0.1.75',
       'features': ['rustc-dep-of-std', 'mem'],
     },
     'core': {
