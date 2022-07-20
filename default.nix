@@ -5,21 +5,21 @@
 
 rec {
   overlays = [
-    (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
+    # (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
     (self: super: {
-      rust_1_53 = pkgs.callPackage ./1_53.nix {
-        nixpkgs_src = self.path;
-        inherit (pkgs.darwin.apple_sdk.frameworks) CoreFoundation Security;
-        llvm_12 = pkgs.llvmPackages_12.libllvm;
-      };
-      rustPackages_1_53 = self.rust_1_53.packages.stable;
-      cargo_1_53 = self.rustPackages_1_53.cargo;
-      clippy_1_53 = self.rustPackages_1_53.clippy;
-      rustc_1_53 = self.rustPackages_1_53.rustc;
-      rustPlatform_1_53 = self.rustPackages_1_53.rustPlatform;
+      # rust_1_61 = pkgs.callPackage ./1_61.nix {
+      #   nixpkgs_src = self.path;
+      #   inherit (pkgs.darwin.apple_sdk.frameworks) CoreFoundation Security;
+      #   llvm_12 = pkgs.llvmPackages_12.libllvm;
+      # };
+      rustPackages_1_61 = self.rust_1_61.packages.stable;
+      cargo_1_61 = self.rustPackages_1_61.cargo;
+      clippy_1_61 = self.rustPackages_1_61.clippy;
+      rustc_1_61 = self.rustPackages_1_61.rustc;
+      rustPlatform_1_61 = self.rustPackages_1_61.rustPlatform;
     })
     (self: super: {
-      rustcBuilt = self.rustc_1_53.overrideAttrs (attrs: {
+      rustcBuilt = self.rustc_1_61.overrideAttrs (attrs: {
         configureFlags = (builtins.tail attrs.configureFlags) ++ [
           "--release-channel=nightly"
           "--disable-docs"
@@ -35,7 +35,7 @@ rec {
       # TODO upstream this stuff back to nixpkgs after bumping to latest
       # stable.
       stdlibSrc = self.callPackage ./stdlib/src.nix {
-        rustPlatform = self.rustPlatform_1_53;
+        rustPlatform = self.rustPlatform_1_61;
         originalCargoToml = null;
       };
 
@@ -46,7 +46,7 @@ rec {
           self.buildPackages.cmake
         ];
         buildInputs = [
-          self.llvmPackages_12.libllvm
+          self.llvmPackages_14.libllvm
         ];
       };
 
@@ -58,14 +58,14 @@ rec {
         ${self.buildPackages.patchelf}/bin/patchelf --add-needed ${self.ropiAllLlvmPass}/lib/libLedgerROPI.so ${self.rustcBuilt}/bin/rustc --output $out/bin/rustc
       '';
     })
-    (self: super: {
-      lldClangStdenv = self.clangStdenv.override (old: {
-        cc = old.cc.override (old: {
-          # Default version of 11 segfaulted
-          inherit (ledgerPkgs.buildPackages.llvmPackages_12) bintools;
-        });
-      });
-    })
+    # (self: super: {
+    #   lldClangStdenv = self.clangStdenv.override (old: {
+    #     cc = old.cc.override (old: {
+    #       # Default version of 11 segfaulted
+    #       inherit (ledgerPkgs.buildPackages.llvmPackages_12) bintools;
+    #     });
+    #   });
+    # })
   ];
 
   pkgs = pkgsFunc {
@@ -131,7 +131,7 @@ rec {
   crate2nix = import ./dep/crate2nix { inherit pkgs; };
 
   buildRustPackageClang = ledgerRustPlatform.buildRustPackage.override {
-    stdenv = ledgerPkgs.lldClangStdenv;
+    # stdenv = ledgerPkgs.lldClangStdenv;
   };
 
   # TODO once we break up GCC to separate compiler vs runtime like we do with
@@ -148,7 +148,7 @@ rec {
   '';
 
   rustShell = buildRustPackageClang {
-    stdenv = ledgerPkgs.lldClangStdenv;
+    # stdenv = ledgerPkgs.lldClangStdenv;
     name = "rust-app";
     src = null;
     # We are just (ab)using buildRustPackage for a shell. When we actually build
@@ -162,10 +162,10 @@ rec {
     '';
     cargoVendorDir = "pretend-exists";
     depsBuildBuild = [ ledgerPkgs.buildPackages.stdenv.cc ];
-    inherit (ledgerPkgs.rustPlatform_1_53) rustLibSrc;
+    inherit (ledgerPkgs.rustPlatform_1_61) rustLibSrc;
     nativeBuildInputs = [
       # emu
-      speculos.speculos ledgerPkgs.buildPackages.gdb
+      # speculos.speculos ledgerPkgs.buildPackages.gdb
 
       # loading on real hardware
       cargo-ledger ledgerctl
@@ -199,15 +199,11 @@ rec {
     isLedger = (pkgs.stdenv.hostPlatform.rustc.platform.os or "") == "nanos";
     platform = if isLedger then ledgerRustPlatform else rustPlatform;
   in pkgs.buildRustCrate.override rec {
-    stdenv = if isLedger then pkgs.lldClangStdenv else pkgs.stdenv;
+    # stdenv = if isLedger then pkgs.lldClangStdenv else pkgs.stdenv;
     inherit (platform.rust) rustc cargo;
   };
 
-  binaryRustPackages = pkgs.rustChannelOf {
-    channel = "1.53.0";
-    sha256 = "1p4vxwv28v7qmrblnvp6qv8dgcrj8ka5c7dw2g2cr3vis7xhflaa";
-  };
-
+  binaryRustPackages = pkgs.rust_1_61.packages.stable;
   binaryRustc = binaryRustPackages.rust.override {
     targets = [
       "thumbv6m-none-eabi"
@@ -277,13 +273,13 @@ rec {
       ((buildRustCrateForPkgsLedger pkgs).override {
         defaultCrateOverrides = pkgs.defaultCrateOverrides // {
           core = attrs: {
-            src = ledgerPkgs.rustPlatform_1_53.rustLibSrc + "/core";
+            src = ledgerPkgs.rustPlatform_1_61.rustLibSrc + "/core";
             postUnpack = ''
-              cp -r ${ledgerPkgs.rustPlatform_1_53.rustLibSrc}/stdarch $sourceRoot/..
+              cp -r ${ledgerPkgs.rustPlatform_1_61.rustLibSrc}/stdarch $sourceRoot/..
             '';
           };
-          alloc = attrs: { src = ledgerPkgs.rustPlatform_1_53.rustLibSrc + "/alloc"; };
-          rustc-std-workspace-core = attrs: { src = ledgerPkgs.rustPlatform_1_53.rustLibSrc + "/rustc-std-workspace-core"; };
+          alloc = attrs: { src = ledgerPkgs.rustPlatform_1_61.rustLibSrc + "/alloc"; };
+          rustc-std-workspace-core = attrs: { src = ledgerPkgs.rustPlatform_1_61.rustLibSrc + "/rustc-std-workspace-core"; };
         };
       });
   };
