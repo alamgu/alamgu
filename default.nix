@@ -63,6 +63,7 @@ rec {
       lldClangStdenv = self.llvmPackages_12.stdenv.override (old: {
         cc = old.cc.override (old: {
           # Default version of 11 segfaulted
+          # This is needed to get armv6m-unknown-none-eabi-clang to do linking using armv6m-unknown-none-eabi-ld
           inherit (ledgerPkgs.buildPackages.llvmPackages_12) bintools;
         });
       });
