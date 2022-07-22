@@ -60,7 +60,7 @@ rec {
     })
     (self: super: {
       # lldClangStdenv = if self.stdenv.cc.isClang then self.stdenv else self.lowPrio self.llvmPackages_12.stdenv;
-      lldClangStdenv = self.llvmPackages_11.stdenv.override (old: {
+      lldClangStdenv = self.llvmPackages_12.stdenv.override (old: {
         cc = old.cc.override (old: {
           # Default version of 11 segfaulted
           inherit (ledgerPkgs.buildPackages.llvmPackages_12) bintools;
