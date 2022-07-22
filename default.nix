@@ -7,19 +7,14 @@ rec {
   overlays = [
     # (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
     (self: super: {
-      rust_1_53 = pkgs.callPackage ./1_53.nix {
-        nixpkgs_src = self.path;
-        inherit (pkgs.darwin.apple_sdk.frameworks) CoreFoundation Security SystemConfiguration;
-        llvm_12 = pkgs.llvmPackages_12.libllvm;
-      };
-      rustPackages_1_53 = self.rust_1_53.packages.stable;
-      cargo_1_53 = self.rustPackages_1_53.cargo;
-      clippy_1_53 = self.rustPackages_1_53.clippy;
-      rustc_1_53 = self.rustPackages_1_53.rustc;
-      rustPlatform_1_53 = self.rustPackages_1_53.rustPlatform;
+      rustPackages_1_56 = self.rust_1_56.packages.stable;
+      cargo_1_56 = self.rustPackages_1_56.cargo;
+      clippy_1_56 = self.rustPackages_1_56.clippy;
+      rustc_1_56 = self.rustPackages_1_56.rustc;
+      rustPlatform_1_56 = self.rustPackages_1_56.rustPlatform;
     })
     (self: super: {
-      rustcBuilt = self.rustc_1_53.overrideAttrs (attrs: {
+      rustcBuilt = self.rustc_1_56.overrideAttrs (attrs: {
         configureFlags = (builtins.tail attrs.configureFlags) ++ [
           "--release-channel=nightly"
           "--disable-docs"
@@ -35,7 +30,7 @@ rec {
       # TODO upstream this stuff back to nixpkgs after bumping to latest
       # stable.
       stdlibSrc = self.callPackage ./stdlib/src.nix {
-        rustPlatform = self.rustPlatform_1_53;
+        rustPlatform = self.rustPlatform_1_56;
         originalCargoToml = null;
       };
 
@@ -46,7 +41,7 @@ rec {
           self.buildPackages.cmake
         ];
         buildInputs = [
-          self.llvmPackages_12.libllvm
+          self.llvmPackages_13.libllvm
         ];
       };
 
@@ -59,12 +54,11 @@ rec {
       '';
     })
     (self: super: {
-      # lldClangStdenv = if self.stdenv.cc.isClang then self.stdenv else self.lowPrio self.llvmPackages_12.stdenv;
-      lldClangStdenv = self.llvmPackages_12.stdenv.override (old: {
+      lldClangStdenv = self.llvmPackages_13.stdenv.override (old: {
         cc = old.cc.override (old: {
           # Default version of 11 segfaulted
           # This is needed to get armv6m-unknown-none-eabi-clang to do linking using armv6m-unknown-none-eabi-ld
-          inherit (ledgerPkgs.buildPackages.llvmPackages_12) bintools;
+          inherit (ledgerPkgs.buildPackages.llvmPackages_13) bintools;
         });
       });
     })
@@ -164,7 +158,7 @@ rec {
     '';
     cargoVendorDir = "pretend-exists";
     depsBuildBuild = [ ledgerPkgs.buildPackages.stdenv.cc ];
-    inherit (ledgerPkgs.rustPlatform_1_53) rustLibSrc;
+    inherit (ledgerPkgs.rustPlatform_1_56) rustLibSrc;
     nativeBuildInputs = [
       # emu
       # speculos.speculos ledgerPkgs.buildPackages.gdb
@@ -218,13 +212,13 @@ rec {
 
   rustPlatform = pkgs.makeRustPlatform {
     # inherit (binaryRustPackages) cargo rustcSrc;
-    cargo = pkgs.cargo_1_53;
+    cargo = pkgs.cargo_1_56;
     rustc = pkgs.buildPackages.rustcRopi;
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
     # inherit (binaryRustPackages) cargo;
-    cargo = pkgs.cargo_1_53;
+    cargo = pkgs.cargo_1_56;
     rustcSrc = ledgerPkgs.buildPackages.rustcBuilt.src;
     rustc = ledgerPkgs.buildPackages.rustcRopi;
   };
@@ -281,13 +275,13 @@ rec {
       ((buildRustCrateForPkgsLedger pkgs).override {
         defaultCrateOverrides = pkgs.defaultCrateOverrides // {
           core = attrs: {
-            src = ledgerPkgs.rustPlatform_1_53.rustLibSrc + "/core";
+            src = ledgerPkgs.rustPlatform_1_56.rustLibSrc + "/core";
             postUnpack = ''
-              cp -r ${ledgerPkgs.rustPlatform_1_53.rustLibSrc}/stdarch $sourceRoot/..
+              cp -r ${ledgerPkgs.rustPlatform_1_56.rustLibSrc}/stdarch $sourceRoot/..
             '';
           };
-          alloc = attrs: { src = ledgerPkgs.rustPlatform_1_53.rustLibSrc + "/alloc"; };
-          rustc-std-workspace-core = attrs: { src = ledgerPkgs.rustPlatform_1_53.rustLibSrc + "/rustc-std-workspace-core"; };
+          alloc = attrs: { src = ledgerPkgs.rustPlatform_1_56.rustLibSrc + "/alloc"; };
+          rustc-std-workspace-core = attrs: { src = ledgerPkgs.rustPlatform_1_56.rustLibSrc + "/rustc-std-workspace-core"; };
         };
       });
   };
