@@ -5,11 +5,11 @@
 
 rec {
   overlays = [
-    (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
+    # (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
     (self: super: {
       rust_1_53 = pkgs.callPackage ./1_53.nix {
         nixpkgs_src = self.path;
-        inherit (pkgs.darwin.apple_sdk.frameworks) CoreFoundation Security;
+        inherit (pkgs.darwin.apple_sdk.frameworks) CoreFoundation Security SystemConfiguration;
         llvm_12 = pkgs.llvmPackages_12.libllvm;
       };
       rustPackages_1_53 = self.rust_1_53.packages.stable;
@@ -59,7 +59,8 @@ rec {
       '';
     })
     (self: super: {
-      lldClangStdenv = self.clangStdenv.override (old: {
+      # lldClangStdenv = if self.stdenv.cc.isClang then self.stdenv else self.lowPrio self.llvmPackages_12.stdenv;
+      lldClangStdenv = self.llvmPackages_11.stdenv.override (old: {
         cc = old.cc.override (old: {
           # Default version of 11 segfaulted
           inherit (ledgerPkgs.buildPackages.llvmPackages_12) bintools;
@@ -149,7 +150,7 @@ rec {
 
   rustShell = buildRustPackageClang {
     stdenv = ledgerPkgs.lldClangStdenv;
-    name = "rust-app";
+    name = "rustShell";
     src = null;
     # We are just (ab)using buildRustPackage for a shell. When we actually build
     __internal_dontAddSysroot = true;
@@ -165,7 +166,7 @@ rec {
     inherit (ledgerPkgs.rustPlatform_1_53) rustLibSrc;
     nativeBuildInputs = [
       # emu
-      speculos.speculos ledgerPkgs.buildPackages.gdb
+      # speculos.speculos ledgerPkgs.buildPackages.gdb
 
       # loading on real hardware
       cargo-ledger ledgerctl
@@ -203,32 +204,34 @@ rec {
     inherit (platform.rust) rustc cargo;
   };
 
-  binaryRustPackages = pkgs.rustChannelOf {
-    channel = "1.53.0";
-    sha256 = "1p4vxwv28v7qmrblnvp6qv8dgcrj8ka5c7dw2g2cr3vis7xhflaa";
-  };
+  # binaryRustPackages = pkgs.rustChannelOf {
+  #   channel = "1.53.0";
+  #   sha256 = "1p4vxwv28v7qmrblnvp6qv8dgcrj8ka5c7dw2g2cr3vis7xhflaa";
+  # };
 
-  binaryRustc = binaryRustPackages.rust.override {
-    targets = [
-      "thumbv6m-none-eabi"
-    ];
-  };
+  # binaryRustc = binaryRustPackages.rust.override {
+  #   targets = [
+  #     "thumbv6m-none-eabi"
+  #   ];
+  # };
 
   rustPlatform = pkgs.makeRustPlatform {
-    inherit (binaryRustPackages) cargo rustcSrc;
+    # inherit (binaryRustPackages) cargo rustcSrc;
+    cargo = pkgs.cargo_1_53;
     rustc = pkgs.buildPackages.rustcRopi;
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
-    inherit (binaryRustPackages) cargo;
+    # inherit (binaryRustPackages) cargo;
+    cargo = pkgs.cargo_1_53;
     rustcSrc = ledgerPkgs.buildPackages.rustcBuilt.src;
     rustc = ledgerPkgs.buildPackages.rustcRopi;
   };
 
-  binaryLedgerRustPlatform = ledgerPkgs.makeRustPlatform {
-    inherit (binaryRustPackages) cargo rustcSrc;
-    rustc = binaryRustc;
-  };
+  # binaryLedgerRustPlatform = ledgerPkgs.makeRustPlatform {
+  #   inherit (binaryRustPackages) cargo rustcSrc;
+  #   rustc = binaryRustc;
+  # };
 
   ledgerctl = with pkgs.python3Packages; buildPythonPackage {
     pname = "ledgerctl";

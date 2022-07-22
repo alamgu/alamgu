@@ -11,7 +11,7 @@
 
 { stdenv, nixpkgs_src, lib
 , buildPackages
-, newScope, callPackage
+, newScope, callPackage, SystemConfiguration
 , CoreFoundation, Security
 , pkgsBuildTarget, pkgsBuildBuild, pkgsBuildHost
 , makeRustPlatform
@@ -31,6 +31,8 @@ import (nixpkgs_src + "/pkgs/development/compilers/rust/default.nix") {
 
   # For use at runtime
   llvmShared = llvm_12.override { enableSharedLibraries = true; };
+
+  llvmPackagesForBuild = pkgsBuildBuild.llvmPackages_12;
 
   # Note: the version MUST be one version prior to the version we're
   # building
