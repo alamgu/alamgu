@@ -1,8 +1,8 @@
 {
   "owner": "obsidiansystems",
   "repo": "nixpkgs",
-  "branch": "wip/ledger-platform-21.11-z-build-std-hack",
+  "branch": "dn-wip-ledger-nixpkgs-22.05",
   "private": false,
-  "rev": "f3cd1e53822ca6639b34dcd7355aa19aab0ee37a",
-  "sha256": "10xqbfl2g3kxdzyhv6y0yplga7v7iypii93wa3x8si1g5w1akdgi"
+  "rev": "335e39acdc9258c6430e1a2ed46edff93cb7abf1",
+  "sha256": "1yprc1y3jr843jrc6ki79y3psjk10dwqvqh8mmifzs9rvh9wg85x"
 }
