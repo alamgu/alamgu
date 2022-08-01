@@ -57,7 +57,7 @@ rec {
   # Have rustc spit out unstable target config json so we can do a minimum of
   # hard-coding.
   stockThumbTarget = pkgs.runCommand "stock-target.json" {
-    nativeBuildInputs = [ pkgs.buildPackages.rustcBuilt ];
+    nativeBuildInputs = [ pkgs.buildPackages.rustcRopi ];
   } ''
     rustc -Z unstable-options --print target-spec-json --target thumbv6m-none-eabi > $out
   '';
@@ -185,12 +185,17 @@ rec {
 
   rustPlatform = pkgs.makeRustPlatform {
     inherit (pkgs.rustPackages_1_56) cargo;
+    # Go back one stage too far back (`buildPackages.buildPackages` not
+    # `buildPackages`) so we just use native compiler. Since we are building
+    # stdlib from scratch we don't need a "cross compiler" --- rustc itself is
+    # actually always multi-target.
     rustc = pkgs.buildPackages.buildPackages.rustcRopi;
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
     inherit (pkgs.rustPackages_1_56) cargo;
     rustcSrc = ledgerPkgs.buildPackages.rustcBuilt.src;
+    # See above for why `buildPackages` twice.
     rustc = ledgerPkgs.buildPackages.buildPackages.rustcRopi;
   };
 
