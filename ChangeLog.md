@@ -1,3 +1,7 @@
+## Unreleased
+
+* Bump Nixpkgs to 21.11
+
 ## 0.0.0
 
 Initial release
