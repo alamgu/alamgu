@@ -1,6 +1,8 @@
 ## Unreleased
 
-* Bump Nixpkgs to 21.11
+* Bump Nixpkgs: 21.05 -> 21.11
+
+* Bump Rust: 1.53 -> 1.56
 
 ## 0.0.0
 
