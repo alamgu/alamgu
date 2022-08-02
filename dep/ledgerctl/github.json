@@ -1,8 +1,7 @@
 {
-  "owner": "obsidiansystems",
+  "owner": "LedgerHQ",
   "repo": "ledgerctl",
-  "branch": "relax-construct",
   "private": false,
-  "rev": "311967385290addeff8e63d35af23a305e736cc1",
-  "sha256": "0k59waknx7cr01skv6xjk3zd99pg9nwbb2gr8jqd59x53avbnqdz"
+  "rev": "690dccb9c0bb77d2cf62a27bcd4b08d25dc2d2ad",
+  "sha256": "0alnhvqh5xwv082rv90n9yqnnxhmc7ivhyfj45n5pdwd7ms92wa4"
 }

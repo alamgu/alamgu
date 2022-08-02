@@ -66,6 +66,12 @@ rec {
         });
       });
     })
+    (self: super: {
+      protobuf = self.callPackage (pkgsSrc + "/pkgs/development/libraries/protobuf/generic-v3.nix") {
+        version = "3.20.1";
+        sha256 = "sha256-pAMacD0UQetqysZHszu5slPqp0iREtDmHFv1cgcUBJA=";
+      };
+    })
   ];
 
   pkgs = pkgsFunc {
