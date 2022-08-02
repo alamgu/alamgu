@@ -1,3 +1,11 @@
+## Unreleased
+
+- Rename project to Alamgu.
+
+- Switch Nixpkgs to stock 21.05
+
+  All patches have been upstreamed!
+
 ## 0.0.0
 
 Initial release
