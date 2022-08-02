@@ -118,7 +118,7 @@ rec {
       then (import (p + /thunk.nix))
     else p;
 
-  usbtool = import ./usbtool.nix { };
+  usbtool = import ./usbtool.nix { inherit pkgs thunkSource; };
 
   gitignoreNix = import (thunkSource ./dep/gitignore.nix) { inherit lib; };
 
