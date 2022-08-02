@@ -4,7 +4,7 @@
 
 * Bump Rust: 1.53 -> 1.56
 
-## Unreleased
+## 0.1.0
 
 - Removed `rust/`.
 
@@ -13,6 +13,10 @@
    - `rust/ledger-log` -> [`alamgu/ledger-log`](https://github.com/alamgu/ledger-log)
 
    - `rust/prompts-ui` -> [`alamgu/ledger-log`](https://github.com/alamgu/ledger-prompts-ui)
+
+This is not technically a breaking change because these libraries are not used
+in this repo. Downstream `Cargo.toml`s handle versioning separately than the
+Nix infra this exposes.
 
 ## 0.0.1
 
