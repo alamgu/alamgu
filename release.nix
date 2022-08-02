@@ -10,9 +10,7 @@ let
     inherit pkgsSrc;
     localSystem = { system = "x86_64-darwin"; };
   }) [
-    "binaryLedgerRustPlatform"
-    "binaryRustPackages"
-    "binaryRustc"
+    "stableRustPackages"
     "buildRustCrateForPkgsLedger"
     "buildRustCrateForPkgsWrapper"
     "buildRustPackageClang"
