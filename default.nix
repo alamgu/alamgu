@@ -88,9 +88,9 @@ rec {
     config.allowUnsupportedSystem = true;
     crossSystem = {
       isStatic = true;
-      config = "armv6m-unknown-none-eabi";
+      config = "armv8m-unknown-none-eabi";
       gcc = {
-        arch = "armv6s-m";
+        arch = "armv8-m.main";
       };
       rustc = {
         config = "thumbv6m-none-eabi";
@@ -166,7 +166,7 @@ rec {
     inherit (ledgerPkgs.rustPlatform_1_61) rustLibSrc;
     nativeBuildInputs = [
       # emu
-      speculos.speculos ledgerPkgs.buildPackages.gdb
+      speculos.speculos # ledgerPkgs.buildPackages.gdb
 
       # loading on real hardware
       cargo-ledger ledgerctl
