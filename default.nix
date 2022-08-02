@@ -41,7 +41,7 @@ rec {
 
       ropiAllLlvmPass = self.stdenv.mkDerivation {
         name = "LedgerROPI";
-        src = ./llvm-pass;
+        src = thunkSource ./dep/llvm-ledger-ropi;
         nativeBuildInputs = [
           self.buildPackages.cmake
         ];
