@@ -45,6 +45,17 @@ rec {
         ${self.buildPackages.patchelf}/bin/patchelf --add-needed ${self.ropiAllLlvmPass}/lib/libLedgerROPI.so ${self.rustcBuilt}/bin/rustc --output $out/bin/rustc
       '';
     })
+    (self: super: {
+      # Must be Clang 12 until
+      # https://github.com/LedgerHQ/ledger-nanos-sdk/pull/23 we get new
+      # enough SDK for this fix.
+      lldClangStdenv = self.llvmPackages_12.stdenv.override (old: {
+        cc = old.cc.override (old: {
+          # So we get LLD
+          inherit (self.buildPackages.llvmPackages_12) bintools;
+        });
+      });
+    })
   ];
 
   pkgs = pkgsFunc {
@@ -112,7 +123,7 @@ rec {
   crate2nix = import ./dep/crate2nix { inherit pkgs; };
 
   buildRustPackageClang = ledgerRustPlatform.buildRustPackage.override {
-    stdenv = ledgerPkgs.clangStdenv;
+    stdenv = ledgerPkgs.lldClangStdenv;
   };
 
   # TODO once we break up GCC to separate compiler vs runtime like we do with
@@ -129,7 +140,7 @@ rec {
   '';
 
   rustShell = buildRustPackageClang {
-    stdenv = ledgerPkgs.clangStdenv;
+    stdenv = ledgerPkgs.lldClangStdenv;
     name = "rustShell";
     src = null;
     # We are just (ab)using buildRustPackage for a shell. When we actually build
@@ -179,7 +190,7 @@ rec {
     isLedger = (pkgs.stdenv.hostPlatform.rustc.platform.os or "") == "nanos";
     platform = if isLedger then ledgerRustPlatform else rustPlatform;
   in pkgs.buildRustCrate.override rec {
-    stdenv = if isLedger then pkgs.clangStdenv else pkgs.stdenv;
+    stdenv = if isLedger then pkgs.lldClangStdenv else pkgs.stdenv;
     inherit (platform.rust) rustc cargo;
   };
 
