@@ -164,7 +164,8 @@ rec {
       speculos.speculos ledgerPkgs.buildPackages.gdb
 
       # loading on real hardware
-      cargo-ledger ledgerctl
+      cargo-ledger
+      ledgerctl
 
       # just plain useful for rust dev
       stack-sizes
