@@ -90,11 +90,8 @@ rec {
         # We can't filter paths with references in Nix 2.4
         # See https://github.com/NixOS/nix/issues/5410
         src = if (lib.versionOlder builtins.nixVersion "2.4pre20211007")
-          then lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/mw9dvfb6dj44mi65qwg4z2ck8digl4r7-rust-lib-src/alloc; }
-          else /nix/store/mw9dvfb6dj44mi65qwg4z2ck8digl4r7-rust-lib-src/alloc;
-        authors = [
-          "The Rust Project Developers"
-        ];
+          then lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/cn88hh04zmxhwr6dhf19s1kwlm0cc08c-rust-lib-src-armv6m-unknown-none-eabi/alloc; }
+          else /nix/store/cn88hh04zmxhwr6dhf19s1kwlm0cc08c-rust-lib-src-armv6m-unknown-none-eabi/alloc;
         dependencies = [
           {
             name = "compiler_builtins";
@@ -143,11 +140,8 @@ rec {
         # We can't filter paths with references in Nix 2.4
         # See https://github.com/NixOS/nix/issues/5410
         src = if (lib.versionOlder builtins.nixVersion "2.4pre20211007")
-          then lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/mw9dvfb6dj44mi65qwg4z2ck8digl4r7-rust-lib-src/core; }
-          else /nix/store/mw9dvfb6dj44mi65qwg4z2ck8digl4r7-rust-lib-src/core;
-        authors = [
-          "The Rust Project Developers"
-        ];
+          then lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/cn88hh04zmxhwr6dhf19s1kwlm0cc08c-rust-lib-src-armv6m-unknown-none-eabi/core; }
+          else /nix/store/cn88hh04zmxhwr6dhf19s1kwlm0cc08c-rust-lib-src-armv6m-unknown-none-eabi/core;
         features = {
         };
       };
@@ -183,12 +177,9 @@ rec {
         # We can't filter paths with references in Nix 2.4
         # See https://github.com/NixOS/nix/issues/5410
         src = if (lib.versionOlder builtins.nixVersion "2.4pre20211007")
-          then lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/mw9dvfb6dj44mi65qwg4z2ck8digl4r7-rust-lib-src/rustc-std-workspace-core; }
-          else /nix/store/mw9dvfb6dj44mi65qwg4z2ck8digl4r7-rust-lib-src/rustc-std-workspace-core;
+          then lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/cn88hh04zmxhwr6dhf19s1kwlm0cc08c-rust-lib-src-armv6m-unknown-none-eabi/rustc-std-workspace-core; }
+          else /nix/store/cn88hh04zmxhwr6dhf19s1kwlm0cc08c-rust-lib-src-armv6m-unknown-none-eabi/rustc-std-workspace-core;
         libPath = "lib.rs";
-        authors = [
-          "Alex Crichton <alex@alexcrichton.com>"
-        ];
         dependencies = [
           {
             name = "core";
