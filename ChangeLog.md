@@ -1,3 +1,9 @@
+## 0.1.1
+
+- Switch back to upstream `crate2nix`.
+
+  Our PRs improving cross support have been merged.
+
 ## 0.1.0
 
 - Removed `rust/`.
