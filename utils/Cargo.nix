@@ -239,12 +239,12 @@ rec {
         dependencies = [
           {
             name = "hermit-abi";
-            packageId = "hermit-abi 0.1.15";
+            packageId = "hermit-abi 0.1.19";
             target = { target, features }: (target."os" == "hermit");
           }
           {
             name = "libc";
-            packageId = "libc 0.2.73";
+            packageId = "libc 0.2.98";
             usesDefaultFeatures = false;
             target = { target, features }: (target."unix" or false);
           }
@@ -1701,18 +1701,18 @@ rec {
         ];
 
       };
-      "hermit-abi 0.1.15" = rec {
+      "hermit-abi 0.1.19" = rec {
         crateName = "hermit-abi";
-        version = "0.1.15";
+        version = "0.1.19";
         edition = "2018";
-        sha256 = "1ac5bij39rhzs8zngfxi109dh0h3v0jl5ng8595f9yg7nsbd3vix";
+        sha256 = "0cxcm8093nf5fyn114w8vxbrbcyvv91d4015rdnlgfll7cs6gd32";
         authors = [
           "Stefan Lankes"
         ];
         dependencies = [
           {
             name = "libc";
-            packageId = "libc 0.2.73";
+            packageId = "libc 0.2.98";
             usesDefaultFeatures = false;
           }
         ];
@@ -1992,20 +1992,6 @@ rec {
         };
         resolvedDefaultFeatures = [ "default" "std" ];
       };
-      "libc 0.2.73" = rec {
-        crateName = "libc";
-        version = "0.2.73";
-        edition = "2015";
-        sha256 = "1fa20bc68n28zyw1fn0c4dzas845vwkpqdkzlvrlpbrj8zb4nzdx";
-        authors = [
-          "The Rust Project Developers"
-        ];
-        features = {
-          "default" = [ "std" ];
-          "rustc-dep-of-std" = [ "align" "rustc-std-workspace-core" ];
-          "use_std" = [ "std" ];
-        };
-      };
       "libc 0.2.98" = rec {
         crateName = "libc";
         version = "0.2.98";
@@ -2073,6 +2059,7 @@ rec {
           "kv_unstable_std" = [ "std" "kv_unstable" "value-bag/error" ];
           "kv_unstable_sval" = [ "kv_unstable" "value-bag/sval" "sval" ];
         };
+        resolvedDefaultFeatures = [ "std" ];
       };
       "memchr 2.4.0" = rec {
         crateName = "memchr";
@@ -3636,8 +3623,8 @@ rec {
         version = "0.4.0";
         edition = "2018";
         crateBin = [
-          { name = "stack-sizes"; path = "src/bin/stack-sizes.rs"; }
           { name = "cargo-stack-sizes"; path = "src/bin/cargo-stack-sizes.rs"; }
+          { name = "stack-sizes"; path = "src/bin/stack-sizes.rs"; }
         ];
         src = import ../dep/stack-sizes/thunk.nix;
         authors = [
@@ -4452,18 +4439,18 @@ rec {
           {
             name = "winapi-i686-pc-windows-gnu";
             packageId = "winapi-i686-pc-windows-gnu";
-            target = { target, features }: ((let p = stdenv.hostPlatform; in p.rustc.config or p.config) == "i686-pc-windows-gnu");
+            target = { target, features }: (pkgs.rust.lib.toRustTarget stdenv.hostPlatform == "i686-pc-windows-gnu");
           }
           {
             name = "winapi-x86_64-pc-windows-gnu";
             packageId = "winapi-x86_64-pc-windows-gnu";
-            target = { target, features }: ((let p = stdenv.hostPlatform; in p.rustc.config or p.config) == "x86_64-pc-windows-gnu");
+            target = { target, features }: (pkgs.rust.lib.toRustTarget stdenv.hostPlatform == "x86_64-pc-windows-gnu");
           }
         ];
         features = {
           "debug" = [ "impl-debug" ];
         };
-        resolvedDefaultFeatures = [ "consoleapi" "errhandlingapi" "fileapi" "minwinbase" "minwindef" "processenv" "std" "winbase" "wincon" "winerror" "winnt" ];
+        resolvedDefaultFeatures = [ "consoleapi" "errhandlingapi" "fileapi" "handleapi" "impl-default" "ioapiset" "jobapi2" "knownfolders" "lmapibuf" "lmserver" "lmwksta" "minwinbase" "minwindef" "ntdef" "objbase" "processenv" "profileapi" "shlobj" "std" "synchapi" "sysinfoapi" "timezoneapi" "tlhelp32" "winbase" "wincon" "winerror" "winnt" "winsock2" "winuser" "ws2def" "ws2ipdef" "ws2tcpip" ];
       };
       "winapi-build" = rec {
         crateName = "winapi-build";
@@ -4598,13 +4585,12 @@ rec {
     fuchsia = true;
     test = false;
 
-    # This doesn't appear to be officially documented anywhere yet.
-    # See https://github.com/rust-lang-nursery/rust-forge/issues/101.
-    os =
-      if platform.isDarwin
-      then "macos"
-      else platform.parsed.kernel.name;
-    arch = platform.parsed.cpu.name;
+    /* We are choosing an arbitrary rust version to grab `lib` from,
+      which is unfortunate, but `lib` has been version-agnostic the
+      whole time so this is good enough for now.
+    */
+    os = pkgs.rust.lib.toTargetOs platform;
+    arch = pkgs.rust.lib.toTargetArch platform;
     family = "unix";
     env = "gnu";
     endian =
@@ -4873,16 +4859,19 @@ rec {
                 dependencies = crateConfig.buildDependencies or [ ];
               };
             dependenciesWithRenames =
-              lib.filter (d: d ? "rename")
-                (filterEnabledDependencies {
-                  inherit features;
-                  inherit (self.build) target;
-                  dependencies = crateConfig.buildDependencies or [ ];
-                } ++ filterEnabledDependencies {
+              let
+                buildDeps = filterEnabledDependencies {
                   inherit features;
                   inherit (self) target;
                   dependencies = crateConfig.dependencies or [ ] ++ devDependencies;
-                });
+                };
+                hostDeps = filterEnabledDependencies {
+                  inherit features;
+                  inherit (self.build) target;
+                  dependencies = crateConfig.buildDependencies or [ ];
+                };
+              in
+              lib.filter (d: d ? "rename") (hostDeps ++ buildDeps);
             # Crate renames have the form:
             #
             # {
@@ -5133,15 +5122,14 @@ rec {
       dependencies;
 
   /* Returns whether the given feature should enable the given dependency. */
-  doesFeatureEnableDependency = { name, rename ? null, ... }: feature:
+  doesFeatureEnableDependency = dependency: feature:
     let
+      name = dependency.rename or dependency.name;
       prefix = "${name}/";
       len = builtins.stringLength prefix;
       startsWithPrefix = builtins.substring 0 len feature == prefix;
     in
-    (rename == null && feature == name)
-    || (rename != null && rename == feature)
-    || startsWithPrefix;
+    feature == name || startsWithPrefix;
 
   /* Returns the expanded features for the given inputFeatures by applying the
     rules in featureMap.
@@ -5176,7 +5164,9 @@ rec {
             let
               enabled = builtins.any (doesFeatureEnableDependency dependency) features;
             in
-            if (dependency.optional or false) && enabled then [ dependency.name ] else [ ]
+            if (dependency.optional or false) && enabled
+            then [ (dependency.rename or dependency.name) ]
+            else [ ]
         )
         dependencies;
     in
