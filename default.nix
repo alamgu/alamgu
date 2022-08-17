@@ -6,7 +6,10 @@
 rec {
   overlays = [
     (self: super: {
-      rustcBuilt = self.rustPackages_1_61.rustc.overrideAttrs (attrs: {
+      # Alias so we use the same version everywhere
+      alamguRustPackages = self.rustPackages_1_61;
+
+      rustcBuilt = self.alamguRustPackages.rustc.overrideAttrs (attrs: {
         configureFlags = (builtins.tail attrs.configureFlags) ++ [
           "--release-channel=nightly"
           "--disable-docs"
@@ -22,7 +25,7 @@ rec {
       # TODO upstream this stuff back to nixpkgs after bumping to latest
       # stable.
       stdlibSrc = self.callPackage ./stdlib/src.nix {
-        inherit (self.rustPackages_1_61) rustPlatform;
+        inherit (self.alamguRustPackages) rustPlatform;
         originalCargoToml = null;
       };
 
@@ -154,7 +157,7 @@ rec {
     '';
     cargoVendorDir = "pretend-exists";
     depsBuildBuild = [ ledgerPkgs.buildPackages.stdenv.cc ];
-    inherit (ledgerPkgs.rustPackages_1_61.rustPlatform) rustLibSrc;
+    inherit (ledgerPkgs.alamguRustPackages.rustPlatform) rustLibSrc;
     nativeBuildInputs = [
       # emu
       speculos.speculos ledgerPkgs.buildPackages.gdb
@@ -196,7 +199,7 @@ rec {
   };
 
   rustPlatform = pkgs.makeRustPlatform {
-    inherit (pkgs.rustPackages_1_61) cargo;
+    inherit (pkgs.alamguRustPackages) cargo;
     # Go back one stage too far back (`buildPackages.buildPackages` not
     # `buildPackages`) so we just use native compiler. Since we are building
     # stdlib from scratch we don't need a "cross compiler" --- rustc itself is
@@ -205,7 +208,7 @@ rec {
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
-    inherit (pkgs.rustPackages_1_61) cargo;
+    inherit (pkgs.alamguRustPackages) cargo;
     rustcSrc = ledgerPkgs.buildPackages.rustcBuilt.src;
     # See above for why `buildPackages` twice.
     rustc = ledgerPkgs.buildPackages.buildPackages.rustcRopi;
@@ -260,14 +263,14 @@ rec {
       ((buildRustCrateForPkgsLedger pkgs).override {
         defaultCrateOverrides = pkgs.defaultCrateOverrides // {
           core = attrs: {
-            src = ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc + "/core";
+            src = ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc + "/core";
             postUnpack = ''
-              cp -r ${ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc}/stdarch $sourceRoot/..
-              cp -r ${ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc}/portable-simd $sourceRoot/..
+              cp -r ${ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc}/stdarch $sourceRoot/..
+              cp -r ${ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc}/portable-simd $sourceRoot/..
             '';
           };
-          alloc = attrs: { src = ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc + "/alloc"; };
-          rustc-std-workspace-core = attrs: { src = ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc + "/rustc-std-workspace-core"; };
+          alloc = attrs: { src = ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc + "/alloc"; };
+          rustc-std-workspace-core = attrs: { src = ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc + "/rustc-std-workspace-core"; };
         };
       });
   };
