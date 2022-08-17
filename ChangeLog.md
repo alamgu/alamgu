@@ -4,6 +4,12 @@
 
 * Bump Rust: 1.53 -> 1.56
 
+## 0.2.0
+
+- Extend target spec so the OS "family" is "bolos".
+
+  This prepares us for supporting more devices without `cfg` in Rust having to enumarate each of them.
+
 ## 0.1.1
 
 - Switch back to upstream `crate2nix`.
