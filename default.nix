@@ -240,6 +240,8 @@ rec {
         "-C" "embed-bitcode"
         "-C" "lto"
         "-Z" "emit-stack-sizes"
+        # Otherwise we don't run our custom pass
+        "-Z" "new-llvm-pass-manager=no"
         "--emit=link,dep-info,obj"
       ] ++ args.extraRustcOpts or [];
       # separateDebugInfo = true;
@@ -260,6 +262,7 @@ rec {
             src = ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc + "/core";
             postUnpack = ''
               cp -r ${ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc}/stdarch $sourceRoot/..
+              cp -r ${ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc}/portable-simd $sourceRoot/..
             '';
           };
           alloc = attrs: { src = ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc + "/alloc"; };
