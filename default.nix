@@ -98,6 +98,7 @@ rec {
           # evidently wrong!
           atomic-cas = true;
           os = "nanos";
+          target-family = "bolos";
         };
       };
     };
