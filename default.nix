@@ -13,13 +13,12 @@ rec {
         llvm_12 = pkgs.llvmPackages_12.libllvm;
       };
       rustPackages_1_53 = self.rust_1_53.packages.stable;
-      cargo_1_53 = self.rustPackages_1_53.cargo;
-      clippy_1_53 = self.rustPackages_1_53.clippy;
-      rustc_1_53 = self.rustPackages_1_53.rustc;
-      rustPlatform_1_53 = self.rustPackages_1_53.rustPlatform;
+
+      # Alias so we use the same version everywhere
+      alamguRustPackages = self.rustPackages_1_53;
     })
     (self: super: {
-      rustcBuilt = self.rustc_1_53.overrideAttrs (attrs: {
+      rustcBuilt = self.alamguRustPackages.rustc.overrideAttrs (attrs: {
         configureFlags = (builtins.tail attrs.configureFlags) ++ [
           "--release-channel=nightly"
           "--disable-docs"
@@ -35,7 +34,7 @@ rec {
       # TODO upstream this stuff back to nixpkgs after bumping to latest
       # stable.
       stdlibSrc = self.callPackage ./stdlib/src.nix {
-        rustPlatform = self.rustPlatform_1_53;
+        inherit (self.alamguRustPackages) rustPlatform;
         originalCargoToml = null;
       };
 
@@ -62,7 +61,7 @@ rec {
       lldClangStdenv = self.clangStdenv.override (old: {
         cc = old.cc.override (old: {
           # Default version of 11 segfaulted
-          inherit (ledgerPkgs.buildPackages.llvmPackages_12) bintools;
+          inherit (self.buildPackages.llvmPackages_12) bintools;
         });
       });
     })
@@ -78,7 +77,7 @@ rec {
   # Have rustc spit out unstable target config json so we can do a minimum of
   # hard-coding.
   stockThumbTarget = pkgs.runCommand "stock-target.json" {
-    nativeBuildInputs = [ pkgs.buildPackages.rustcBuilt ];
+    nativeBuildInputs = [ pkgs.buildPackages.rustcRopi ];
   } ''
     rustc -Z unstable-options --print target-spec-json --target thumbv6m-none-eabi > $out
   '';
@@ -94,6 +93,8 @@ rec {
       rustc = {
         config = "thumbv6m-none-eabi";
         platform = builtins.fromJSON (builtins.readFile stockThumbTarget) // {
+          is-builtin = false;
+
           # Shoudn't be needed, but what rustc prints out by default is
           # evidently wrong!
           atomic-cas = true;
@@ -150,7 +151,7 @@ rec {
 
   rustShell = buildRustPackageClang {
     stdenv = ledgerPkgs.lldClangStdenv;
-    name = "rust-app";
+    name = "rustShell";
     src = null;
     # We are just (ab)using buildRustPackage for a shell. When we actually build
     __internal_dontAddSysroot = true;
@@ -163,7 +164,7 @@ rec {
     '';
     cargoVendorDir = "pretend-exists";
     depsBuildBuild = [ ledgerPkgs.buildPackages.stdenv.cc ];
-    inherit (ledgerPkgs.rustPlatform_1_53) rustLibSrc;
+    inherit (ledgerPkgs.alamguRustPackages.rustPlatform) rustLibSrc;
     nativeBuildInputs = [
       # emu
       speculos.speculos ledgerPkgs.buildPackages.gdb
@@ -217,13 +218,18 @@ rec {
 
   rustPlatform = pkgs.makeRustPlatform {
     inherit (binaryRustPackages) cargo rustcSrc;
-    rustc = pkgs.buildPackages.rustcRopi;
+    # Go back one stage too far back (`buildPackages.buildPackages` not
+    # `buildPackages`) so we just use native compiler. Since we are building
+    # stdlib from scratch we don't need a "cross compiler" --- rustc itself is
+    # actually always multi-target.
+    rustc = pkgs.buildPackages.buildPackages.rustcRopi;
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
     inherit (binaryRustPackages) cargo;
     rustcSrc = ledgerPkgs.buildPackages.rustcBuilt.src;
-    rustc = ledgerPkgs.buildPackages.rustcRopi;
+    # See above for why `buildPackages` twice.
+    rustc = ledgerPkgs.buildPackages.buildPackages.rustcRopi;
   };
 
   binaryLedgerRustPlatform = ledgerPkgs.makeRustPlatform {
@@ -278,13 +284,13 @@ rec {
       ((buildRustCrateForPkgsLedger pkgs).override {
         defaultCrateOverrides = pkgs.defaultCrateOverrides // {
           core = attrs: {
-            src = ledgerPkgs.rustPlatform_1_53.rustLibSrc + "/core";
+            src = ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc + "/core";
             postUnpack = ''
-              cp -r ${ledgerPkgs.rustPlatform_1_53.rustLibSrc}/stdarch $sourceRoot/..
+              cp -r ${ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc}/stdarch $sourceRoot/..
             '';
           };
-          alloc = attrs: { src = ledgerPkgs.rustPlatform_1_53.rustLibSrc + "/alloc"; };
-          rustc-std-workspace-core = attrs: { src = ledgerPkgs.rustPlatform_1_53.rustLibSrc + "/rustc-std-workspace-core"; };
+          alloc = attrs: { src = ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc + "/alloc"; };
+          rustc-std-workspace-core = attrs: { src = ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc + "/rustc-std-workspace-core"; };
         };
       });
   };

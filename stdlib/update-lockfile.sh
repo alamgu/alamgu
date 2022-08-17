@@ -12,7 +12,7 @@ cd "$tempdir"
 mkdir -p src
 touch src/lib.rs
 
-RUSTC_SRC=$(nix-build "$HERE/.." -A ledgerPkgs.rustPlatform_1_53.rustLibSrc --no-out-link)
+RUSTC_SRC=$(nix-build "$HERE/.." -A ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc --no-out-link)
 
 ln -s $RUSTC_SRC/{core,alloc} ./
 
