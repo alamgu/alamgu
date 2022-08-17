@@ -46,13 +46,13 @@ rec {
       '';
     })
     (self: super: {
-      # Must be Clang 12 until
+      # Must be Clang 11 until
       # https://github.com/LedgerHQ/ledger-nanos-sdk/pull/23 we get new
       # enough SDK for this fix.
-      lldClangStdenv = self.llvmPackages_12.stdenv.override (old: {
+      lldClangStdenv = self.llvmPackages_11.stdenv.override (old: {
         cc = old.cc.override (old: {
           # So we get LLD
-          inherit (self.buildPackages.llvmPackages_12) bintools;
+          inherit (self.buildPackages.llvmPackages_13) bintools;
         });
       });
     })
