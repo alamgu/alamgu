@@ -6,14 +6,7 @@
 rec {
   overlays = [
     (self: super: {
-      rustPackages_1_61 = self.rust_1_61.packages.stable;
-      cargo_1_61 = self.rustPackages_1_61.cargo;
-      clippy_1_61 = self.rustPackages_1_61.clippy;
-      rustc_1_61 = self.rustPackages_1_61.rustc;
-      rustPlatform_1_61 = self.rustPackages_1_61.rustPlatform;
-    })
-    (self: super: {
-      rustcBuilt = self.rustc_1_61.overrideAttrs (attrs: {
+      rustcBuilt = self.rustPackages_1_61.rustc.overrideAttrs (attrs: {
         configureFlags = (builtins.tail attrs.configureFlags) ++ [
           "--release-channel=nightly"
           "--disable-docs"
@@ -29,13 +22,13 @@ rec {
       # TODO upstream this stuff back to nixpkgs after bumping to latest
       # stable.
       stdlibSrc = self.callPackage ./stdlib/src.nix {
-        rustPlatform = self.rustPlatform_1_61;
+        inherit (self.rustPackages_1_61) rustPlatform;
         originalCargoToml = null;
       };
 
       ropiAllLlvmPass = self.stdenv.mkDerivation {
         name = "LedgerROPI";
-        src = ./llvm-pass;
+        src = thunkSource ./dep/llvm-ledger-ropi;
         nativeBuildInputs = [
           self.buildPackages.cmake
         ];
@@ -57,8 +50,8 @@ rec {
       lldClangStdenv = self.llvmPackages_14.stdenv.override (old: {
         cc = old.cc.override (old: {
           # This is needed to get armv6m-unknown-none-eabi-clang to do linking
-          # using armv6m-unknown-none-eabi-ld
-          inherit (ledgerPkgs.buildPackages.llvmPackages_14) bintools;
+          # using armv6m-unknown-none-eabi-l
+          inherit (self.buildPackages.llvmPackages_14) bintools;
         });
       });
     })
@@ -74,7 +67,7 @@ rec {
   # Have rustc spit out unstable target config json so we can do a minimum of
   # hard-coding.
   stockThumbTarget = pkgs.runCommand "stock-target.json" {
-    nativeBuildInputs = [ pkgs.buildPackages.rustcBuilt ];
+    nativeBuildInputs = [ pkgs.buildPackages.rustcRopi ];
   } ''
     rustc -Z unstable-options --print target-spec-json --target thumbv6m-none-eabi > $out
   '';
@@ -90,6 +83,8 @@ rec {
       rustc = {
         config = "thumbv6m-none-eabi";
         platform = builtins.fromJSON (builtins.readFile stockThumbTarget) // {
+          is-builtin = false;
+
           # Shoudn't be needed, but what rustc prints out by default is
           # evidently wrong!
           atomic-cas = true;
@@ -114,7 +109,7 @@ rec {
       then (import (p + /thunk.nix))
     else p;
 
-  usbtool = import ./usbtool.nix { };
+  usbtool = import ./usbtool.nix { inherit pkgs thunkSource; };
 
   gitignoreNix = import (thunkSource ./dep/gitignore.nix) { inherit lib; };
 
@@ -158,7 +153,7 @@ rec {
     '';
     cargoVendorDir = "pretend-exists";
     depsBuildBuild = [ ledgerPkgs.buildPackages.stdenv.cc ];
-    inherit (ledgerPkgs.rustPlatform_1_61) rustLibSrc;
+    inherit (ledgerPkgs.rustPackages_1_61.rustPlatform) rustLibSrc;
     nativeBuildInputs = [
       # emu
       speculos.speculos ledgerPkgs.buildPackages.gdb
@@ -174,12 +169,11 @@ rec {
       # Testing stuff against nodejs modules
       pkgs.nodejs_latest
     ];
-    # buildInputs = [ stableRustPackages.rust-std ];
     verifyCargoDeps = true;
     target = "thumbv6m-none-eabi";
 
     # Cargo hash must be updated when Cargo.lock file changes.
-    cargoSha256 = "1kdg77ijbq0y1cwrivsrnb9mm4y5vlj7hxn39fq1dqlrppr6fdrr";
+    cargoSha261 = "1kdg77ijbq0y1cwrivsrnb9mm4y5vlj7hxn39fq1dqlrppr6fdrr";
 
     # It is more reliable to trick a stable rustc into doing unstable features
     # than use an unstable nightly rustc. Just because we want unstable
@@ -200,17 +194,20 @@ rec {
     inherit (platform.rust) rustc cargo;
   };
 
-  stableRustPackages = pkgs.rust_1_61.packages.stable;
-
   rustPlatform = pkgs.makeRustPlatform {
-    inherit (stableRustPackages) cargo rustcSrc;
-    rustc = pkgs.buildPackages.rustcRopi;
+    inherit (pkgs.rustPackages_1_61) cargo;
+    # Go back one stage too far back (`buildPackages.buildPackages` not
+    # `buildPackages`) so we just use native compiler. Since we are building
+    # stdlib from scratch we don't need a "cross compiler" --- rustc itself is
+    # actually always multi-target.
+    rustc = pkgs.buildPackages.buildPackages.rustcRopi;
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
-    inherit (stableRustPackages) cargo;
+    inherit (pkgs.rustPackages_1_61) cargo;
     rustcSrc = ledgerPkgs.buildPackages.rustcBuilt.src;
-    rustc = ledgerPkgs.buildPackages.rustcRopi;
+    # See above for why `buildPackages` twice.
+    rustc = ledgerPkgs.buildPackages.buildPackages.rustcRopi;
   };
 
   ledgerctl = with pkgs.python3Packages; buildPythonPackage {
@@ -260,13 +257,13 @@ rec {
       ((buildRustCrateForPkgsLedger pkgs).override {
         defaultCrateOverrides = pkgs.defaultCrateOverrides // {
           core = attrs: {
-            src = ledgerPkgs.rustPlatform_1_61.rustLibSrc + "/core";
+            src = ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc + "/core";
             postUnpack = ''
-              cp -r ${ledgerPkgs.rustPlatform_1_61.rustLibSrc}/stdarch $sourceRoot/..
+              cp -r ${ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc}/stdarch $sourceRoot/..
             '';
           };
-          alloc = attrs: { src = ledgerPkgs.rustPlatform_1_61.rustLibSrc + "/alloc"; };
-          rustc-std-workspace-core = attrs: { src = ledgerPkgs.rustPlatform_1_61.rustLibSrc + "/rustc-std-workspace-core"; };
+          alloc = attrs: { src = ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc + "/alloc"; };
+          rustc-std-workspace-core = attrs: { src = ledgerPkgs.rustPackages_1_61.rustPlatform.rustLibSrc + "/rustc-std-workspace-core"; };
         };
       });
   };

@@ -1,5 +1,5 @@
 {
-  "owner": "obsidiansystems",
+  "owner": "nixos",
   "repo": "nixpkgs",
   "branch": "dn-wip-ledger-nixpkgs-22.05",
   "private": false,

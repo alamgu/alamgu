@@ -1,16 +1,8 @@
-{ pkgs ? import ./dep/nixpkgs {} }:
-
-let
-  # TODO: Replace this with `thunkSource` for added safety checking
-  fetchThunk = p:
-    if builtins.pathExists (p + /thunk.nix)
-      then (import (p + /thunk.nix))
-    else p;
-in
+{ pkgs ? import ./dep/nixpkgs {}, thunkSource }:
 
 pkgs.stdenv.mkDerivation {
   name = "usbtool";
-  src = fetchThunk ./dep/v-usb;
+  src = thunkSource ./dep/v-usb;
   preBuild = ''
     cd examples/usbtool
     ./make-files.sh
