@@ -1,8 +1,8 @@
 {
   "owner": "nixos",
   "repo": "nixpkgs",
-  "branch": "dn-wip-ledger-nixpkgs-22.05",
+  "branch": "release-22.05",
   "private": false,
-  "rev": "335e39acdc9258c6430e1a2ed46edff93cb7abf1",
-  "sha256": "1yprc1y3jr843jrc6ki79y3psjk10dwqvqh8mmifzs9rvh9wg85x"
+  "rev": "462d76cc7b6f557bdf61bf1df2d6e3eba42a742d",
+  "sha256": "18b28nd9h8fc1vmsaz86md1iasf97z58axfabcj12c906l8zsd7x"
 }
