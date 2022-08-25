@@ -4,6 +4,12 @@
 
 * Bump Rust: 1.56 -> 1.61
 
+* Suppport package sets for all three Ledger devices:
+
+  * Nano S
+  * Nano X
+  * Nano S+
+
 ## Unreleased
 
 * Bump Nixpkgs: 21.05 -> 21.11
