@@ -177,6 +177,10 @@ rec {
 
   crate2nix = import ./dep/crate2nix { inherit pkgs; };
 
+  crate2nix-tools = import (import ./dep/crate2nix/thunk.nix + "/tools.nix") {
+    inherit pkgs;
+  };
+
   rustPlatform = pkgs.makeRustPlatform {
     inherit (pkgs.alamguRustPackages) cargo;
     # Go back one stage too far back (`buildPackages.buildPackages` not
@@ -208,7 +212,8 @@ rec {
     inherit pkgs;
   }).package;
 
-  utils = import ./utils/Cargo.nix { inherit pkgs; };
+  inherit (import ./utils.nix { inherit pkgs crate2nix-tools; })
+    utils-srcs utils-nix utils;
 
   cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
 
