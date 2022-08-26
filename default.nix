@@ -126,6 +126,10 @@ rec {
 
   crate2nix = import ./dep/crate2nix { inherit pkgs; };
 
+  crate2nix-tools = import (import ./dep/crate2nix/thunk.nix + "/tools.nix") {
+    inherit pkgs;
+  };
+
   buildRustPackageClang = ledgerRustPlatform.buildRustPackage.override {
     stdenv = ledgerPkgs.lldClangStdenv;
   };
@@ -284,7 +288,8 @@ rec {
 
   ledgerStdlibCI = ledgerStdlib.rootCrate.build;
 
-  utils = import ./utils/Cargo.nix { inherit pkgs; };
+  inherit (import ./utils.nix { inherit pkgs crate2nix-tools; })
+    utils-srcs utils-nix utils;
 
   cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
 
