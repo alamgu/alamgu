@@ -1,8 +1,8 @@
 {
-  "owner": "kolloch",
+  "owner": "obsidiansystems",
   "repo": "crate2nix",
-  "branch": "master",
+  "branch": "target-family",
   "private": false,
-  "rev": "283eaa6d99d7f4df92ddcfb09a1fd075a224fe32",
-  "sha256": "1pf70xqw3wksw4714jd1hradvyxyd132aqqhiy2jbcngf73y3f0w"
+  "rev": "2e7b3adb5f8ea90070b0592ed2e6bdafd6dda36b",
+  "sha256": "1psnbdah94n9k3w098jdjmr8yrmh3i65wpxdixql9i4jzzdz5gdh"
 }
