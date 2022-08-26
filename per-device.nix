@@ -4,6 +4,7 @@
 , ledgerPkgs
 
 , rustPlatform
+, crate2nix-tools
 
 , cargo-ledger
 , cargo-watch
@@ -115,7 +116,19 @@ rec {
       dontStrip = isLedger;
     });
 
-  ledgerStdlib = import ./stdlib/Cargo.nix {
+  ledgerStdlib-nix = (crate2nix-tools.generatedCargoNix {
+    name = "stdlib";
+    src = ledgerPkgs.stdlibSrc;
+  }).overrideAttrs (old: {
+    buildPhase = old.buildPhase + ''
+      sed -E -i $out/crate/Cargo-generated.nix -e \
+        's_(/?\.\./?)*(${builtins.storeDir})_\2_'
+    '';
+  });
+
+  ledgerStdlib = ledgerPkgs.callPackage ledgerStdlib-nix {
+    # Hack to avoid a `.override` that doesn't work.
+    defaultCrateOverrides = ledgerPkgs.defaultCrateOverrides;
     pkgs = ledgerPkgs;
     buildRustCrateForPkgs = pkgs: buildRustCrateForPkgsWrapper
       pkgs

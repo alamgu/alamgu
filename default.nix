@@ -83,6 +83,7 @@ rec {
       inherit
         pkgs
         rustPlatform
+        crate2nix-tools
         cargo-ledger
         cargo-watch
         ledgerctl
