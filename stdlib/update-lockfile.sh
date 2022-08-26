@@ -12,7 +12,7 @@ cd "$tempdir"
 mkdir -p src
 touch src/lib.rs
 
-RUSTC_SRC=$(nix-build "$HERE/.." -A ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc --no-out-link)
+RUSTC_SRC=$(nix-build "$HERE/.." -A pkgs.alamguRustPackages.rustPlatform.rustLibSrc --no-out-link)
 
 ln -s $RUSTC_SRC/{core,alloc} ./
 
@@ -20,7 +20,7 @@ export RUSTC_SRC
 python3 "$HERE/cargo.py"
 
 export RUSTC_BOOTSTRAP=1
-cargo generate-lockfile
+cargo generate-lockfile --offline
 
 cp Cargo.lock "$HERE"
 

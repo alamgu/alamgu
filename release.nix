@@ -29,6 +29,7 @@ let
     #"ledgerPkgs"
     "ledgerRustPlatform"
     "ledgerStdlib"
+    "ledgerStdlib-nix"
     "ledgerStdlibCI"
     #"ledgerctl"
     #"lib"

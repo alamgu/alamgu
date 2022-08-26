@@ -258,8 +258,20 @@ rec {
     inherit pkgs;
   }).package;
 
-  ledgerStdlib = import ./stdlib/Cargo.nix {
-    pkgs = ledgerPkgs;
+
+  ledgerStdlib-nix = (crate2nix-tools.generatedCargoNix {
+    name = "stdlib";
+    src = ledgerPkgs.stdlibSrc;
+  }).overrideAttrs (old: {
+    buildPhase = old.buildPhase + ''
+      sed -E -i $out/crate/Cargo-generated.nix -e \
+        's_(/?\.\./?)*(${builtins.storeDir})_\2_'
+    '';
+  });
+
+  ledgerStdlib = ledgerPkgs.callPackage ledgerStdlib-nix {
+    # Hack to avoid a `.override` that doesn't work.
+    defaultCrateOverrides = ledgerPkgs.defaultCrateOverrides;
     buildRustCrateForPkgs = pkgs: buildRustCrateForPkgsWrapper
       pkgs
       ((buildRustCrateForPkgsLedger pkgs).override {
