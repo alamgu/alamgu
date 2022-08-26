@@ -1,8 +1,0 @@
-{
-  "sources": {
-    "nixpkgs-sysroot-stub-crate": {
-      "type": "Nix",
-      "import": "./src-for-crate2nix-nixpkgs-sysroot-stub-crate.nix"
-    }
-  }
-}
