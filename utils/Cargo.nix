@@ -170,7 +170,7 @@ rec {
           {
             name = "winapi";
             packageId = "winapi 0.3.9";
-            target = { target, features }: (target."os" == "windows");
+            target = { target, features }: ("windows" == target."os");
             features = [ "errhandlingapi" "consoleapi" "processenv" ];
           }
         ];
@@ -190,7 +190,7 @@ rec {
           {
             name = "winapi";
             packageId = "winapi 0.3.9";
-            target = { target, features }: (target."os" == "windows");
+            target = { target, features }: ("windows" == target."os");
             features = [ "consoleapi" "errhandlingapi" "fileapi" "handleapi" "processenv" ];
           }
         ];
@@ -251,7 +251,7 @@ rec {
           {
             name = "hermit-abi";
             packageId = "hermit-abi";
-            target = { target, features }: (target."os" == "hermit");
+            target = { target, features }: ("hermit" == target."os");
           }
           {
             name = "libc";
@@ -444,7 +444,11 @@ rec {
         version = "1.0.0";
         edition = "2018";
         crateBin = [
-          { name = "cargo-ledger"; path = "src/main.rs"; }
+          {
+            name = "cargo-ledger";
+            path = "src/main.rs";
+            requiredFeatures = [ ];
+          }
         ];
         src = import ../dep/cargo-ledger/thunk.nix;
         authors = [
@@ -524,7 +528,11 @@ rec {
         version = "7.8.1";
         edition = "2018";
         crateBin = [
-          { name = "cargo-watch"; path = "src/main.rs"; }
+          {
+            name = "cargo-watch";
+            path = "src/main.rs";
+            requiredFeatures = [ ];
+          }
         ];
         src = import ../dep/cargo-watch/thunk.nix;
         authors = [
@@ -1265,7 +1273,7 @@ rec {
             name = "redox_users";
             packageId = "redox_users";
             usesDefaultFeatures = false;
-            target = { target, features }: (target."os" == "redox");
+            target = { target, features }: ("redox" == target."os");
           }
           {
             name = "winapi";
@@ -1407,7 +1415,7 @@ rec {
           {
             name = "redox_syscall";
             packageId = "redox_syscall 0.2.9";
-            target = { target, features }: (target."os" == "redox");
+            target = { target, features }: ("redox" == target."os");
           }
           {
             name = "winapi";
@@ -1439,7 +1447,7 @@ rec {
           {
             name = "redox_syscall";
             packageId = "redox_syscall 0.2.10";
-            target = { target, features }: (target."os" == "redox");
+            target = { target, features }: ("redox" == target."os");
           }
           {
             name = "winapi";
@@ -1576,7 +1584,7 @@ rec {
           {
             name = "wasi";
             packageId = "wasi 0.9.0+wasi-snapshot-preview1";
-            target = { target, features }: (target."os" == "wasi");
+            target = { target, features }: ("wasi" == target."os");
           }
         ];
         features = {
@@ -1614,7 +1622,7 @@ rec {
           {
             name = "wasi";
             packageId = "wasi 0.10.2+wasi-snapshot-preview1";
-            target = { target, features }: (target."os" == "wasi");
+            target = { target, features }: ("wasi" == target."os");
           }
         ];
         features = {
@@ -2266,12 +2274,12 @@ rec {
           {
             name = "fuchsia-zircon";
             packageId = "fuchsia-zircon";
-            target = { target, features }: (target."os" == "fuchsia");
+            target = { target, features }: ("fuchsia" == target."os");
           }
           {
             name = "fuchsia-zircon-sys";
             packageId = "fuchsia-zircon-sys";
-            target = { target, features }: (target."os" == "fuchsia");
+            target = { target, features }: ("fuchsia" == target."os");
           }
           {
             name = "iovec";
@@ -2389,7 +2397,7 @@ rec {
           {
             name = "libc";
             packageId = "libc 0.2.98";
-            target = { target, features }: ((target."os" == "redox") || (target."unix" or false) || (target."os" == "wasi"));
+            target = { target, features }: (("redox" == target."os") || (target."unix" or false) || ("wasi" == target."os"));
           }
           {
             name = "winapi";
@@ -2430,7 +2438,7 @@ rec {
           {
             name = "cc";
             packageId = "cc 1.0.69";
-            target = {target, features}: (target."os" == "dragonfly");
+            target = {target, features}: ("dragonfly" == target."os");
           }
         ];
 
@@ -2504,18 +2512,18 @@ rec {
           {
             name = "fsevent";
             packageId = "fsevent";
-            target = { target, features }: (target."os" == "macos");
+            target = { target, features }: ("macos" == target."os");
           }
           {
             name = "fsevent-sys";
             packageId = "fsevent-sys";
-            target = { target, features }: (target."os" == "macos");
+            target = { target, features }: ("macos" == target."os");
           }
           {
             name = "inotify";
             packageId = "inotify";
             usesDefaultFeatures = false;
-            target = { target, features }: (target."os" == "linux");
+            target = { target, features }: ("linux" == target."os");
           }
           {
             name = "libc";
@@ -2524,12 +2532,12 @@ rec {
           {
             name = "mio";
             packageId = "mio";
-            target = { target, features }: (target."os" == "linux");
+            target = { target, features }: ("linux" == target."os");
           }
           {
             name = "mio-extras";
             packageId = "mio-extras";
-            target = { target, features }: (target."os" == "linux");
+            target = { target, features }: ("linux" == target."os");
           }
           {
             name = "walkdir";
@@ -3048,7 +3056,7 @@ rec {
             name = "rand_chacha";
             packageId = "rand_chacha";
             usesDefaultFeatures = false;
-            target = { target, features }: (!(target."os" == "emscripten"));
+            target = { target, features }: (!("emscripten" == target."os"));
           }
           {
             name = "rand_core";
@@ -3057,7 +3065,7 @@ rec {
           {
             name = "rand_hc";
             packageId = "rand_hc";
-            target = { target, features }: (target."os" == "emscripten");
+            target = { target, features }: ("emscripten" == target."os");
           }
           {
             name = "rand_pcg";
@@ -3783,8 +3791,16 @@ rec {
         version = "0.4.0";
         edition = "2018";
         crateBin = [
-          { name = "cargo-stack-sizes"; path = "src/bin/cargo-stack-sizes.rs"; }
-          { name = "stack-sizes"; path = "src/bin/stack-sizes.rs"; }
+          {
+            name = "cargo-stack-sizes";
+            path = "src/bin/cargo-stack-sizes.rs";
+            requiredFeatures = [ "tools" ];
+          }
+          {
+            name = "stack-sizes";
+            path = "src/bin/stack-sizes.rs";
+            requiredFeatures = [ "tools" ];
+          }
         ];
         src = import ../dep/stack-sizes/thunk.nix;
         authors = [
@@ -4749,7 +4765,20 @@ rec {
     */
     os = pkgs.rust.lib.toTargetOs platform;
     arch = pkgs.rust.lib.toTargetArch platform;
-    family = "unix";
+    family =
+      if platform ? rustc.platform.target-family
+      then
+        (
+          /* Since https://github.com/rust-lang/rust/pull/84072
+             `target-family` is a list instead of single value.
+           */
+          let
+            f = platform.rustc.platform.target-family;
+          in
+          if builtins.isList f then f else [ f ]
+        )
+      else lib.optional platform.isUnix "unix"
+        ++ lib.optional platform.isWindows "windows";
     env = "gnu";
     endian =
       if platform.parsed.cpu.significantByte.name == "littleEndian"

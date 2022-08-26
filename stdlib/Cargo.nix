@@ -90,8 +90,8 @@ rec {
         # We can't filter paths with references in Nix 2.4
         # See https://github.com/NixOS/nix/issues/5410
         src = if (lib.versionOlder builtins.nixVersion "2.4pre20211007")
-          then lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/drmwjpkiki8cl7gw9875xp4pcjjs7nbv-rust-lib-src/alloc; }
-          else /nix/store/drmwjpkiki8cl7gw9875xp4pcjjs7nbv-rust-lib-src/alloc;
+          then lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/db0yrwzyir3d789qlm88l9sd9s1xc33i-rust-lib-src/alloc; }
+          else /nix/store/db0yrwzyir3d789qlm88l9sd9s1xc33i-rust-lib-src/alloc;
         dependencies = [
           {
             name = "compiler_builtins";
@@ -142,8 +142,8 @@ rec {
         # We can't filter paths with references in Nix 2.4
         # See https://github.com/NixOS/nix/issues/5410
         src = if (lib.versionOlder builtins.nixVersion "2.4pre20211007")
-          then lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/drmwjpkiki8cl7gw9875xp4pcjjs7nbv-rust-lib-src/core; }
-          else /nix/store/drmwjpkiki8cl7gw9875xp4pcjjs7nbv-rust-lib-src/core;
+          then lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/db0yrwzyir3d789qlm88l9sd9s1xc33i-rust-lib-src/core; }
+          else /nix/store/db0yrwzyir3d789qlm88l9sd9s1xc33i-rust-lib-src/core;
         features = {
         };
       };
@@ -179,8 +179,8 @@ rec {
         # We can't filter paths with references in Nix 2.4
         # See https://github.com/NixOS/nix/issues/5410
         src = if (lib.versionOlder builtins.nixVersion "2.4pre20211007")
-          then lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/drmwjpkiki8cl7gw9875xp4pcjjs7nbv-rust-lib-src/rustc-std-workspace-core; }
-          else /nix/store/drmwjpkiki8cl7gw9875xp4pcjjs7nbv-rust-lib-src/rustc-std-workspace-core;
+          then lib.cleanSourceWith { filter = sourceFilter;  src = /nix/store/db0yrwzyir3d789qlm88l9sd9s1xc33i-rust-lib-src/rustc-std-workspace-core; }
+          else /nix/store/db0yrwzyir3d789qlm88l9sd9s1xc33i-rust-lib-src/rustc-std-workspace-core;
         libPath = "lib.rs";
         dependencies = [
           {
@@ -211,7 +211,20 @@ rec {
     */
     os = pkgs.rust.lib.toTargetOs platform;
     arch = pkgs.rust.lib.toTargetArch platform;
-    family = "unix";
+    family =
+      if platform ? rustc.platform.target-family
+      then
+        (
+          /* Since https://github.com/rust-lang/rust/pull/84072
+             `target-family` is a list instead of single value.
+           */
+          let
+            f = platform.rustc.platform.target-family;
+          in
+          if builtins.isList f then f else [ f ]
+        )
+      else lib.optional platform.isUnix "unix"
+        ++ lib.optional platform.isWindows "windows";
     env = "gnu";
     endian =
       if platform.parsed.cpu.significantByte.name == "littleEndian"
