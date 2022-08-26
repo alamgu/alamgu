@@ -42,6 +42,7 @@ let
     "thunkSource"
     "usbtool"
     "utils"
+    "utils-nix"
   ];
 in {
   inherit x86_64-linux x86_64-darwin;
