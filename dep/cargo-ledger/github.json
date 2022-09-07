@@ -1,7 +1,8 @@
 {
   "owner": "ledgerhq",
   "repo": "cargo-ledger",
+  "branch": "master",
   "private": false,
-  "rev": "8d2a23d30a56e8b9f59977e21cbb8787ad0972e8",
-  "sha256": "1qkh193a3r0s62w1v4sj95n1cdi4syh01agdfl388clrv5k2p3nm"
+  "rev": "593a5bd3728990859fcdafbeca93598b0a5f9a89",
+  "sha256": "08xf47d9d3jb02ii4vbv70sj7qjir70scprgjyscf8wrg6fv3i4w"
 }
