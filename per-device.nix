@@ -83,7 +83,7 @@ rec {
 
   # Use right Rust; use Clang.
   buildRustCrateForPkgsLedger = pkgs: let
-    isLedger = (pkgs.stdenv.hostPlatform.rustc.platform.os or "") == "nanos";
+    isLedger = lib.elem "bolos" (pkgs.stdenv.hostPlatform.rustc.platform.target-family or []) ;
     platform = if isLedger then ledgerRustPlatform else rustPlatform;
   in pkgs.buildRustCrate.override rec {
     stdenv = if isLedger then pkgs.lldClangStdenv else pkgs.stdenv;
@@ -98,7 +98,7 @@ rec {
   };
 
   buildRustCrateForPkgsWrapper = pkgs: fun: let
-    isLedger = (pkgs.stdenv.hostPlatform.rustc.platform.os or "") == "nanos";
+    isLedger = lib.elem "bolos" (pkgs.stdenv.hostPlatform.rustc.platform.target-family or []) ;
   in args: fun (args // lib.optionalAttrs isLedger {
       RUSTC_BOOTSTRAP = true;
       extraRustcOpts = [
