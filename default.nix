@@ -214,13 +214,13 @@ rec {
   }).package;
 
   inherit (import ./utils.nix { inherit pkgs crate2nix-tools; })
-    utils-srcs utils-nix utils;
+    utils util-stack-sizes;
 
   cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
 
   cargo-watch = utils.workspaceMembers.cargo-watch.build;
 
-  stack-sizes = utils.workspaceMembers.stack-sizes.build;
+  stack-sizes = util-stack-sizes.workspaceMembers.stack-sizes.build;
 
   # COMPAT
   stockThumbTarget = stockThumbTargets.thumbv6m-none-eabi;
