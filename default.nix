@@ -1,6 +1,8 @@
 { localSystem ? { system = builtins.currentSystem; }
 , pkgsSrc ? import ./dep/nixpkgs/thunk.nix
 , pkgsFunc ? import pkgsSrc
+, extraAppInputs ? []
+, extraNativeAppInputs ? []
 }:
 
 rec {
@@ -176,7 +178,10 @@ rec {
 
       # Testing stuff against nodejs modules
       pkgs.nodejs_latest
-    ];
+
+      pkgs.protobuf
+    ] ++ extraNativeAppInputs;
+    buildInputs = extraAppInputs;
     # buildInputs = [ binaryRustPackages.rust-std ];
     verifyCargoDeps = true;
     target = "thumbv6m-none-eabi";
@@ -188,6 +193,8 @@ rec {
     # than use an unstable nightly rustc. Just because we want unstable
     # langauge features doesn't mean we want a less tested implementation!
     RUSTC_BOOTSTRAP = 1;
+
+    PROTO_INCLUDE = "${pkgs.protobuf}/include";
 
     meta = {
       platforms = lib.platforms.all;
