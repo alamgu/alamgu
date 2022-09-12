@@ -10,9 +10,7 @@ let
     inherit pkgsSrc;
     localSystem = { system = "x86_64-darwin"; };
   }) [
-    "binaryLedgerRustPlatform"
-    "binaryRustPackages"
-    "binaryRustc"
+    "stableRustPackages"
     "buildRustCrateForPkgsLedger"
     "buildRustCrateForPkgsWrapper"
     "buildRustPackageClang"
@@ -50,4 +48,7 @@ in {
 }
   # Hack until CI will traverse contents
   // lib.mapAttrs' (n: lib.nameValuePair ("linux--" + n)) x86_64-linux
+  // lib.mapAttrs' (n: lib.nameValuePair ("linux--nanos--" + n)) x86_64-linux.perDevice.nanos
+  // lib.mapAttrs' (n: lib.nameValuePair ("linux--nanox--" + n)) x86_64-linux.perDevice.nanox
+  // lib.mapAttrs' (n: lib.nameValuePair ("linux--nanosplus--" + n)) x86_64-linux.perDevice.nanosplus
   // lib.mapAttrs' (n: lib.nameValuePair ("macos--" + n)) x86_64-darwin
