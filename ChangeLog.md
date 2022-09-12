@@ -10,7 +10,7 @@
   * Nano X
   * Nano S+
 
-## Unreleased
+## 0.3
 
 * Bump Nixpkgs: 21.05 -> 21.11
 
