@@ -5,19 +5,10 @@
 
 rec {
   overlays = [
-    (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
     (self: super: {
-      rust_1_53 = pkgs.callPackage ./1_53.nix {
-        nixpkgs_src = self.path;
-        inherit (pkgs.darwin.apple_sdk.frameworks) CoreFoundation Security;
-        llvm_12 = pkgs.llvmPackages_12.libllvm;
-      };
-      rustPackages_1_53 = self.rust_1_53.packages.stable;
-
       # Alias so we use the same version everywhere
-      alamguRustPackages = self.rustPackages_1_53;
-    })
-    (self: super: {
+      alamguRustPackages = self.rustPackages_1_56;
+
       rustcBuilt = self.alamguRustPackages.rustc.overrideAttrs (attrs: {
         configureFlags = (builtins.tail attrs.configureFlags) ++ [
           "--release-channel=nightly"
@@ -45,7 +36,7 @@ rec {
           self.buildPackages.cmake
         ];
         buildInputs = [
-          self.llvmPackages_12.libllvm
+          self.llvmPackages_13.libllvm
         ];
       };
 
@@ -58,10 +49,13 @@ rec {
       '';
     })
     (self: super: {
-      lldClangStdenv = self.clangStdenv.override (old: {
+      # Must be Clang 11 until
+      # https://github.com/LedgerHQ/ledger-nanos-sdk/pull/23 we get new
+      # enough SDK for this fix.
+      lldClangStdenv = self.llvmPackages_11.stdenv.override (old: {
         cc = old.cc.override (old: {
-          # Default version of 11 segfaulted
-          inherit (self.buildPackages.llvmPackages_12) bintools;
+          # So we get LLD
+          inherit (self.buildPackages.llvmPackages_13) bintools;
         });
       });
     })
@@ -183,7 +177,6 @@ rec {
       # Testing stuff against nodejs modules
       pkgs.nodejs_latest
     ];
-    # buildInputs = [ binaryRustPackages.rust-std ];
     verifyCargoDeps = true;
     target = "thumbv6m-none-eabi";
 
@@ -209,19 +202,8 @@ rec {
     inherit (platform.rust) rustc cargo;
   };
 
-  binaryRustPackages = pkgs.rustChannelOf {
-    channel = "1.53.0";
-    sha256 = "1p4vxwv28v7qmrblnvp6qv8dgcrj8ka5c7dw2g2cr3vis7xhflaa";
-  };
-
-  binaryRustc = binaryRustPackages.rust.override {
-    targets = [
-      "thumbv6m-none-eabi"
-    ];
-  };
-
   rustPlatform = pkgs.makeRustPlatform {
-    inherit (binaryRustPackages) cargo rustcSrc;
+    inherit (pkgs.alamguRustPackages) cargo;
     # Go back one stage too far back (`buildPackages.buildPackages` not
     # `buildPackages`) so we just use native compiler. Since we are building
     # stdlib from scratch we don't need a "cross compiler" --- rustc itself is
@@ -230,15 +212,10 @@ rec {
   };
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
-    inherit (binaryRustPackages) cargo;
+    inherit (pkgs.alamguRustPackages) cargo;
     rustcSrc = ledgerPkgs.buildPackages.rustcBuilt.src;
     # See above for why `buildPackages` twice.
     rustc = ledgerPkgs.buildPackages.buildPackages.rustcRopi;
-  };
-
-  binaryLedgerRustPlatform = ledgerPkgs.makeRustPlatform {
-    inherit (binaryRustPackages) cargo rustcSrc;
-    rustc = binaryRustc;
   };
 
   ledgerctl = with pkgs.python3Packages; buildPythonPackage {

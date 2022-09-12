@@ -1,3 +1,9 @@
+## 0.3
+
+* Bump Nixpkgs: 21.05 -> 21.11
+
+* Bump Rust: 1.53 -> 1.56
+
 ## 0.2.1
 
 Compute all `Cargo.nix` that are needed on the fly instead of vendoring impurely pre-generated copies.
