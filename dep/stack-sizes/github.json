@@ -1,8 +1,8 @@
 {
   "owner": "obsidiansystems",
   "repo": "stack-sizes",
-  "branch": "add-lock-file",
+  "branch": "wip-use-call-graph-more",
   "private": false,
-  "rev": "11b518d349f56b8f5bac182db638fea2b859ae05",
-  "sha256": "0kjifsq284ac75sxkm707hc5wsrynmhw8lhyas1s910fmhy6x57h"
+  "rev": "e35cdde1d50936ade1ac54707a725643ce51feb0",
+  "sha256": "0rrvvgahddds3yi58wh2bqxzqpl0mc9kmpl2q77v4dab1qkapzy7"
 }
