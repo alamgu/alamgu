@@ -213,7 +213,7 @@ rec {
     inherit pkgs;
   }).package;
 
-  inherit (import ./utils.nix { inherit pkgs crate2nix-tools; })
+  inherit (import ./utils.nix { inherit pkgs crate2nix-tools thunkSource; })
     utils util-stack-sizes;
 
   cargo-ledger = utils.workspaceMembers.cargo-ledger.build;

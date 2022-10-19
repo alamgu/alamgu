@@ -1,4 +1,4 @@
-{ pkgs, crate2nix-tools }:
+{ pkgs, crate2nix-tools, thunkSource }:
 
 rec {
   utils-srcs = pkgs.runCommand "utils-srcs" {} ''
@@ -7,19 +7,19 @@ rec {
     ln -s ${pkgs.runCommand "crate2nix-sources" {} ''
       mkdir -p "$out"
       cd "$out"
-      ln -s "${import ./dep/cargo-watch/thunk.nix}" cargo-watch
-      ln -s "${import ./dep/cargo-ledger/thunk.nix}" cargo-ledger
+      ln -s "${thunkSource ./dep/cargo-watch}" cargo-watch
+      ln -s "${thunkSource ./dep/cargo-ledger}" cargo-ledger
     ''} crate2nix-sources
     cat <<EOF >"crate2nix.json"
       {
         "sources": {
           "cargo-watch": {
             "type": "LocalDirectory",
-            "path": "${import ./dep/cargo-watch/thunk.nix}"
+            "path": "${thunkSource ./dep/cargo-watch}"
           },
           "cargo-ledger": {
             "type": "LocalDirectory",
-            "path": "${import ./dep/cargo-ledger/thunk.nix}"
+            "path": "${thunkSource ./dep/cargo-ledger}"
           }
         }
       }
@@ -42,14 +42,14 @@ rec {
       ln -s ${pkgs.runCommand "crate2nix-sources" {} ''
         mkdir -p "$out"
         cd "$out"
-        ln -s "${import ./dep/stack-sizes/thunk.nix}" stack-sizes
+        ln -s "${thunkSource ./dep/stack-sizes}" stack-sizes
       ''} crate2nix-sources
       cat <<EOF >"crate2nix.json"
         {
           "sources": {
             "stack-sizes": {
               "type": "LocalDirectory",
-              "path": "${import ./dep/stack-sizes/thunk.nix}"
+              "path": "${thunkSource ./dep/stack-sizes}"
             }
           }
         }
