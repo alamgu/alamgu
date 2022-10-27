@@ -1,7 +1,8 @@
 {
   "owner": "alamgu",
   "repo": "llvm-ledger-ropi",
+  "branch": "dn-new-pm-support",
   "private": false,
-  "rev": "a9e7907e6435d785bb3774e2af01923c5648d736",
-  "sha256": "1k56v4wpz9qj60ff9wikh752qya7sd958sjxiq7lw26lnjlfnv4a"
+  "rev": "95d230c06ca8f6ee0c6a632962daa6c839bed328",
+  "sha256": "188f8wrdny5pdsv8r1160vxlb4nsb7lnly07j50xdk2znvca88wv"
 }
