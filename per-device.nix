@@ -97,8 +97,8 @@ rec {
     rustc = ledgerPkgs.buildPackages.buildPackages.rustcRopi;
   };
 
-  buildRustCrateForPkgsWrapper = pkgs: fun: let
-    isLedger = lib.elem "bolos" (pkgs.stdenv.hostPlatform.rustc.platform.target-family or []) ;
+  buildRustCrateForPkgsWrapper = pkgs': fun: let
+    isLedger = lib.elem "bolos" (pkgs'.stdenv.hostPlatform.rustc.platform.target-family or []) ;
   in args: fun (args // lib.optionalAttrs isLedger {
       RUSTC_BOOTSTRAP = true;
       extraRustcOpts = [
@@ -108,8 +108,7 @@ rec {
         "-C" "embed-bitcode"
         "-C" "lto"
         "-Z" "emit-stack-sizes"
-        # Otherwise we don't run our custom pass
-        "-Z" "new-llvm-pass-manager=no"
+        "-Z" "llvm_plugins=${pkgs.ropiAllLlvmPass}/lib/libLedgerROPI.so"
         "--emit=link,dep-info,obj"
       ] ++ args.extraRustcOpts or [];
       # separateDebugInfo = true;

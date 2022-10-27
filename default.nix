@@ -46,7 +46,7 @@ rec {
         ${self.buildPackages.xorg.lndir}/bin/lndir -silent ${self.rustcSrc} $out
         rm $out/bin/rustc
         ln -s ${self.rustcBuilt.llvmPackages.lld}/bin/lld $out/bin/rust-lld
-        ${self.buildPackages.patchelf}/bin/patchelf --add-needed ${self.ropiAllLlvmPass}/lib/libLedgerROPI.so ${self.rustcBuilt}/bin/rustc --output $out/bin/rustc
+        cp ${self.rustcBuilt}/bin/rustc $out/bin/rustc
       '';
     })
     (self: super: {
