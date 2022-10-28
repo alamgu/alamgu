@@ -2,6 +2,10 @@
 
 * Bump `crate2nix` to support newer Nix.
 
+* Use `thunkSource` for util dependencies.
+
+  This makes modifying them easier.
+
 ## 0.4.0
 
 * Bump Nixpkgs: 21.11 -> 22.05
