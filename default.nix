@@ -170,7 +170,7 @@ rec {
     inherit pkgs;
   };
 
-  rustPlatform = pkgs.alamguRustPackages;
+  inherit (pkgs.alamguRustPackages) rustPlatform;
 
   ledgerctl = with pkgs.python3Packages; buildPythonPackage {
     pname = "ledgerctl";
