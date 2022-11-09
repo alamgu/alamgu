@@ -107,7 +107,6 @@ rec {
         "-C" "opt-level=3"
         "-C" "codegen-units=1"
         "-C" "embed-bitcode"
-        "-C" "lto"
         "-Z" "emit-stack-sizes"
         "-Z" "llvm_plugins=${pkgs.ropiAllLlvmPass}/lib/libLedgerROPI.so"
         "--emit=link,dep-info,obj"
