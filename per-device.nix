@@ -106,7 +106,6 @@ rec {
         "-C" "opt-level=3"
         "-C" "codegen-units=1"
         "-C" "embed-bitcode"
-        "-C" "lto"
         "-Z" "emit-stack-sizes"
         # Otherwise we don't run our custom pass
         "-Z" "new-llvm-pass-manager=no"
