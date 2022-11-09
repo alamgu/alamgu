@@ -101,8 +101,8 @@ rec {
     rustc = ledgerPkgs.buildPackages.buildPackages.alamguRustPackages.rustc;
   };
 
-  buildRustCrateForPkgsWrapper = pkgs': fun: let
-    isLedger = lib.elem "bolos" (pkgs'.stdenv.hostPlatform.rustc.platform.target-family or []) ;
+  buildRustCrateForPkgsWrapper = pkgs: fun: let
+    isLedger = lib.elem "bolos" (pkgs.stdenv.hostPlatform.rustc.platform.target-family or []) ;
   in args: fun (args // lib.optionalAttrs isLedger {
       RUSTC_BOOTSTRAP = true;
       extraRustcOpts = [
@@ -111,7 +111,7 @@ rec {
         "-C" "codegen-units=1"
         "-C" "embed-bitcode"
         "-Z" "emit-stack-sizes"
-        "-Z" "llvm_plugins=${pkgs.ropiAllLlvmPass}/lib/libLedgerROPI.so"
+        "-Z" "llvm_plugins=${pkgs.buildPackages.buildPackages.ropiAllLlvmPass}/lib/libLedgerROPI.so"
         "--emit=link,dep-info,obj"
       ] ++ args.extraRustcOpts or [];
       # separateDebugInfo = true;
