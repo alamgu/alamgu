@@ -32,6 +32,7 @@ rec {
   cargoLedgerPreHook = ''
     export CARGO_TARGET_THUMBV6M_NONE_EABI_OBJCOPY=$OBJCOPY
     export CARGO_TARGET_THUMBV6M_NONE_EABI_SIZE=$SIZE
+    export RUSTFLAGS='-Z llvm_plugins=${pkgs.ropiAllLlvmPass}/lib/libLedgerROPI.so'
   '';
 
   rustShell = buildRustPackageClang {
@@ -74,7 +75,7 @@ rec {
     # It is more reliable to trick a stable rustc into doing unstable features
     # than use an unstable nightly rustc. Just because we want unstable
     # langauge features doesn't mean we want a less tested implementation!
-    RUSTC_BOOTSTRAP = 1;
+    RUSTC_BOOTSTRAP = true;
 
     meta = {
       platforms = lib.platforms.all;
@@ -92,9 +93,12 @@ rec {
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
     inherit (pkgs.alamguRustPackages) cargo;
-    rustcSrc = ledgerPkgs.buildPackages.rustcBuilt.src;
-    # See above for why `buildPackages` twice.
-    rustc = ledgerPkgs.buildPackages.buildPackages.rustcRopi;
+    rustcSrc = ledgerPkgs.buildPackages.alamguRustPackages.rustc.src;
+    # Go back one stage too far back (`buildPackages.buildPackages` not
+    # `buildPackages`) so we just use native compiler. Since we are building
+    # stdlib from scratch we don't need a "cross compiler" --- rustc itself is
+    # actually always multi-target.
+    rustc = ledgerPkgs.buildPackages.buildPackages.alamguRustPackages.rustc;
   };
 
   buildRustCrateForPkgsWrapper = pkgs: fun: let
@@ -107,8 +111,7 @@ rec {
         "-C" "codegen-units=1"
         "-C" "embed-bitcode"
         "-Z" "emit-stack-sizes"
-        # Otherwise we don't run our custom pass
-        "-Z" "new-llvm-pass-manager=no"
+        "-Z" "llvm_plugins=${pkgs.buildPackages.buildPackages.ropiAllLlvmPass}/lib/libLedgerROPI.so"
         "--emit=link,dep-info,obj"
       ] ++ args.extraRustcOpts or [];
       # separateDebugInfo = true;
