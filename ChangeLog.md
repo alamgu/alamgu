@@ -1,14 +1,20 @@
 ## Unreleased
 
-* Bump `crate2nix` to support newer Nix.
-
-* Use `thunkSource` for util dependencies.
-
-  This makes modifying them easier.
+* Do not force LTO in the ledger app build, some apps were not working with it.
 
 * Instead of baking in our PIC LLVM pass to rustc, instruct it to load from the SO using the new LLVM pass manager.
 
   This change allows us to simplify things, deprecating `rustcBuild` and `rustcRopi` in package sets
+
+* Bump `crate2nix`
+
+  * Supports newer Nix.
+
+  * Supports improved `target-family` support now upstreamed into Nixpkgs.
+
+* Use `thunkSource` for util dependencies.
+
+  This makes modifying them easier.
 
 ## 0.4.0
 
