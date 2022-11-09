@@ -9,17 +9,9 @@ rec {
       # Alias so we use the same version everywhere
       alamguRustPackages = self.rustPackages_1_61;
 
-      rustcBuilt = self.alamguRustPackages.rustc.overrideAttrs (attrs: {
-        configureFlags = (builtins.tail attrs.configureFlags) ++ [
-          "--release-channel=nightly"
-          "--disable-docs"
-          "--disable-compiler-docs"
-        ];
-      });
-
       rustcSrc = self.runCommand "rustc-source" {} ''
         install -d $out/lib/rustlib/src/rust
-        tar -C $out/lib/rustlib/src/rust -xvf ${self.rustcBuilt.src} --strip-components=1
+        tar -C $out/lib/rustlib/src/rust -xvf ${self.alamguRustPackages.rustc.src} --strip-components=1
       '';
 
       # TODO upstream this stuff back to nixpkgs after bumping to latest
@@ -40,14 +32,9 @@ rec {
         ];
       };
 
-      rustcRopi = self.runCommand "rustc-ledger" {} ''
-        install -d $out/
-        ${self.buildPackages.xorg.lndir}/bin/lndir -silent ${self.rustcBuilt} $out
-        ${self.buildPackages.xorg.lndir}/bin/lndir -silent ${self.rustcSrc} $out
-        rm $out/bin/rustc
-        ln -s ${self.rustcBuilt.llvmPackages.lld}/bin/lld $out/bin/rust-lld
-        cp ${self.rustcBuilt}/bin/rustc $out/bin/rustc
-      '';
+      # Deprecated
+      rustcRopi = self.alamguRustPackages.rustc;
+      rustcBuilt = self.alamguRustPackages.rustc;
     })
     (self: super: {
       lldClangStdenv = self.llvmPackages_14.stdenv.override (old: {
@@ -73,7 +60,8 @@ rec {
     [ "thumbv6m-none-eabi" "thumbv8m.main-none-eabi" ]
     (target-name:
       pkgs.runCommand "stock-target.json" {
-        nativeBuildInputs = [ pkgs.buildPackages.rustcRopi ];
+        nativeBuildInputs = [ pkgs.buildPackages.alamguRustPackages.rustc ];
+        RUSTC_BOOTSTRAP = true;
       } ''
         rustc -Z unstable-options --print target-spec-json --target ${target-name} > $out
       '');
@@ -182,14 +170,7 @@ rec {
     inherit pkgs;
   };
 
-  rustPlatform = pkgs.makeRustPlatform {
-    inherit (pkgs.alamguRustPackages) cargo;
-    # Go back one stage too far back (`buildPackages.buildPackages` not
-    # `buildPackages`) so we just use native compiler. Since we are building
-    # stdlib from scratch we don't need a "cross compiler" --- rustc itself is
-    # actually always multi-target.
-    rustc = pkgs.buildPackages.buildPackages.rustcRopi;
-  };
+  rustPlatform = pkgs.alamguRustPackages;
 
   ledgerctl = with pkgs.python3Packages; buildPythonPackage {
     pname = "ledgerctl";

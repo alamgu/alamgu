@@ -75,7 +75,7 @@ rec {
     # It is more reliable to trick a stable rustc into doing unstable features
     # than use an unstable nightly rustc. Just because we want unstable
     # langauge features doesn't mean we want a less tested implementation!
-    RUSTC_BOOTSTRAP = 1;
+    RUSTC_BOOTSTRAP = true;
 
     meta = {
       platforms = lib.platforms.all;
@@ -93,9 +93,12 @@ rec {
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
     inherit (pkgs.alamguRustPackages) cargo;
-    rustcSrc = ledgerPkgs.buildPackages.rustcBuilt.src;
-    # See above for why `buildPackages` twice.
-    rustc = ledgerPkgs.buildPackages.buildPackages.rustcRopi;
+    rustcSrc = ledgerPkgs.buildPackages.alamguRustPackages.rustc.src;
+    # Go back one stage too far back (`buildPackages.buildPackages` not
+    # `buildPackages`) so we just use native compiler. Since we are building
+    # stdlib from scratch we don't need a "cross compiler" --- rustc itself is
+    # actually always multi-target.
+    rustc = ledgerPkgs.buildPackages.buildPackages.alamguRustPackages.rustc;
   };
 
   buildRustCrateForPkgsWrapper = pkgs': fun: let
