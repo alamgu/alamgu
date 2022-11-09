@@ -6,6 +6,10 @@
 
   This makes modifying them easier.
 
+* Instead of baking in our PIC LLVM pass to rustc, instruct it to load from the SO using the new LLVM pass manager.
+
+  This change allows us to simplify things, deprecating `rustcBuild` and `rustcRopi` in package sets
+
 ## 0.4.0
 
 * Bump Nixpkgs: 21.11 -> 22.05
