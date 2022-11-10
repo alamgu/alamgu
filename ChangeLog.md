@@ -1,4 +1,4 @@
-## Unreleased
+## 0.4.1
 
 * Do not force LTO in the ledger app build, some apps were not working with it.
 
@@ -11,6 +11,8 @@
   * Supports newer Nix.
 
   * Supports improved `target-family` support now upstreamed into Nixpkgs.
+
+* Bump Nixpkgs to newer 22.05
 
 * Use `thunkSource` for util dependencies.
 
