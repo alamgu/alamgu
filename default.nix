@@ -10,8 +10,8 @@ rec {
       alamguRustPackages = self.rustPackages_1_61;
 
       rustcSrc = self.runCommand "rustc-source" {} ''
-        install -d $out/lib/rustlib/src/rust
-        tar -C $out/lib/rustlib/src/rust -xvf ${self.alamguRustPackages.rustc.src} --strip-components=1
+        install -d $out
+        tar -C $out -xvf ${self.alamguRustPackages.rustc.src} --strip-components=1
       '';
 
       # TODO upstream this stuff back to nixpkgs after bumping to latest

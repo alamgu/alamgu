@@ -77,6 +77,9 @@ rec {
     # langauge features doesn't mean we want a less tested implementation!
     RUSTC_BOOTSTRAP = true;
 
+    # https://github.com/rust-lang/cargo/blob/0.61.0/src/cargo/core/compiler/standard_lib.rs#L189-L191
+    __CARGO_TESTS_ONLY_SRC_ROOT = ledgerPkgs.buildPackages.rustcSrc;
+
     meta = {
       platforms = lib.platforms.all;
     };
