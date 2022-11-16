@@ -104,9 +104,13 @@ rec {
     rustc = ledgerPkgs.buildPackages.buildPackages.alamguRustPackages.rustc;
   };
 
-  buildRustCrateForPkgsWrapper = pkgs: fun: let
+  # TODO deprecate this
+  buildRustCrateForPkgsWrapper = pkgs: fun: args:
+    fun (extraArgsForAllCrates pkgs args);
+
+  extraArgsForAllCrates = pkgs: let
     isLedger = lib.elem "bolos" (pkgs.stdenv.hostPlatform.rustc.platform.target-family or []) ;
-  in args: fun (args // lib.optionalAttrs isLedger {
+  in args: args // lib.optionalAttrs isLedger {
       RUSTC_BOOTSTRAP = true;
       extraRustcOpts = [
         "-C" "passes=ledger-ropi"
@@ -119,7 +123,7 @@ rec {
       ] ++ args.extraRustcOpts or [];
       # separateDebugInfo = true;
       dontStrip = isLedger;
-    });
+    };
 
   ledgerStdlib-nix = (crate2nix-tools.generatedCargoNix {
     name = "stdlib";
