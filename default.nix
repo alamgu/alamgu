@@ -72,6 +72,7 @@ rec {
         pkgs
         rustPlatform
         crate2nix-tools
+        alamguLib
         cargo-ledger
         cargo-watch
         ledgerctl
@@ -171,6 +172,8 @@ rec {
   };
 
   inherit (pkgs.alamguRustPackages) rustPlatform;
+
+  alamguLib = import ./lib { inherit lib; };
 
   ledgerctl = with pkgs.python3Packages; buildPythonPackage {
     pname = "ledgerctl";

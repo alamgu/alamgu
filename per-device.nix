@@ -5,6 +5,7 @@
 
 , rustPlatform
 , crate2nix-tools
+, alamguLib
 
 , cargo-ledger
 , cargo-watch
@@ -88,7 +89,7 @@ rec {
 
   # Use right Rust; use Clang.
   buildRustCrateForPkgsLedger = pkgs: let
-    isLedger = lib.elem "bolos" (pkgs.stdenv.hostPlatform.rustc.platform.target-family or []) ;
+    isLedger = alamguLib.platformIsBolos pkgs.stdenv.hostPlatform;
     platform = if isLedger then ledgerRustPlatform else rustPlatform;
   in pkgs.buildRustCrate.override rec {
     stdenv = if isLedger then pkgs.lldClangStdenv else pkgs.stdenv;
@@ -107,24 +108,7 @@ rec {
 
   # TODO deprecate this
   buildRustCrateForPkgsWrapper = pkgs: fun: args:
-    fun (extraArgsForAllCrates pkgs args);
-
-  extraArgsForAllCrates = pkgs: let
-    isLedger = lib.elem "bolos" (pkgs.stdenv.hostPlatform.rustc.platform.target-family or []) ;
-  in args: args // lib.optionalAttrs isLedger {
-      RUSTC_BOOTSTRAP = true;
-      extraRustcOpts = [
-        "-C" "passes=ledger-ropi"
-        "-C" "opt-level=3"
-        "-C" "codegen-units=1"
-        "-C" "embed-bitcode"
-        "-Z" "emit-stack-sizes"
-        "-Z" "llvm_plugins=${pkgs.buildPackages.buildPackages.ropiAllLlvmPass}/lib/libLedgerROPI.so"
-        "--emit=link,dep-info,obj"
-      ] ++ args.extraRustcOpts or [];
-      # separateDebugInfo = true;
-      dontStrip = isLedger;
-    };
+    fun (alamguLib.extraArgsForAllCrates pkgs args);
 
   ledgerStdlib-nix = (crate2nix-tools.generatedCargoNix {
     name = "stdlib";
@@ -140,9 +124,8 @@ rec {
     # Hack to avoid a `.override` that doesn't work.
     defaultCrateOverrides = ledgerPkgs.defaultCrateOverrides;
     pkgs = ledgerPkgs;
-    buildRustCrateForPkgs = pkgs: buildRustCrateForPkgsWrapper
-      pkgs
-      ((buildRustCrateForPkgsLedger pkgs).override {
+    buildRustCrateForPkgs = alamguLib.combineWrappers [
+      (pkgs: (buildRustCrateForPkgsLedger pkgs).override {
         defaultCrateOverrides = pkgs.defaultCrateOverrides // {
           core = attrs: {
             src = ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc + "/core";
@@ -154,7 +137,9 @@ rec {
           alloc = attrs: { src = ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc + "/alloc"; };
           rustc-std-workspace-core = attrs: { src = ledgerPkgs.alamguRustPackages.rustPlatform.rustLibSrc + "/rustc-std-workspace-core"; };
         };
-      });
+      })
+      alamguLib.extraArgsForAllCrates
+    ];
   };
 
   ledgerCompilerBuiltins = lib.findFirst
