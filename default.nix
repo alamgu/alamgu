@@ -21,17 +21,6 @@ rec {
         originalCargoToml = null;
       };
 
-      ropiAllLlvmPass = self.stdenv.mkDerivation {
-        name = "LedgerROPI";
-        src = thunkSource ./dep/llvm-ledger-ropi;
-        nativeBuildInputs = [
-          self.buildPackages.cmake
-        ];
-        buildInputs = [
-          self.llvmPackages_14.libllvm
-        ];
-      };
-
       # Deprecated
       rustcRopi = self.alamguRustPackages.rustc;
       rustcBuilt = self.alamguRustPackages.rustc;
