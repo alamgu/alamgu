@@ -62,6 +62,7 @@ rec {
       # just plain useful for rust dev
       stack-sizes
       cargo-watch
+      pkgs.alamguRustPackages.clippy
 
       # Testing stuff against nodejs modules
       pkgs.nodejs_latest
