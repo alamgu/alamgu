@@ -64,6 +64,7 @@ rec {
       stack-sizes
       cargo-watch
       pkgs.alamguRustPackages.clippy
+      pkgs.alamguRustPackages.rustfmt
 
       # Testing stuff against nodejs modules
       pkgs.nodejs_latest
