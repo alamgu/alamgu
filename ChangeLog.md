@@ -1,3 +1,7 @@
+## 0.4.2
+
+* Add Clippy and rustfmt to the development shell
+
 ## 0.4.1
 
 * Do not force LTO in the ledger app build, some apps were not working with it.
