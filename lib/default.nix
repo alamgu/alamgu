@@ -12,6 +12,7 @@ rec {
   in args: args // lib.optionalAttrs isBolos {
       RUSTC_BOOTSTRAP = true;
       extraRustcOpts = [
+        "-C" "link-args=--emit-relocs"
         "-C" "opt-level=3"
         "-C" "codegen-units=1"
         "-C" "embed-bitcode"
