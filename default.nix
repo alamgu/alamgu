@@ -111,7 +111,7 @@ rec {
           os = "nanox";
           target-family = [ "bolos" ];
 
-          relocation-model = "ropi";
+          relocation-model = "ropi-rwpi";
         };
       };
     };
@@ -131,7 +131,7 @@ rec {
           os = "nanosplus";
           target-family = [ "bolos" ];
 
-          relocation-model = "ropi";
+          relocation-model = "ropi-rwpi";
         };
       };
     };
