@@ -1,3 +1,8 @@
+## Unreleased
+
+* Tidy up how `buildRustCrate` overriding works.
+  There is a new `alamguLib` to assist with this.
+
 ## 0.4.2
 
 * Add Clippy and rustfmt to the development shell
