@@ -1,8 +1,8 @@
 {
-  "owner": "nixos",
+  "owner": "obsidiansystems",
   "repo": "nixpkgs",
-  "branch": "release-22.05",
+  "branch": "buildRustCrate-no-remove-obj-22.05",
   "private": false,
-  "rev": "d0e1dd63a4fc4b0b3ef8bf2885f578e3d9b9b1d9",
-  "sha256": "1pkmbxdgazx6z3hqfsammmsnwiasv3ajagfisvr07d476g0yplhm"
+  "rev": "15747feff3b3c9313409d0a28ee32476ad1c1fca",
+  "sha256": "1s12by2asrqmhzb3v74hq6rwdq9n51aqn37iih5z3wzwklfm1944"
 }

@@ -1,8 +1,8 @@
 {
   "owner": "obsidiansystems",
   "repo": "speculos",
-  "branch": "with-nix-build",
+  "branch": "load-text-segment-nix",
   "private": false,
-  "rev": "57bd2194dad71762a925bf278dc5dd4ebf8bdd94",
-  "sha256": "08nqqgzwbn8sqmlrblnk9yj14mkn6akwwkya1azwqgd2gkr41iaw"
+  "rev": "3cba230619706d01bac544f7c54b2d709c5f0162",
+  "sha256": "1v77465k4mjfx3phgwxn4js4hicd9k501an2ls1nfq14c69gj084"
 }

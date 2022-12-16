@@ -33,7 +33,6 @@ rec {
   cargoLedgerPreHook = ''
     export CARGO_TARGET_THUMBV6M_NONE_EABI_OBJCOPY=$OBJCOPY
     export CARGO_TARGET_THUMBV6M_NONE_EABI_SIZE=$SIZE
-    export RUSTFLAGS='-Z llvm_plugins=${pkgs.ropiAllLlvmPass}/lib/libLedgerROPI.so'
   '';
 
   rustShell = buildRustPackageClang {

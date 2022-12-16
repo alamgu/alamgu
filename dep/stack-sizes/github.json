@@ -1,8 +1,8 @@
 {
   "owner": "obsidiansystems",
   "repo": "stack-sizes",
-  "branch": "add-lock-file",
+  "branch": "canary-check",
   "private": false,
-  "rev": "83a8b230e0baae8a0c3f4920eed9c015142c2986",
-  "sha256": "1vlmzykyvg56yld28dycqc2bg1m89myiq8x4v6v67h5k1wxaz8af"
+  "rev": "b2d9edd99bb9120db93d56d2a056998541d768bd",
+  "sha256": "1syvhfbvr3vyw2ssbmvr89j2jl9hm2vyf723h676icnd4fnd3aaq"
 }
