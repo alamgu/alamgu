@@ -7,7 +7,7 @@ rec {
   overlays = [
     (self: super: {
       # Alias so we use the same version everywhere
-      alamguRustPackages = self.rustPackages_1_61;
+      alamguRustPackages = self.rustPackages_1_64;
 
       rustcSrc = self.runCommand "rustc-source" {} ''
         install -d $out
