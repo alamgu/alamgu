@@ -1,5 +1,9 @@
 ## Unreleased
 
+* Remove the LLVM plugin to insert PIC fix-ups.
+
+  Instead, we have modified the SDK (pinned in downstream projects) to relocate address in memory on app start (as needed, the relocation is persistent).
+
 * Tidy up how `buildRustCrate` overriding works.
   There is a new `alamguLib` to assist with this.
 
