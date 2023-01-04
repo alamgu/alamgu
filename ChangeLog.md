@@ -17,6 +17,10 @@
   Changes from upstream, and also a slight change to the loading to accommodate our more complicated linker script.
   That is https://github.com/LedgerHQ/speculos/pull/327
 
+* Bump `crate2nix`
+
+  Get ready to support newer Nixpkgs.
+
 ## 0.4.2
 
 * Add Clippy and rustfmt to the development shell
