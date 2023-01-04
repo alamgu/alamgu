@@ -37,6 +37,8 @@ let
     "rustShell"
     #"speculos"
     "stack-sizes"
+    "util-stack-sizes"
+    "stack-sizes-nix"
     "stockThumbTarget"
     "thunkSource"
     "usbtool"
