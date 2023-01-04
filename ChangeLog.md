@@ -12,6 +12,11 @@
 
   There is a new `alamguLib` to assist with this.
 
+* Bump speculos slightly
+
+  Changes from upstream, and also a slight change to the loading to accommodate our more complicated linker script.
+  That is https://github.com/LedgerHQ/speculos/pull/327
+
 ## 0.4.2
 
 * Add Clippy and rustfmt to the development shell
