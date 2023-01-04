@@ -73,5 +73,5 @@ rec {
         buildInputs = [pkgs.llvmPackages_14.libllvm pkgs.zlib pkgs.ncurses pkgs.libxml2 pkgs.libffi];
       };
     };
-      };
+  };
 }
