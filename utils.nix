@@ -59,7 +59,7 @@ rec {
 
   util-stack-sizes = pkgs.callPackage stack-sizes-nix {
     inherit pkgs;
-    defaultCrateOverrides = {
+    defaultCrateOverrides = pkgs.defaultCrateOverrides // {
       llvm-sys = attrs: {
         LLVM_SYS_120_FFI_WORKAROUND=1;
         LLVM_SYS_130_FFI_WORKAROUND=1;
