@@ -182,7 +182,7 @@ rec {
     ];
   };
 
-  generic-cli = (import ./node/cli {
+  generic-cli = (import (thunkSource ./dep/alamgu-generic-cli) {
     inherit pkgs;
   }).package;
 
