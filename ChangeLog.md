@@ -25,6 +25,11 @@
 
   Get ready to support newer Nixpkgs.
 
+* Update `cargo-ledger`
+
+  Note that the `package.metadata.nanos` has changed with this.
+  `path` and `curve` are now lists of strings, not strings.
+
 ## 0.4.2
 
 * Add Clippy and rustfmt to the development shell
