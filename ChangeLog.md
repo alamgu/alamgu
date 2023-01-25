@@ -2,7 +2,7 @@
 
 * Bump Nixpkgs: 22.05 -> 22.11
 
-## Unreleased
+## 0.5
 
 * Remove the LLVM plugin to insert PIC fix-ups.
 
