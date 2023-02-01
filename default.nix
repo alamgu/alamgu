@@ -5,19 +5,42 @@
 
 rec {
   overlays = [
-    (self: super: {
+    (self: super: rec {
       # Alias so we use the same version everywhere
-      alamguRustPackages = self.rustPackages_1_61;
+      alamguRustPackages = self.rustPackages_1_67;
+      rustPackages_1_67 = rustPackages_pre // {
+        clippy = rustPackages_pre.clippy-preview;
+      };
+      rustPackages_pre = self.rustChannelOf {
+        channel = "1.67.0";
+        sha256 = "sha256-riZUc+R9V35c/9e8KJUE+8pzpXyl0lRXt3ZkKlxoY0g=";
+      };
+
+      rustc-src = (super.fetchurl {
+        url = "https://github.com/rust-lang/rust/archive/refs/tags/1.67.0.tar.gz";
+        sha256 = "sha256-7o5osRJ71GM7Qpa/VGTCWsIvYFmrDH7JSmv4cRrAlpI=";
+      });
+
+      rustc_1_67 = self.rustPackages_1_67.rust;
+
+      rustPlatform = pkgs.makeRustPlatform {
+        inherit (self.rustPackages_1_67) cargo;
+        #rustc = rustc_1_67;
+        rustc = rustc_1_67.overrideAttrs (drv: { src = rustc-src; });
+      };
+
+
+      # alamguRustPackages = self.rustPackages;
 
       rustcSrc = self.runCommand "rustc-source" {} ''
         install -d $out
-        tar -C $out -xvf ${self.alamguRustPackages.rustc.src} --strip-components=1
+        tar -C $out -xvf ${self.rustc-src} --strip-components=1
       '';
 
       # TODO upstream this stuff back to nixpkgs after bumping to latest
       # stable.
       stdlibSrc = self.callPackage ./stdlib/src.nix {
-        inherit (self.alamguRustPackages) rustPlatform;
+        inherit rustPlatform;
         originalCargoToml = null;
       };
 
@@ -34,6 +57,7 @@ rec {
         });
       });
     })
+    (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
   ];
 
   pkgs = pkgsFunc {
