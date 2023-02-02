@@ -13,8 +13,16 @@ rec {
           channel = "1.67.0";
           sha256 = "sha256-riZUc+R9V35c/9e8KJUE+8pzpXyl0lRXt3ZkKlxoY0g=";
         };
-      in pre // {
-        clippy = pre.clippy-preview;
+        stuff = pre.rust.override {
+          extensions = [
+            "clippy-preview"
+            "rust-src"
+            "rustfmt-preview"
+          ];
+        };
+      in pre // rec {
+        clippy = stuff;
+        rustfmt = stuff;
         rustc = pre.rustc // {
           # Spoof source hiding this is prebuilt compiler
           src = super.fetchurl {
@@ -22,23 +30,21 @@ rec {
             sha256 = "sha256-7o5osRJ71GM7Qpa/VGTCWsIvYFmrDH7JSmv4cRrAlpI=";
           };
         };
+        rustPlatform = pkgs.makeRustPlatform {
+          inherit (pre) cargo;
+          inherit rustc;
+        };
       };
-
-      rustPlatform = pkgs.makeRustPlatform {
-        inherit (self.rustPackages_1_67) cargo rust;
-      };
-
-      # alamguRustPackages = self.rustPackages;
 
       rustcSrc = self.runCommand "rustc-source" {} ''
         install -d $out
-        tar -C $out -xvf ${self.rustc-src} --strip-components=1
+        tar -C $out -xvf ${self.alamguRustPackages.rustc.src} --strip-components=1
       '';
 
       # TODO upstream this stuff back to nixpkgs after bumping to latest
       # stable.
       stdlibSrc = self.callPackage ./stdlib/src.nix {
-        inherit rustPlatform;
+        inherit (self.alamguRustPackages) rustPlatform;
         originalCargoToml = null;
       };
 
