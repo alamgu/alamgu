@@ -5,30 +5,28 @@
 
 rec {
   overlays = [
+    (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
     (self: super: rec {
       # Alias so we use the same version everywhere
-      alamguRustPackages = self.rustPackages_1_67;
-      rustPackages_1_67 = rustPackages_pre // {
-        clippy = rustPackages_pre.clippy-preview;
+      alamguRustPackages = let
+        pre = self.rustChannelOf {
+          channel = "1.67.0";
+          sha256 = "sha256-riZUc+R9V35c/9e8KJUE+8pzpXyl0lRXt3ZkKlxoY0g=";
+        };
+      in pre // {
+        clippy = pre.clippy-preview;
+        rustc = pre.rustc // {
+          # Spoof source hiding this is prebuilt compiler
+          src = super.fetchurl {
+            url = "https://github.com/rust-lang/rust/archive/refs/tags/1.67.0.tar.gz";
+            sha256 = "sha256-7o5osRJ71GM7Qpa/VGTCWsIvYFmrDH7JSmv4cRrAlpI=";
+          };
+        };
       };
-      rustPackages_pre = self.rustChannelOf {
-        channel = "1.67.0";
-        sha256 = "sha256-riZUc+R9V35c/9e8KJUE+8pzpXyl0lRXt3ZkKlxoY0g=";
-      };
-
-      rustc-src = (super.fetchurl {
-        url = "https://github.com/rust-lang/rust/archive/refs/tags/1.67.0.tar.gz";
-        sha256 = "sha256-7o5osRJ71GM7Qpa/VGTCWsIvYFmrDH7JSmv4cRrAlpI=";
-      });
-
-      rustc_1_67 = self.rustPackages_1_67.rust;
 
       rustPlatform = pkgs.makeRustPlatform {
-        inherit (self.rustPackages_1_67) cargo;
-        #rustc = rustc_1_67;
-        rustc = rustc_1_67.overrideAttrs (drv: { src = rustc-src; });
+        inherit (self.rustPackages_1_67) cargo rust;
       };
-
 
       # alamguRustPackages = self.rustPackages;
 
@@ -57,7 +55,6 @@ rec {
         });
       });
     })
-    (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
   ];
 
   pkgs = pkgsFunc {
