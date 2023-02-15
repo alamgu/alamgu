@@ -1,8 +1,8 @@
 {
-  "owner": "obsidiansystems",
+  "owner": "alamgu",
   "repo": "speculos",
-  "branch": "load-text-segment-nix",
+  "branch": "with-nix-build",
   "private": false,
-  "rev": "e3d4480eb3eced4452bc7d035e6daf8e5e7709ca",
-  "sha256": "1p05mxndwffpga53krr2w4z1qbhqz27mwl32iq8jcjyd04bl10h7"
+  "rev": "1592532a464a84e035521ae131fa2271755b44f9",
+  "sha256": "0kkklsxydfiqmkxh37q4q2hdmp67dr1jhqzbhl5i289clq77k974"
 }
