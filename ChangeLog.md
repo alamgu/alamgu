@@ -1,5 +1,9 @@
 ## Unreleased
 
+* Allow using a pre-built Rust compiler
+
+  This will make it easier to use more recent Rust compilers.
+
 * Bump speculos slightly
 
   Changes from upstream. Our slight slight change to the loading was merged.
