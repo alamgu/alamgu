@@ -10,21 +10,22 @@ rec {
       # Alias so we use the same version everywhere
       alamguRustPackages = let
         pre = self.rustChannelOf {
-          channel = "1.67.0";
-          sha256 = "sha256-riZUc+R9V35c/9e8KJUE+8pzpXyl0lRXt3ZkKlxoY0g=";
-        };
-        stuff = pre.rust.override {
-          extensions = [
-            "clippy-preview"
-            "rust-src"
-            "rustfmt-preview"
-          ];
+          channel = "1.67.1";
+          sha256 = "sha256-S4dA7ne2IpFHG+EnjXfogmqwGyDFSRWFnJ8cy4KZr1k=";
         };
       in pre // rec {
-        clippy = stuff;
-        rustfmt = stuff;
+        clippy = pre.rust.override {
+          extensions = [ "clippy-preview" ];
+        };
+        rustfmt = pre.rust.override {
+          extensions = [ "rustfmt-preview" ];
+        };
+        rustc = pre.rust.override {
+          extensions = [ "rust-std" ];
+        };
         rustPlatform = pkgs.makeRustPlatform {
-          inherit (pre) cargo rustc;
+          inherit (pre) cargo;
+          inherit rustc;
         } // {
           # src = pre.rust-src;
           # Hack around bad use of fetchurl
