@@ -11,7 +11,7 @@ stdenv.mkDerivation {
   dontBuild = true;
 
   installPhase = ''
-    export RUSTC_SRC=${rustPlatform.rustLibSrc.override { }}
+    export RUSTC_SRC=${rustPlatform.rustLibSrc}
   ''
   + lib.optionalString (originalCargoToml != null) ''
     export ORIG_CARGO=${originalCargoToml}

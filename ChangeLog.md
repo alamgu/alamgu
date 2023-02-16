@@ -2,6 +2,16 @@
 
 * Bump Nixpkgs: 22.05 -> 22.11
 
+## Unreleased
+
+* Allow using a pre-built Rust compiler
+
+  This will make it easier to use more recent Rust compilers.
+
+* Bump speculos slightly
+
+  Changes from upstream. Our slight slight change to the loading was merged.
+
 ## 0.5
 
 * Remove the LLVM plugin to insert PIC fix-ups.
