@@ -5,53 +5,56 @@
 }:
 
 rec {
-  backendOverlay = {
-    mozilla = (self: super: {
-      alamguRustPackages = let
-        pre = self.rustChannelOf {
-          channel = "1.67.1";
-          sha256 = "sha256-S4dA7ne2IpFHG+EnjXfogmqwGyDFSRWFnJ8cy4KZr1k=";
-        };
-      in pre // rec {
-        backend = "mozilla";
-        clippy = pre.rust.override {
-          extensions = [ "clippy-preview" ];
-        };
-        rustfmt = pre.rust.override {
-          extensions = [ "rustfmt-preview" ];
-        };
-        rustc = pre.rust.override {
-          extensions = [ "rust-std" ];
-        };
-        rustPlatform = pkgs.makeRustPlatform {
-          inherit (pre) cargo;
-          inherit rustc;
-        } // {
-          # src = pre.rust-src;
-          # Hack around bad use of fetchurl
-          # Get rid of symlinks
-          rustLibSrc = let
-            inherit (self.buildPackages.alamguRustPackages.rust-src) paths;
-          in assert builtins.length paths == 1;
-            "${builtins.head paths}/lib/rustlib/src/rust/library";
+  backendOverlays = {
+    mozilla = [
+      (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
+      (self: super: {
+        alamguRustPackages = let
+          pre = self.rustChannelOf {
+            channel = "1.67.1";
+            sha256 = "sha256-S4dA7ne2IpFHG+EnjXfogmqwGyDFSRWFnJ8cy4KZr1k=";
+          };
+        in pre // rec {
+          backend = "mozilla";
+          clippy = pre.rust.override {
+            extensions = [ "clippy-preview" ];
+          };
+          rustfmt = pre.rust.override {
+            extensions = [ "rustfmt-preview" ];
+          };
+          rustc = pre.rust.override {
+            extensions = [ "rust-std" ];
+          };
+          rustPlatform = pkgs.makeRustPlatform {
+            inherit (pre) cargo;
+            inherit rustc;
+          } // {
+            # src = pre.rust-src;
+            # Hack around bad use of fetchurl
+            # Get rid of symlinks
+            rustLibSrc = let
+              inherit (self.buildPackages.alamguRustPackages.rust-src) paths;
+            in assert builtins.length paths == 1;
+              "${builtins.head paths}/lib/rustlib/src/rust/library";
           };
         };
-      });
-    nixpkgs = (self: super: rec {
-      alamguRustPackages = self.rustPackages_1_61 // {
-        backend = "nixpkgs";
-        rust-src = self.runCommand "rustc-source" {} ''
-          install -d $out
-          tar -C $out -xvf ${self.rustPackages_1_61.rustc.src} --strip-components=1
-        '';
-      };
-    });
+      })
+    ];
+    nixpkgs = [
+      (self: super: rec {
+        alamguRustPackages = self.rustPackages_1_61 // {
+          backend = "nixpkgs";
+          rust-src = self.runCommand "rustc-source" {} ''
+            install -d $out
+            tar -C $out -xvf ${self.rustPackages_1_61.rustc.src} --strip-components=1
+          '';
+        };
+      })
+    ];
   };
 
   inherit backend;
-  overlays = [
-    (import "${thunkSource ./dep/nixpkgs-mozilla}/rust-overlay.nix")
-    (backendOverlay."${backend}")
+  overlays = backendOverlays."${backend}" ++ [
     (self: super: rec {
       # TODO upstream this stuff back to nixpkgs after bumping to latest
       # stable.
