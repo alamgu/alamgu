@@ -63,7 +63,7 @@ rec {
       # Deprecated
       rustcRopi = self.alamguRustPackages.rustc;
       rustcBuilt = self.alamguRustPackages.rustc;
-      })
+    })
     (self: super: {
       lldClangStdenv = self.llvmPackages_14.stdenv.override (old: {
         cc = old.cc.override (old: {
