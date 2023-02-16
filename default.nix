@@ -23,23 +23,14 @@ rec {
       in pre // rec {
         clippy = stuff;
         rustfmt = stuff;
-        rustc = pre.rustc // {
-          # Spoof source hiding this is prebuilt compiler
-          src = super.fetchurl {
-            url = "https://github.com/rust-lang/rust/archive/refs/tags/1.67.0.tar.gz";
-            sha256 = "sha256-7o5osRJ71GM7Qpa/VGTCWsIvYFmrDH7JSmv4cRrAlpI=";
-          };
-        };
         rustPlatform = pkgs.makeRustPlatform {
-          inherit (pre) cargo;
-          inherit rustc;
+          inherit (pre) cargo rustc;
+        } // {
+          # src = pre.rust-src;
+          # Hack around bad use of fetchurl
+          rustLibSrc = "${self.buildPackages.alamguRustPackages.rust-src}/lib/rustlib/src/rust/library";
         };
       };
-
-      rustcSrc = self.runCommand "rustc-source" {} ''
-        install -d $out
-        tar -C $out -xvf ${self.alamguRustPackages.rustc.src} --strip-components=1
-      '';
 
       # TODO upstream this stuff back to nixpkgs after bumping to latest
       # stable.

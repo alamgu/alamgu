@@ -80,7 +80,7 @@ rec {
     RUSTC_BOOTSTRAP = true;
 
     # https://github.com/rust-lang/cargo/blob/0.61.0/src/cargo/core/compiler/standard_lib.rs#L189-L191
-    __CARGO_TESTS_ONLY_SRC_ROOT = ledgerPkgs.buildPackages.rustcSrc;
+    __CARGO_TESTS_ONLY_SRC_ROOT = ledgerPkgs.buildPackages.alamguRustPackages.rust-src;
 
     meta = {
       platforms = lib.platforms.all;
@@ -98,7 +98,7 @@ rec {
 
   ledgerRustPlatform = ledgerPkgs.makeRustPlatform {
     inherit (pkgs.alamguRustPackages) cargo;
-    rustcSrc = ledgerPkgs.buildPackages.alamguRustPackages.rustc.src;
+    rustcSrc = ledgerPkgs.buildPackages.alamguRustPackages.rust-src;
     # Go back one stage too far back (`buildPackages.buildPackages` not
     # `buildPackages`) so we just use native compiler. Since we are building
     # stdlib from scratch we don't need a "cross compiler" --- rustc itself is
