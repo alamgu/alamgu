@@ -37,14 +37,14 @@ rec {
           };
         };
       });
-      nixpkgs = (self: super: rec {
-        alamguRustPackages = self.rustPackages_1_61 // {
-          backend = "nixpkgs";
-          rust-src = self.runCommand "rustc-source" {} ''
-            install -d $out
-            tar -C $out -xvf ${self.rustPackages_1_61.rustc.src} --strip-components=1
-          '';
-        };
+    nixpkgs = (self: super: rec {
+      alamguRustPackages = self.rustPackages_1_61 // {
+        backend = "nixpkgs";
+        rust-src = self.runCommand "rustc-source" {} ''
+          install -d $out
+          tar -C $out -xvf ${self.rustPackages_1_61.rustc.src} --strip-components=1
+        '';
+      };
     });
   };
 
