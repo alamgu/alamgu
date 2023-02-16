@@ -1,3 +1,9 @@
+## Unreleased
+
+* Bump speculos slightly
+
+  Changes from upstream. Our slight slight change to the loading was merged.
+
 ## 0.5
 
 * Remove the LLVM plugin to insert PIC fix-ups.
