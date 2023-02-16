@@ -29,7 +29,11 @@ rec {
         } // {
           # src = pre.rust-src;
           # Hack around bad use of fetchurl
-          rustLibSrc = "${self.buildPackages.alamguRustPackages.rust-src}/lib/rustlib/src/rust/library";
+          # Get rid of symlinks
+          rustLibSrc = let
+            inherit (self.buildPackages.alamguRustPackages.rust-src) paths;
+          in assert builtins.length paths == 1;
+            "${builtins.head paths}/lib/rustlib/src/rust/library";
         };
       };
 
