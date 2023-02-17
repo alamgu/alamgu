@@ -147,6 +147,7 @@ rec {
       rustc = rec {
         config = "thumbv6m-none-eabi";
         platform = builtins.removeAttrs (builtins.fromJSON (builtins.readFile stockThumbTargets.${config})) ["features"] // {
+          features = "+atomics-32";
           is-builtin = false;
 
           atomic-cas = false;
