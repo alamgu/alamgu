@@ -3,6 +3,6 @@
   "repo": "nixpkgs",
   "branch": "buildRustCrate-no-remove-obj-22.11",
   "private": false,
-  "rev": "6b07a61e578dafe60f04207e007ebc14d322b88d",
-  "sha256": "0d62bsir07dvp7svdqax7gj2vhjvc3jy49vfv139bkkncj0h0706"
+  "rev": "d118daff579d81a7df4b7a38b04c334074d974a0",
+  "sha256": "1mz61a8ar11k3wq01ndm2ga5zp65gqk4wl61whh4k7ijnayihh4l"
 }
