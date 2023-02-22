@@ -8,6 +8,10 @@
 
   Changes from upstream. Our slight slight change to the loading was merged.
 
+* Bump Alamgu generic CLI
+
+  Same code, just a new more automatic build system.
+
 ## 0.5
 
 * Remove the LLVM plugin to insert PIC fix-ups.
