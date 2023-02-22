@@ -65,12 +65,12 @@ rec {
         LLVM_SYS_130_FFI_WORKAROUND=1;
         LLVM_SYS_140_FFI_WORKAROUND=1;
         LLVM_SYS_150_FFI_WORKAROUND=1;
-        buildInputs = [pkgs.llvmPackages_14.libllvm pkgs.zlib pkgs.ncurses pkgs.xml2 pkgs.libffi];
+        buildInputs = [pkgs.llvmPackages_15.libllvm pkgs.zlib pkgs.ncurses pkgs.xml2 pkgs.libffi];
       };
       stack-sizes = attrs: {
         # For #![feature(exit_status_error)]
         RUSTC_BOOTSTRAP = true;
-        buildInputs = [pkgs.llvmPackages_14.libllvm pkgs.zlib pkgs.ncurses pkgs.libxml2 pkgs.libffi];
+        buildInputs = [pkgs.llvmPackages_15.libllvm pkgs.zlib pkgs.ncurses pkgs.libxml2 pkgs.libffi];
       };
     };
   };

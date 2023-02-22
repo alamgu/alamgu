@@ -2,6 +2,8 @@
 
 * Bump Nixpkgs: 22.05 -> 22.11
 
+* Build `stack-check` against LLVM 15.
+
 ## Unreleased
 
 * Allow using a pre-built Rust compiler
