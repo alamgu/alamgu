@@ -3,6 +3,6 @@
   "repo": "nixpkgs",
   "branch": "obsidian/buildRustCrate-libconv-fix",
   "private": false,
-  "rev": "239c057ecf71395d2dd4023106c6c58b73ad1978",
-  "sha256": "1n5095anhpjgcl4ra9qs5x681m9g7k0zqf6hlfgn0wmdkpw9q1za"
+  "rev": "9e7ef9388a36a754d2951256b747d246684f2b47",
+  "sha256": "1f9xf39qkry0hik4r178rbdidimlni17ff36mi05sly3wi2bn2x8"
 }
