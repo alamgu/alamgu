@@ -1,8 +1,8 @@
 {
-  "owner": "obsidiansystems",
+  "owner": "cidkidnix",
   "repo": "nixpkgs",
-  "branch": "buildRustCrate-no-remove-obj-22.05",
+  "branch": "obsidian/buildRustCrate-libconv-fix",
   "private": false,
-  "rev": "15747feff3b3c9313409d0a28ee32476ad1c1fca",
-  "sha256": "1s12by2asrqmhzb3v74hq6rwdq9n51aqn37iih5z3wzwklfm1944"
+  "rev": "239c057ecf71395d2dd4023106c6c58b73ad1978",
+  "sha256": "1n5095anhpjgcl4ra9qs5x681m9g7k0zqf6hlfgn0wmdkpw9q1za"
 }
