@@ -225,10 +225,10 @@ rec {
   };
 
   # NOTE(@cidkidnix): Waiting on backport for libiconv PR
-  /*generic-cli = (import (thunkSource ./dep/alamgu-generic-cli) {
+  generic-cli = if !pkgs.stdenv.isLinux then null else (import (thunkSource ./dep/alamgu-generic-cli) {
     inherit pkgs;
   }).package;
-  */
+
   inherit (import ./utils.nix { inherit pkgs crate2nix-tools thunkSource; })
     utils utils-nix
     util-stack-sizes stack-sizes-nix
