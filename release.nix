@@ -9,46 +9,11 @@ let
       localSystem = { system = "x86_64-linux"; };
       backend = a;
     };
-    x86_64-darwin = builtins.removeAttrs (import ./. rec {
+    x86_64-darwin = import ./. rec {
       inherit pkgsSrc;
       localSystem = { system = "x86_64-darwin"; };
       backend = a;
-    }) [
-         #"stableRustPackages"
-         #"buildRustCrateForPkgsLedger"
-         #"buildRustCrateForPkgsWrapper"
-         #"buildRustPackageClang"
-         #"cargo-ledger"
-         #"cargo-watch"
-         #"cargoLedgerPreHook"
-         #"crate2nix"
-         #"gccLibsPreHook"
-         #"generic-cli"
-         #"gitignoreNix"
-         #"gitignoreSource"
-         #"ledgerCore"
-         #"ledgerCompilerBuiltins"
-         #"ledgerPkgs"
-         #"ledgerRustPlatform"
-         #"ledgerStdlib"
-         #"ledgerStdlib-nix"
-         #"ledgerStdlibCI"
-         "ledgerctl"
-         #"lib"
-         #"overlays"
-         #"pkgs"
-         #"rustPlatform"
-         #"rustShell"
-         #"speculos"
-         #"stack-sizes"
-         #"util-stack-sizes"
-         #"stack-sizes-nix"
-         #"stockThumbTarget"
-         #"thunkSource"
-         #"usbtool"
-         #"utils"
-         #"utils-nix"
-      ];
+    };
   });
 in {
   #inherit x86_64-linux x86_64-darwin;
