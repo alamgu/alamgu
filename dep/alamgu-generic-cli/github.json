@@ -1,8 +1,8 @@
 {
   "owner": "alamgu",
   "repo": "alamgu-generic-cli",
-  "branch": "main",
+  "branch": "fix-macos",
   "private": false,
-  "rev": "15efa7d9dfab0efe0953f7aa82939ec07d9b9032",
-  "sha256": "0968ma7syhmvm7nsgg3ml5m69911b2l425i326j8si6miwl0a1my"
+  "rev": "cfeff9423a95fa59ba138616d9dc01142a49202a",
+  "sha256": "1cljs40an86sq4dx6z1h97gy2d53s7kfy0fd8a9f8qxnghgbdpnb"
 }

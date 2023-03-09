@@ -30,7 +30,17 @@ rec {
     src = utils-srcs;
   };
 
-  utils = pkgs.callPackage utils-nix {};
+  utils = pkgs.callPackage utils-nix {
+    inherit pkgs;
+    defaultCrateOverrides = pkgs.defaultCrateOverrides // {
+      cargo-watch = attrs: {
+        buildInputs = (attrs.buildInputs or []) ++
+        pkgs.lib.optionals (pkgs.stdenv.isDarwin) [
+          pkgs.darwin.apple_sdk.frameworks.CoreServices
+        ];
+      };
+    };
+  };
 
   # stack-sizes is separate from cargo-ledger as crate2nix output fails to build
   # the serde
@@ -65,12 +75,12 @@ rec {
         LLVM_SYS_130_FFI_WORKAROUND=1;
         LLVM_SYS_140_FFI_WORKAROUND=1;
         LLVM_SYS_150_FFI_WORKAROUND=1;
-        buildInputs = [pkgs.llvmPackages_14.libllvm pkgs.zlib pkgs.ncurses pkgs.xml2 pkgs.libffi];
+        buildInputs = (attrs.buildInputs or [ ]) ++ [pkgs.llvmPackages_14.libllvm pkgs.zlib pkgs.ncurses pkgs.xml2 pkgs.libffi];
       };
       stack-sizes = attrs: {
         # For #![feature(exit_status_error)]
         RUSTC_BOOTSTRAP = true;
-        buildInputs = [pkgs.llvmPackages_14.libllvm pkgs.zlib pkgs.ncurses pkgs.libxml2 pkgs.libffi];
+        buildInputs = (attrs.buildInputs or []) ++ [pkgs.llvmPackages_14.libllvm pkgs.zlib pkgs.ncurses pkgs.libxml2 pkgs.libffi];
       };
     };
   };
