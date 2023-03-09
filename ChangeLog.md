@@ -2,6 +2,8 @@
 
 * Bump Nixpkgs: 22.05 -> 22.11
 
+  Rust 1.61 was forwarded-ported to this release so we wouldn't be changing the Nixpkgs and Rust version at the same time.
+
 ## Unreleased
 
 * Allow using a pre-built Rust compiler

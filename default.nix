@@ -42,11 +42,11 @@ rec {
     ];
     nixpkgs = [
       (self: super: rec {
-        alamguRustPackages = self.rustPackages_1_64 // {
+        alamguRustPackages = self.rustPackages_1_61 // {
           backend = "nixpkgs";
           rust-src = self.runCommand "rustc-source" {} ''
             install -d $out
-            tar -C $out -xvf ${self.rustPackages_1_64.rustc.src} --strip-components=1
+            tar -C $out -xvf ${self.rustPackages_1_61.rustc.src} --strip-components=1
           '';
         };
       })
@@ -147,7 +147,7 @@ rec {
       rustc = rec {
         config = "thumbv6m-none-eabi";
         platform = builtins.removeAttrs (builtins.fromJSON (builtins.readFile stockThumbTargets.${config})) ["features"] // {
-          features = "+atomics-32";
+          #features = "+atomics-32"; # For newer rustc
           is-builtin = false;
 
           atomic-cas = false;
