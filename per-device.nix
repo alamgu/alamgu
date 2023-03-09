@@ -53,7 +53,7 @@ rec {
     inherit (ledgerPkgs.alamguRustPackages.rustPlatform) rustLibSrc;
     nativeBuildInputs = [
       # emu
-      speculos.speculos ledgerPkgs.buildPackages.gdb
+      speculos.speculos
 
       # loading on real hardware
       cargo-ledger
@@ -67,6 +67,9 @@ rec {
 
       # Testing stuff against nodejs modules
       pkgs.nodejs_latest
+    ] ++ lib.optionals (ledgerPkgs.stdenv.buildPlatform.isLinux) [
+      # GDB doesn't build on macos
+      ledgerPkgs.buildPackages.gdb
     ];
     verifyCargoDeps = true;
     target = "thumbv6m-none-eabi";
