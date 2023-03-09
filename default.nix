@@ -225,8 +225,7 @@ rec {
     ];
   };
 
-  # NOTE(@cidkidnix): Waiting on backport for libiconv PR
-  generic-cli = if !pkgs.stdenv.isLinux then null else (import (thunkSource ./dep/alamgu-generic-cli) {
+  generic-cli = (import (thunkSource ./dep/alamgu-generic-cli) {
     inherit pkgs;
   }).package;
 
