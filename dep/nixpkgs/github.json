@@ -1,7 +1,7 @@
 {
-  "owner": "cidkidnix",
+  "owner": "obsidiansystems",
   "repo": "nixpkgs",
-  "branch": "nixpkgs-22.11-1_61",
+  "branch": "alamgu-22.11",
   "private": false,
   "rev": "e6d11a049460c937da5cf4514994f44e10c4d10f",
   "sha256": "0fz44r58344sy0kmsznl7carxzsr9qbfl1gv7yrgw1r9r176jz4s"
