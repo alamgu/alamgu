@@ -18,6 +18,12 @@
 
 * Fix builds of most things on macOS
 
+* Support newer firmwares
+
+  * Bump ledgerctl to latest develop
+
+  * Bump cargo-ledger to [PR #21](https://github.com/LedgerHQ/cargo-ledger/pull/21).
+
 ## 0.5
 
 * Remove the LLVM plugin to insert PIC fix-ups.

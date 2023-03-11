@@ -206,11 +206,21 @@ rec {
 
   alamguLib = import ./lib { inherit lib; };
 
-  ledgerctl = with pkgs.python3Packages; buildPythonPackage {
+  ledgerctl = let
+     # Need newer Nixpkgs for protobuf >= 3.20 && < 4.
+     pkgs = import (thunkSource ./dep/nixpkgs-22.11) {
+       inherit localSystem;
+     };
+  in pkgs.python3Packages.buildPythonPackage {
     pname = "ledgerctl";
     version = "master";
     src = thunkSource ./dep/ledgerctl;
-    propagatedBuildInputs = [
+    format = "pyproject";
+    nativeBuildInputs = with pkgs.buildPackages.python3Packages; [
+      flit-core
+      setuptools
+    ];
+    propagatedBuildInputs = with pkgs.python3Packages; [
       click
       construct
       cryptography
@@ -218,9 +228,10 @@ rec {
       hidapi
       intelhex
       pillow
-      protobuf
+      protobuf3
       requests
       tabulate
+      toml
     ];
   };
 

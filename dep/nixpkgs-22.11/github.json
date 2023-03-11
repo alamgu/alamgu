@@ -1,0 +1,8 @@
+{
+  "owner": "obsidiansystems",
+  "repo": "nixpkgs",
+  "branch": "buildRustCrate-no-remove-obj-22.11",
+  "private": false,
+  "rev": "d118daff579d81a7df4b7a38b04c334074d974a0",
+  "sha256": "1mz61a8ar11k3wq01ndm2ga5zp65gqk4wl61whh4k7ijnayihh4l"
+}
