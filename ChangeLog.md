@@ -4,10 +4,6 @@
 
   This will make it easier to use more recent Rust compilers.
 
-* Bump speculos slightly
-
-  Changes from upstream. Our slight slight change to the loading was merged.
-
 * Bump Alamgu generic CLI
 
   Same code, just a new more automatic build system.
@@ -23,6 +19,10 @@
   * Bump ledgerctl to latest develop
 
   * Bump cargo-ledger to [PR #21](https://github.com/LedgerHQ/cargo-ledger/pull/21).
+
+  * Bump speculos to latest develop
+
+    In addition to new firmware support, our slight change to the loading was merged.
 
 ## 0.5
 
