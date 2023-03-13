@@ -1,8 +1,8 @@
 {
-  "owner": "obsidiansystems",
+  "owner": "cidkidnix",
   "repo": "nixpkgs",
-  "branch": "alamgu-22.11",
+  "branch": "dylang/nixpkgs-22.11",
   "private": false,
-  "rev": "e6d11a049460c937da5cf4514994f44e10c4d10f",
-  "sha256": "0fz44r58344sy0kmsznl7carxzsr9qbfl1gv7yrgw1r9r176jz4s"
+  "rev": "7de7b873af588ad87ca42775742018f61d5a279e",
+  "sha256": "1h7bs1y7w8r4lgjrjf4shpy18ggr39ps52cdfj5dyqlcjnjlhvb0"
 }
