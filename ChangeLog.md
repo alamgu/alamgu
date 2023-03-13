@@ -1,4 +1,4 @@
-## Unreleased
+## 0.5.1
 
 * Allow using a pre-built Rust compiler
 
@@ -18,7 +18,7 @@
 
 * Fix builds of most things on macOS
 
-## 0.5
+## 0.5.0
 
 * Remove the LLVM plugin to insert PIC fix-ups.
 
