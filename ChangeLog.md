@@ -4,7 +4,7 @@
 
   Rust 1.61 was forwarded-ported to this release so we wouldn't be changing the Nixpkgs and Rust version at the same time.
 
-## Unreleased
+## 0.5.1
 
 * Allow using a pre-built Rust compiler
 
@@ -24,7 +24,7 @@
 
 * Fix builds of most things on macOS
 
-## 0.5
+## 0.5.0
 
 * Remove the LLVM plugin to insert PIC fix-ups.
 
