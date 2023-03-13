@@ -211,16 +211,16 @@ rec {
      pkgs = import (thunkSource ./dep/nixpkgs-22.11) {
        inherit localSystem;
      };
-  in pkgs.python3Packages.buildPythonPackage {
+  in pkgs.python39Packages.buildPythonPackage {
     pname = "ledgerctl";
     version = "master";
     src = thunkSource ./dep/ledgerctl;
     format = "pyproject";
-    nativeBuildInputs = with pkgs.buildPackages.python3Packages; [
+    nativeBuildInputs = with pkgs.buildPackages.python39Packages; [
       flit-core
       setuptools
     ];
-    propagatedBuildInputs = with pkgs.python3Packages; [
+    propagatedBuildInputs = with pkgs.python39Packages; [
       click
       construct
       cryptography
