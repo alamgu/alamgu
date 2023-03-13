@@ -1,8 +1,22 @@
-## Unreleased
+# Unreleased
+
+Support newer firmwares
+
+* Bump ledgerctl to latest develop
+
+* Bump cargo-ledger to [PR #21](https://github.com/LedgerHQ/cargo-ledger/pull/21).
+
+* Bump speculos to latest develop
+
+## 0.5.1
 
 * Allow using a pre-built Rust compiler
 
   This will make it easier to use more recent Rust compilers.
+
+* Bump speculos slightly
+
+  Changes from upstream. Our slight slight change to the loading was merged.
 
 * Bump Alamgu generic CLI
 
@@ -14,17 +28,7 @@
 
 * Fix builds of most things on macOS
 
-* Support newer firmwares
-
-  * Bump ledgerctl to latest develop
-
-  * Bump cargo-ledger to [PR #21](https://github.com/LedgerHQ/cargo-ledger/pull/21).
-
-  * Bump speculos to latest develop
-
-    In addition to new firmware support, our slight change to the loading was merged.
-
-## 0.5
+## 0.5.0
 
 * Remove the LLVM plugin to insert PIC fix-ups.
 
