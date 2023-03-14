@@ -147,6 +147,7 @@ rec {
       rustc = rec {
         config = "thumbv6m-none-eabi";
         platform = builtins.removeAttrs (builtins.fromJSON (builtins.readFile stockThumbTargets.${config})) ["features"] // {
+          #features = "+atomics-32"; # For newer rustc
           is-builtin = false;
 
           atomic-cas = false;
@@ -206,12 +207,7 @@ rec {
 
   alamguLib = import ./lib { inherit lib; };
 
-  ledgerctl = let
-     # Need newer Nixpkgs for protobuf >= 3.20 && < 4.
-     pkgs = import (thunkSource ./dep/nixpkgs-22.11) {
-       inherit localSystem;
-     };
-  in pkgs.python3Packages.buildPythonPackage {
+  ledgerctl = pkgs.python3Packages.buildPythonPackage {
     pname = "ledgerctl";
     version = "master";
     src = thunkSource ./dep/ledgerctl;
@@ -235,12 +231,9 @@ rec {
     ];
   };
 
-  generic-cli = (import
-    (thunkSource ./dep/alamgu-generic-cli)
-    # NOTE(@cidkidnix): 22.05 is missing patched node-gyp for Darwin, it pins
-    # 22.11 and so it is fine if we don't force Nixpkgs consistency on that
-    # platform.
-    (lib.optionalAttrs (! pkgs.stdenv.isDarwin) { inherit pkgs; })).package;
+  generic-cli = (import (thunkSource ./dep/alamgu-generic-cli) {
+    inherit pkgs;
+  }).package;
 
   inherit (import ./utils.nix { inherit pkgs crate2nix-tools thunkSource; })
     utils utils-nix

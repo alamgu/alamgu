@@ -8,6 +8,16 @@ Support newer firmwares
 
 * Bump speculos to latest develop
 
+## Unreleased
+
+* Bump Nixpkgs: 22.05 -> 22.11
+
+  Rust 1.61 was forwarded-ported to this release so we wouldn't be changing the Nixpkgs and Rust version at the same time.
+
+## 0.5.2
+
+* Bump crate2nix to more easily allow locked-down hashing.
+
 ## 0.5.1
 
 * Allow using a pre-built Rust compiler
