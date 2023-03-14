@@ -1,4 +1,4 @@
-## Unreleased
+## 0.5.2
 
 * Bump crate2nix to more easily allow locked-down hashing.
 
