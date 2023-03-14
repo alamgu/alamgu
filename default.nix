@@ -147,6 +147,7 @@ rec {
       rustc = rec {
         config = "thumbv6m-none-eabi";
         platform = builtins.removeAttrs (builtins.fromJSON (builtins.readFile stockThumbTargets.${config})) ["features"] // {
+          #features = "+atomics-32"; # For newer rustc
           is-builtin = false;
 
           atomic-cas = false;
@@ -224,12 +225,9 @@ rec {
     ];
   };
 
-  generic-cli = (import
-    (thunkSource ./dep/alamgu-generic-cli)
-    # NOTE(@cidkidnix): 22.05 is missing patched node-gyp for Darwin, it pins
-    # 22.11 and so it is fine if we don't force Nixpkgs consistency on that
-    # platform.
-    (lib.optionalAttrs (! pkgs.stdenv.isDarwin) { inherit pkgs; })).package;
+  generic-cli = (import (thunkSource ./dep/alamgu-generic-cli) {
+    inherit pkgs;
+  }).package;
 
   inherit (import ./utils.nix { inherit pkgs crate2nix-tools thunkSource; })
     utils utils-nix
