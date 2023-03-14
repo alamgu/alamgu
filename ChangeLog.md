@@ -4,7 +4,7 @@
 
   Rust 1.61 was forwarded-ported to this release so we wouldn't be changing the Nixpkgs and Rust version at the same time.
 
-## Unreleased
+## 0.5.2
 
 * Bump crate2nix to more easily allow locked-down hashing.
 
