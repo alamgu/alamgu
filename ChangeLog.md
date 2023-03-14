@@ -1,3 +1,7 @@
+## Unreleased
+
+* Bump crate2nix to more easily allow locked-down hashing.
+
 ## 0.5.1
 
 * Allow using a pre-built Rust compiler
