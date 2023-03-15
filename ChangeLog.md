@@ -8,7 +8,7 @@ Support newer firmwares
 
 * Bump speculos to latest develop
 
-## Unreleased
+## 0.6.0
 
 * Bump Nixpkgs: 22.05 -> 22.11
 
