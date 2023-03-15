@@ -1,3 +1,15 @@
+# Unreleased
+
+Support newer firmwares:
+
+* Bump ledgerctl to latest develop
+
+* Bump cargo-ledger to [PR #21](https://github.com/LedgerHQ/cargo-ledger/pull/21).
+
+* Bump speculos to latest develop
+
+Older firmwares no longer work with te new ledgerctl; devices must be updated.
+
 ## 0.6.0
 
 * Bump Nixpkgs: 22.05 -> 22.11

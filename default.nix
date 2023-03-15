@@ -207,11 +207,16 @@ rec {
 
   alamguLib = import ./lib { inherit lib; };
 
-  ledgerctl = with pkgs.python3Packages; buildPythonPackage {
+  ledgerctl = pkgs.python3Packages.buildPythonPackage {
     pname = "ledgerctl";
     version = "master";
     src = thunkSource ./dep/ledgerctl;
-    propagatedBuildInputs = [
+    format = "pyproject";
+    nativeBuildInputs = with pkgs.buildPackages.python3Packages; [
+      flit-core
+      setuptools
+    ];
+    propagatedBuildInputs = with pkgs.python3Packages; [
       click
       construct
       cryptography
@@ -219,9 +224,10 @@ rec {
       hidapi
       intelhex
       pillow
-      protobuf
+      protobuf3
       requests
       tabulate
+      toml
     ];
   };
 
