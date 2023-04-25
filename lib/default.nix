@@ -9,8 +9,9 @@ rec {
 
   extraArgsForAllCrates = pkgs: let
     isBolos = platformIsBolos pkgs.stdenv.hostPlatform;
-  in args: args // lib.optionalAttrs isBolos {
+  in args: args // {
       RUSTC_BOOTSTRAP = true;
+    } // lib.optionalAttrs isBolos {
       extraRustcOpts = [
         "-C" "opt-level=3"
         "-C" "codegen-units=1"
