@@ -4,11 +4,11 @@ Support newer firmwares:
 
 * Bump ledgerctl to latest develop
 
-* Bump cargo-ledger to [PR #21](https://github.com/LedgerHQ/cargo-ledger/pull/21).
+* Bump cargo-ledger to latest main.
 
 * Bump speculos to latest develop
 
-Older firmwares no longer work with te new ledgerctl; devices must be updated.
+Older firmwares no longer work with the new ledgerctl; devices must be updated.
 
 ## 0.6.0
 
