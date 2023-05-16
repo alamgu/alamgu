@@ -8,6 +8,10 @@ Support newer firmwares:
 
 * Bump speculos to latest develop
 
+* Bump alamgu-generic-cli.
+
+* Use rust 1.66
+
 Older firmwares no longer work with the new ledgerctl; devices must be updated.
 
 ## 0.6.0
