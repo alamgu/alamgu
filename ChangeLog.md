@@ -1,3 +1,7 @@
+## Unreleased
+
+* Bump speculos to latest develop, with NanoX ApiLevel 5 support
+
 ## 0.6.1
 
 Support newer firmwares:
