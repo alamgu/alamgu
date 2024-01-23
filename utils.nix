@@ -8,7 +8,7 @@ rec {
       mkdir -p "$out"
       cd "$out"
       ln -s "${thunkSource ./dep/cargo-watch}" cargo-watch
-      ln -s "${thunkSource ./dep/cargo-ledger}" cargo-ledger
+      ln -s "${thunkSource ./dep/ledger-device-rust-sdk}/cargo-ledger" cargo-ledger
     ''} crate2nix-sources
     cat <<EOF >"crate2nix.json"
       {
@@ -19,7 +19,7 @@ rec {
           },
           "cargo-ledger": {
             "type": "LocalDirectory",
-            "path": "${thunkSource ./dep/cargo-ledger}"
+            "path": "${thunkSource ./dep/ledger-device-rust-sdk}/cargo-ledger"
           }
         }
       }
