@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -i bash -p python3 python3.pkgs.toml cargo jq
+#!nix-shell -I nixpkgs=../dep/nixpkgs -i bash -p python3 python3.pkgs.toml cargo jq
 set -eu pipefile
 
 set -x
