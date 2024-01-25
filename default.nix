@@ -67,11 +67,11 @@ rec {
       rustcBuilt = self.alamguRustPackages.rustc;
     })
     (self: super: {
-      lldClangStdenv = self.llvmPackages_15.stdenv.override (old: {
+      lldClangStdenv = self.llvmPackages_17.stdenv.override (old: {
         cc = old.cc.override (old: {
           # This is needed to get armv6m-unknown-none-eabi-clang to do linking
           # using armv6m-unknown-none-eabi-l
-          inherit (self.buildPackages.llvmPackages_15) bintools;
+          inherit (self.buildPackages.llvmPackages_17) bintools;
         });
       });
     })
