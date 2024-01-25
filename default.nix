@@ -194,6 +194,19 @@ rec {
 
   speculos = pkgs.callPackage ./dep/speculos {
     inherit pkgsFunc pkgs localSystem;
+    speculosPkgs = pkgsFunc {
+      inherit localSystem;
+      crossSystem = {
+        #isStatic = true;
+        config = "armv6l-unknown-linux-gnueabihf";
+      };
+      config = {
+        permittedInsecurePackages = [
+          # Required for speculos, till https://github.com/LedgerHQ/speculos/issues/447 is fixed upstream
+          "openssl-1.1.1w"
+        ];
+      };
+    };
   };
 
   crate2nix = import ./dep/crate2nix { inherit pkgs; };
