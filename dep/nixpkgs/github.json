@@ -3,6 +3,6 @@
   "repo": "nixpkgs",
   "branch": "alamgu-nixpkgs-unstable",
   "private": false,
-  "rev": "aada2e1b3a26154cd56dda62c1c95655d4daf9a7",
-  "sha256": "0hg72pzmmjvn45jpccfw8gb3kni7pfa3g1m4jxn0888vfn83ywbg"
+  "rev": "e910bb9b46e1d77d01b1916f148e5564d7141260",
+  "sha256": "09acvf2ll1xnzkl53mxfrxjgrz3gkvshzyxnyxmbskjb7zgc5l8i"
 }

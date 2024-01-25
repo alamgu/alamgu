@@ -11,8 +11,7 @@ rec {
       (self: super: {
         alamguRustPackages = let
           pre = self.rustChannelOf {
-            channel = "1.67.1";
-            sha256 = "sha256-S4dA7ne2IpFHG+EnjXfogmqwGyDFSRWFnJ8cy4KZr1k=";
+            channel = "1.75.0";
           };
         in pre // rec {
           backend = "mozilla";
@@ -42,11 +41,11 @@ rec {
     ];
     nixpkgs = [
       (self: super: rec {
-        alamguRustPackages = self.rustPackages_1_69 // {
+        alamguRustPackages = self.rustPackages_1_75 // {
           backend = "nixpkgs";
           rust-src = self.runCommand "rustc-source" {} ''
             install -d $out
-            tar -C $out -xvf ${self.rustPackages_1_69.rustc.src} --strip-components=1
+            tar -C $out -xvf ${self.rustPackages_1_75.rustc.src} --strip-components=1
           '';
         };
       })
