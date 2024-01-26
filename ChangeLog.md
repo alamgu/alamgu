@@ -1,5 +1,17 @@
 ## Unreleased
 
+* Bump Nixpkgs: 22.11 -> nixpkgs-unstable
+
+* Use rust 1.75, llvm 17
+
+* stack-sizes no longer work due to lack of llvm 17 support in llvm-ir
+
+* Bump crate2nix with support of newer rust
+
+* Bump alamgu-generic-cli
+
+* Speculos: python tests fail to run with newer nixpkgs, and are disabled for now.
+
 ## 0.6.2
 
 * Bump speculos to latest develop, with NanoX ApiLevel 5 support
