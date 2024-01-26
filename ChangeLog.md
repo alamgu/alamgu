@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.7.0
+
 * Bump Nixpkgs: 22.11 -> nixpkgs-unstable
 
 * Use rust 1.75, llvm 17
