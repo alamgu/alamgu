@@ -1,8 +1,8 @@
 {
   "owner": "ledgerhq",
   "repo": "ledgerctl",
-  "branch": "develop",
+  "branch": "master",
   "private": false,
-  "rev": "fe73e30fd1456e0cf5d793652aeaa94779bcc53b",
-  "sha256": "0yvclv5hy6a054ddwwd7ycxnsl33fv4jyjh2q9qxc48ai5hsvi11"
+  "rev": "aafc538e8c59f97382fc66cb9ddda82689581364",
+  "sha256": "039hpdh11l7n5ga0pchb9n2hc41jdrqmbzmnqgfh2i64hfy6sv38"
 }

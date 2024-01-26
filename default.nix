@@ -221,12 +221,13 @@ rec {
 
   ledgerctl = pkgs.python3Packages.buildPythonPackage {
     pname = "ledgerctl";
-    version = "master";
+    version = "0.1.4";
     src = thunkSource ./dep/ledgerctl;
     format = "pyproject";
     nativeBuildInputs = with pkgs.buildPackages.python3Packages; [
       flit-core
       setuptools
+      setuptools-scm
     ];
     propagatedBuildInputs = with pkgs.python3Packages; [
       click
@@ -241,6 +242,7 @@ rec {
       tabulate
       toml
     ];
+    env.SETUPTOOLS_SCM_PRETEND_VERSION = "0.1.4";
   };
 
   generic-cli = (import (thunkSource ./dep/alamgu-generic-cli) {
