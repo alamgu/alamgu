@@ -11,8 +11,7 @@ rec {
       (self: super: {
         alamguRustPackages = let
           pre = self.rustChannelOf {
-            channel = "1.67.1";
-            sha256 = "sha256-S4dA7ne2IpFHG+EnjXfogmqwGyDFSRWFnJ8cy4KZr1k=";
+            channel = "1.75.0";
           };
         in pre // rec {
           backend = "mozilla";
@@ -42,11 +41,11 @@ rec {
     ];
     nixpkgs = [
       (self: super: rec {
-        alamguRustPackages = self.rustPackages_1_66 // {
+        alamguRustPackages = self.rustPackages_1_75 // {
           backend = "nixpkgs";
           rust-src = self.runCommand "rustc-source" {} ''
             install -d $out
-            tar -C $out -xvf ${self.rustPackages_1_66.rustc.src} --strip-components=1
+            tar -C $out -xvf ${self.rustPackages_1_75.rustc.src} --strip-components=1
           '';
         };
       })
@@ -68,11 +67,11 @@ rec {
       rustcBuilt = self.alamguRustPackages.rustc;
     })
     (self: super: {
-      lldClangStdenv = self.llvmPackages_14.stdenv.override (old: {
+      lldClangStdenv = self.llvmPackages_17.stdenv.override (old: {
         cc = old.cc.override (old: {
           # This is needed to get armv6m-unknown-none-eabi-clang to do linking
           # using armv6m-unknown-none-eabi-l
-          inherit (self.buildPackages.llvmPackages_14) bintools;
+          inherit (self.buildPackages.llvmPackages_17) bintools;
         });
       });
     })
@@ -147,7 +146,7 @@ rec {
       rustc = rec {
         config = "thumbv6m-none-eabi";
         platform = builtins.removeAttrs (builtins.fromJSON (builtins.readFile stockThumbTargets.${config})) ["features"] // {
-          #features = "+atomics-32"; # For newer rustc
+          features = "+atomics-32"; # For newer rustc
           is-builtin = false;
 
           atomic-cas = false;
@@ -195,6 +194,19 @@ rec {
 
   speculos = pkgs.callPackage ./dep/speculos {
     inherit pkgsFunc pkgs localSystem;
+    speculosPkgs = pkgsFunc {
+      inherit localSystem;
+      crossSystem = {
+        #isStatic = true;
+        config = "armv6l-unknown-linux-gnueabihf";
+      };
+      config = {
+        permittedInsecurePackages = [
+          # Required for speculos, till https://github.com/LedgerHQ/speculos/issues/447 is fixed upstream
+          "openssl-1.1.1w"
+        ];
+      };
+    };
   };
 
   crate2nix = import ./dep/crate2nix { inherit pkgs; };

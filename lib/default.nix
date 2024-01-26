@@ -11,6 +11,7 @@ rec {
     isBolos = platformIsBolos pkgs.stdenv.hostPlatform;
   in args: args // {
       RUSTC_BOOTSTRAP = true;
+      auditable = false;
     } // lib.optionalAttrs isBolos {
       extraRustcOpts = [
         "-C" "opt-level=3"
