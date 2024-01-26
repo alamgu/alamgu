@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.6.2
+
 * Bump speculos to latest develop, with NanoX ApiLevel 5 support
 
 ## 0.6.1
