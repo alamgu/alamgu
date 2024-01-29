@@ -33,6 +33,8 @@ rec {
   cargoLedgerPreHook = ''
     export CARGO_TARGET_THUMBV6M_NONE_EABI_OBJCOPY=$OBJCOPY
     export CARGO_TARGET_THUMBV6M_NONE_EABI_SIZE=$SIZE
+    export LIBCLANG_PATH="${ledgerPkgs.buildPackages.libclang.lib}/lib"
+    export BINDGEN_EXTRA_CLANG_ARGS="-I${ledgerPkgs.clang.libc}/${ledgerPkgs.stdenv.hostPlatform.config}/include"
   '';
 
   rustShell = buildRustPackageClang {
