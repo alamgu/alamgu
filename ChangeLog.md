@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 0.7.1
+
+* Bump speculos and ledgerctl
+
+* Build cargo-ledger using ledger-device-rust-sdk repo
+
 ## 0.7.0
 
 * Bump Nixpkgs: 22.11 -> nixpkgs-unstable
