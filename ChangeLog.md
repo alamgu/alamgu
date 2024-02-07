@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Fix stack-sizes to support llvm 17
+
 ## 0.7.1
 
 * Bump speculos and ledgerctl
