@@ -35,6 +35,7 @@ rec {
     export CARGO_TARGET_THUMBV6M_NONE_EABI_SIZE=$SIZE
     export LIBCLANG_PATH="${ledgerPkgs.buildPackages.libclang.lib}/lib"
     export BINDGEN_EXTRA_CLANG_ARGS="-I${ledgerPkgs.clang.libc}/${ledgerPkgs.stdenv.hostPlatform.config}/include"
+    export NEWLIB_LIB_PATH="${ledgerPkgs.newlib-nanoCross}/${ledgerPkgs.stdenv.hostPlatform.config}/lib"
   '';
 
   rustShell = buildRustPackageClang {
