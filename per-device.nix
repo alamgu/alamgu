@@ -12,6 +12,7 @@
 , ledgerctl
 , speculos
 , stack-sizes
+, ragger
 }:
 
 rec {
@@ -57,6 +58,7 @@ rec {
     nativeBuildInputs = [
       # emu
       speculos.speculos
+      ragger
 
       # loading on real hardware
       cargo-ledger

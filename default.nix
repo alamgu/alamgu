@@ -108,6 +108,7 @@ rec {
         ledgerctl
         speculos
         stack-sizes
+        ragger
         ;
       ledgerPkgs = pkgsFunc {
         config.allowUnsupportedSystem = true;
@@ -208,6 +209,58 @@ rec {
       };
     };
   };
+
+  ragger = pkgs.python3Packages.callPackage (
+    { lib
+    , buildPythonPackage
+    , fetchPypi
+    , setuptools
+    , setuptools_scm
+    , toml
+    , pyelftools
+    , pygithub
+    , bip_utils
+    , py-sr25519-bindings
+    , ledgered
+    , speculos
+    , mnemonic
+    , enableSpeculos ? true
+    }:
+
+    buildPythonPackage rec {
+      pname = "ragger";
+      version = "1.24.0";
+      pyproject = true;
+
+      src = fetchPypi {
+        inherit pname version;
+        hash = "sha256-5rN1SVc8MbLwm7JavB2VtLaGBe2CkpHHkpzzvjxQVDg=";
+      };
+
+      build-system = [
+        setuptools
+        setuptools_scm
+      ];
+
+      propagatedBuildInputs = [
+        setuptools
+        setuptools_scm
+        bip_utils
+        py-sr25519-bindings
+        ledgered
+        speculos
+        mnemonic
+      ];
+      # ++ lib.optionals enableSpeculos optional-dependencies.speculos;
+
+      # optional-dependencies = {
+      #   speculos = [
+      #     speculos
+      #     mnemonic
+      #   ];
+      # };
+
+    }) { ledgered = speculos.ledgered; speculos = speculos.speculos; };
 
   crate2nix = import ./dep/crate2nix { inherit pkgs; };
 
