@@ -72,6 +72,10 @@ rec {
 
       # Testing stuff against nodejs modules
       pkgs.nodejs_latest
+
+      # Necessary with ragger
+      pkgs.python3Packages.pytest
+      pkgs.python3Packages.tomli
     ] ++ lib.optionals (ledgerPkgs.stdenv.buildPlatform.isLinux) [
       # GDB doesn't build on macos
       ledgerPkgs.buildPackages.gdb
