@@ -242,6 +242,10 @@ rec {
         setuptools_scm
       ];
 
+      patches = [
+        ./ragger-find_project_root_dir.patch
+      ];
+
       propagatedBuildInputs = [
         setuptools
         setuptools_scm
