@@ -1,8 +1,8 @@
 {
   "owner": "alamgu",
   "repo": "ledger-nanos-sdk",
-  "branch": "alamgu-fixes-new-sdk",
+  "branch": "alamgu-fixes-new-sdk-2",
   "private": false,
-  "rev": "6cd0a8df5c0471a328fc6355a8e6fb8550dafcb9",
-  "sha256": "186v004nx69w5p6qz0cdvxzs80x4cl28ilirh057z3s0ighlcq1f"
+  "rev": "fd6e6be2a11b476726148268697c4cee84c87c8d",
+  "sha256": "196vk61y79mbknlz5qn0dcw7lhb95fnam0p59ydg6cr8qh392drx"
 }
