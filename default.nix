@@ -178,6 +178,46 @@ rec {
         };
       };
     };
+    flex = f {
+      isStatic = true;
+      config = "armv8m-unknown-none-eabi";
+      libc = "newlib-nano";
+      gcc = {
+        arch = "armv8-m.main";
+      };
+      rustc = rec {
+        config = "thumbv8m.main-none-eabi";
+        platform = builtins.fromJSON (builtins.readFile stockThumbTargets.${config}) // {
+          is-builtin = false;
+
+          max-atomic-width = 32;
+          os = "flex";
+          target-family = [ "bolos" ];
+
+          relocation-model = "ropi-rwpi";
+        };
+      };
+    };
+    stax = f {
+      isStatic = true;
+      config = "armv8m-unknown-none-eabi";
+      libc = "newlib-nano";
+      gcc = {
+        arch = "armv8-m.main";
+      };
+      rustc = rec {
+        config = "thumbv8m.main-none-eabi";
+        platform = builtins.fromJSON (builtins.readFile stockThumbTargets.${config}) // {
+          is-builtin = false;
+
+          max-atomic-width = 32;
+          os = "stax";
+          target-family = [ "bolos" ];
+
+          relocation-model = "ropi-rwpi";
+        };
+      };
+    };
   };
 
   # TODO: Replace this with `thunkSource` from nix-thunk for added safety
