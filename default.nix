@@ -306,7 +306,7 @@ rec {
 
     }) { ledgered = speculos.ledgered; speculos = speculos.speculos; };
 
-  crate2nix = import ./dep/crate2nix { inherit pkgs; };
+  # crate2nix = import ./dep/crate2nix { inherit pkgs; };
 
   crate2nix-tools = import (import ./dep/crate2nix/thunk.nix + "/tools.nix") {
     inherit pkgs;
@@ -327,11 +327,11 @@ rec {
     util-stack-sizes stack-sizes-nix
     ;
 
-  cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
+  cargo-ledger = null; # utils.workspaceMembers.cargo-ledger.build;
 
-  cargo-watch = utils.workspaceMembers.cargo-watch.build;
+  cargo-watch = null; #utils.workspaceMembers.cargo-watch.build;
 
-  stack-sizes = util-stack-sizes.workspaceMembers.stack-sizes.build;
+  stack-sizes = null; #util-stack-sizes.workspaceMembers.stack-sizes.build;
 
   # COMPAT
   stockThumbTarget = stockThumbTargets.thumbv6m-none-eabi;
