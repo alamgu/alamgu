@@ -11,7 +11,7 @@ rec {
       (self: super: {
         alamguRustPackages = let
           pre = self.rustChannelOf {
-            channel = "1.75.0";
+            channel = "1.82.0";
           };
         in pre // rec {
           backend = "mozilla";
@@ -41,11 +41,11 @@ rec {
     ];
     nixpkgs = [
       (self: super: rec {
-        alamguRustPackages = self.rustPackages_1_75 // {
+        alamguRustPackages = self.rustPackages_1_82 // {
           backend = "nixpkgs";
           rust-src = self.runCommand "rustc-source" {} ''
             install -d $out
-            tar -C $out -xvf ${self.rustPackages_1_75.rustc.src} --strip-components=1
+            tar -C $out -xvf ${self.rustPackages_1_82.rustc.src} --strip-components=1
           '';
         };
       })
@@ -67,11 +67,11 @@ rec {
       rustcBuilt = self.alamguRustPackages.rustc;
     })
     (self: super: {
-      lldClangStdenv = self.llvmPackages_17.stdenv.override (old: {
+      lldClangStdenv = self.llvmPackages_19.stdenv.override (old: {
         cc = old.cc.override (old: {
           # This is needed to get armv6m-unknown-none-eabi-clang to do linking
           # using armv6m-unknown-none-eabi-l
-          inherit (self.buildPackages.llvmPackages_17) bintools;
+          inherit (self.buildPackages.llvmPackages_19) bintools;
         });
       });
     })
