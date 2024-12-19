@@ -313,31 +313,7 @@ rec {
 
   alamguLib = import ./lib { inherit lib; };
 
-  ledgerctl = pkgs.python3Packages.buildPythonPackage {
-    pname = "ledgerctl";
-    version = "0.1.4";
-    src = thunkSource ./dep/ledgerctl;
-    format = "pyproject";
-    nativeBuildInputs = with pkgs.buildPackages.python3Packages; [
-      flit-core
-      setuptools
-      setuptools-scm
-    ];
-    propagatedBuildInputs = with pkgs.python3Packages; [
-      click
-      construct
-      cryptography
-      ecdsa
-      hidapi
-      intelhex
-      pillow
-      protobuf3
-      requests
-      tabulate
-      toml
-    ];
-    env.SETUPTOOLS_SCM_PRETEND_VERSION = "0.1.4";
-  };
+  ledgerctl = pkgs.python3Packages.ledgerwallet;
 
   generic-cli = (import (thunkSource ./dep/alamgu-generic-cli) {
     inherit pkgs;
