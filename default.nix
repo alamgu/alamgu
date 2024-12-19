@@ -57,7 +57,7 @@ rec {
     (self: super: rec {
       # TODO upstream this stuff back to nixpkgs after bumping to latest
       # stable.
-      stdlibSrc = self.callPackage ./stdlib/src.nix {
+      stdlibSrc = self.callPackage (pkgsSrc + /pkgs/build-support/rust/sysroot/src.nix) {
         inherit (self.alamguRustPackages) rustPlatform;
         originalCargoToml = null;
       };
