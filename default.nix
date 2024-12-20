@@ -308,7 +308,7 @@ rec {
 
   crate2nix = import ./dep/crate2nix { inherit pkgs; };
 
-  crate2nix-tools = import (import ./dep/crate2nix/thunk.nix + "/tools.nix") {
+  crate2nix-tools = import ((thunkSource ./dep/crate2nix) + "/tools.nix") {
     inherit pkgs;
   };
 
