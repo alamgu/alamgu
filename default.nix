@@ -111,7 +111,7 @@ rec {
         cargo-watch
         ledgerctl
         speculos
-        stack-sizes
+        # stack-sizes
         ragger
         ;
       ledgerPkgs = pkgsFunc {
@@ -321,14 +321,14 @@ rec {
 
   inherit (import ./utils.nix { inherit pkgs crate2nix-tools thunkSource; })
     utils utils-nix
-    util-stack-sizes stack-sizes-nix
+    # util-stack-sizes stack-sizes-nix
     ;
 
   cargo-ledger = utils.workspaceMembers.cargo-ledger.build;
 
   cargo-watch = utils.workspaceMembers.cargo-watch.build;
 
-  stack-sizes = util-stack-sizes.workspaceMembers.stack-sizes.build;
+  # stack-sizes = util-stack-sizes.workspaceMembers.stack-sizes.build;
 
   # COMPAT
   stockThumbTarget = stockThumbTargets.thumbv6m-none-eabi;

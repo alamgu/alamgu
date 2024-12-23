@@ -11,7 +11,7 @@
 , cargo-watch
 , ledgerctl
 , speculos
-, stack-sizes
+# , stack-sizes
 , ragger
 }:
 
@@ -65,7 +65,7 @@ rec {
       ledgerctl
 
       # just plain useful for rust dev
-      stack-sizes
+      # stack-sizes
       cargo-watch
       pkgs.alamguRustPackages.clippy
       pkgs.alamguRustPackages.rustfmt
