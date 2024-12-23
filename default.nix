@@ -1,5 +1,9 @@
+let
+  thunkSource = (import ./dep/nix-thunk {}).thunkSource;
+
+in
 { localSystem ? { system = builtins.currentSystem; }
-, pkgsSrc ? import ./dep/nixpkgs/thunk.nix
+, pkgsSrc ? thunkSource ./dep/nixpkgs
 , pkgsFunc ? import pkgsSrc
 , backend ? "nixpkgs"
 }:
@@ -52,7 +56,7 @@ rec {
     ];
   };
 
-  inherit backend;
+  inherit backend thunkSource;
   overlays = backendOverlays."${backend}" ++ [
     (self: super: rec {
       # TODO upstream this stuff back to nixpkgs after bumping to latest
@@ -219,13 +223,6 @@ rec {
       };
     };
   };
-
-  # TODO: Replace this with `thunkSource` from nix-thunk for added safety
-  # checking once CI stuff is separated.
-  thunkSource = p:
-    if builtins.pathExists (p + /thunk.nix)
-      then (import (p + /thunk.nix))
-    else p;
 
   usbtool = import ./usbtool.nix { inherit pkgs thunkSource; };
 
