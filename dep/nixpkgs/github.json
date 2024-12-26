@@ -1,8 +1,8 @@
 {
   "owner": "obsidiansystems",
   "repo": "nixpkgs",
-  "branch": "alamgu-nixpkgs-unstable",
+  "branch": "alamgu-24.05",
   "private": false,
-  "rev": "e910bb9b46e1d77d01b1916f148e5564d7141260",
-  "sha256": "09acvf2ll1xnzkl53mxfrxjgrz3gkvshzyxnyxmbskjb7zgc5l8i"
+  "rev": "e1b3da9217445189e985fb162d98a8f1f0bfa6a0",
+  "sha256": "1734xfvnf5vmlcwr5ahvpgm2w7vj55jg2z8fk583l2rj75jdh3vn"
 }
