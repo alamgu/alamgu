@@ -59,6 +59,7 @@ rec {
       # emu
       speculos.speculos
       ragger
+      pkgs.qemu
 
       # loading on real hardware
       cargo-ledger
