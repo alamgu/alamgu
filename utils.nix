@@ -42,32 +42,8 @@ rec {
     };
   };
 
-  # stack-sizes is separate from cargo-ledger as crate2nix output fails to build
-  # the serde
-  stack-sizes-nix = crate2nix-tools.generatedCargoNix {
-    name = "stack-sizes-nix";
-    src = pkgs.runCommand "stack-sizes-src" {} ''
-      mkdir -p "$out"
-      cd "$out"
-      ln -s ${pkgs.runCommand "crate2nix-sources" {} ''
-        mkdir -p "$out"
-        cd "$out"
-        ln -s "${thunkSource ./dep/stack-sizes}" stack-sizes
-      ''} crate2nix-sources
-      cat <<EOF >"crate2nix.json"
-        {
-          "sources": {
-            "stack-sizes": {
-              "type": "LocalDirectory",
-              "path": "${thunkSource ./dep/stack-sizes}"
-            }
-          }
-        }
-      EOF
-    '';
-  };
-
-  util-stack-sizes = pkgs.callPackage stack-sizes-nix {
+  # For stack-sizes, use the crate2nix generated files
+  util-stack-sizes = pkgs.callPackage ("${thunkSource ./dep/stack-sizes}/Cargo.nix") {
     inherit pkgs;
     defaultCrateOverrides = pkgs.defaultCrateOverrides // {
       llvm-sys = attrs: {
@@ -76,12 +52,13 @@ rec {
         LLVM_SYS_140_FFI_WORKAROUND=1;
         LLVM_SYS_150_FFI_WORKAROUND=1;
         LLVM_SYS_170_FFI_WORKAROUND=1;
-        buildInputs = (attrs.buildInputs or [ ]) ++ [pkgs.llvmPackages_17.libllvm pkgs.zlib pkgs.ncurses pkgs.xml2 pkgs.libffi];
+        LLVM_SYS_180_FFI_WORKAROUND=1;
+        buildInputs = (attrs.buildInputs or [ ]) ++ [pkgs.llvmPackages_18.libllvm pkgs.zlib pkgs.ncurses pkgs.xml2 pkgs.libffi];
       };
       stack-sizes = attrs: {
         # For #![feature(exit_status_error)]
         RUSTC_BOOTSTRAP = true;
-        buildInputs = (attrs.buildInputs or []) ++ [pkgs.llvmPackages_17.libllvm pkgs.zlib pkgs.ncurses pkgs.libxml2 pkgs.libffi];
+        buildInputs = (attrs.buildInputs or []) ++ [pkgs.llvmPackages_18.libllvm pkgs.zlib pkgs.ncurses pkgs.libxml2 pkgs.libffi];
       };
     };
   };
