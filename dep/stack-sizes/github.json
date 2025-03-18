@@ -1,8 +1,8 @@
 {
-  "owner": "obsidiansystems",
+  "owner": "dfordivam",
   "repo": "stack-sizes",
-  "branch": "canary-check-llvm-17",
+  "branch": "canary-check-llvm-18",
   "private": false,
-  "rev": "562882817ff0f7b96c63b3181443e92e3dcffc1a",
-  "sha256": "09d7sq9mlvzj56mjbv76qxv6azds2mxqbhc6zrkp7fjsmgcsd3fw"
+  "rev": "a7ec5cf706895a5fc39b9162bcc32b011d69ff1e",
+  "sha256": "0qn4qr25p2a5gyy7cmy37rl30020ivaawzh0vlfa88pv184z269a"
 }
