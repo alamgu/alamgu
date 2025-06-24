@@ -3,6 +3,6 @@
   "repo": "speculos",
   "branch": "with-nix-build",
   "private": false,
-  "rev": "9378db798e8ae4eef8b03db734d4139fdc49b9c7",
-  "sha256": "1bpgjpgy2yybwk5fvzx11rnn6dkbz6yzl9ygz6lac6v4xvq87j33"
+  "rev": "dc4277fad23eb2963c2d0b1f5b7fe90b69ac246d",
+  "sha256": "0a39r2hqvx49c5f3hylfci96q9i1lh50dnx1jv2r4shrwr2wxwdf"
 }
