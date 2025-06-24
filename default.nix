@@ -266,12 +266,12 @@ rec {
 
     buildPythonPackage rec {
       pname = "ragger";
-      version = "1.24.0";
+      version = "1.37.1";
       pyproject = true;
 
       src = fetchPypi {
         inherit pname version;
-        hash = "sha256-5rN1SVc8MbLwm7JavB2VtLaGBe2CkpHHkpzzvjxQVDg=";
+        hash = "sha256-winpZDAc7ziWtYPD0ZOaR3k1dt0lfE2b5T4QDkitxYs=";
       };
 
       build-system = [
@@ -291,6 +291,7 @@ rec {
         ledgered
         speculos
         mnemonic
+        toml
       ];
       # ++ lib.optionals enableSpeculos optional-dependencies.speculos;
 
